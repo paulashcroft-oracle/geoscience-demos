@@ -47,6 +47,8 @@ Verified on 2026-06-16:
 - `exports/apex/f104_geoscience_demos_20260616_feedback_queue.sql`: post-feedback-queue export for app 104.
 - `exports/apex/f105_boreholes_demo_20260616_feedback_queue.sql`: post-feedback-queue export for app 105.
 - `exports/apex/f105_boreholes_demo_20260616_refresh_ai_assistant.sql`: post-refresh/AI-assistant export for app 105.
+- `exports/apex/f105_boreholes_demo_20260616_graphical_assistant.sql`: post-graphical-assistant correction export for app 105.
+- `exports/apex/f105_boreholes_demo_20260616_assistant_left_panel_enter.sql`: post-left-panel/Enter-key assistant export for app 105.
 
 ## Boreholes Demo Data And AI
 
@@ -61,3 +63,5 @@ Verified on 2026-06-16:
 - Post-change APEX export: `exports/apex/f105_boreholes_demo_20260616_refresh_ai_assistant.sql`.
 - Graphical assistant correction: `docs/verification/20260616-boreholes-graphical-assistant.md`.
 - Graphical assistant export: `exports/apex/f105_boreholes_demo_20260616_graphical_assistant.sql`.
+- Assistant left-panel and Enter-key correction: `docs/verification/20260616-boreholes-assistant-left-panel-enter.md`.
+- Assistant left-panel and Enter-key export: `exports/apex/f105_boreholes_demo_20260616_assistant_left_panel_enter.sql`.

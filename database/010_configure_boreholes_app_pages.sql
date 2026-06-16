@@ -47,7 +47,9 @@ create or replace package body gs_borehole_page_api as
     append_line(p_html, '.gs-bore-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:1rem 0}.gs-bore-stats div{border:1px solid var(--line);border-radius:8px;background:#fff;padding:.85rem}.gs-bore-stats span{display:block;color:var(--muted);font-size:.74rem;text-transform:uppercase;font-weight:850}.gs-bore-stats strong{display:block;font-size:1.55rem;margin-top:.2rem}.gs-bore-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1rem}.gs-bore-panel{border:1px solid var(--line);border-radius:8px;background:#fff;padding:1rem}.gs-bore-panel h3{margin:.1rem 0 .45rem;font-size:1rem}');
     append_line(p_html, '.gs-bore-map{border:1px solid var(--line);border-radius:8px;background:linear-gradient(180deg,#f8fbfd,#eef6f1);min-height:20rem;overflow:hidden}.gs-bore-map svg{width:100%;height:auto;display:block}.gs-bore-layout{display:grid;grid-template-columns:minmax(18rem,.42fr) minmax(0,1fr);gap:1rem}.gs-bore-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.gs-bore-form label{display:grid;gap:.25rem;font-weight:800;font-size:.82rem;color:var(--muted)}.gs-bore-form input,.gs-bore-form select,.gs-bore-form textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:.55rem .65rem;font:inherit;background:#fff}.gs-bore-form textarea{min-height:7rem;resize:vertical}.gs-bore-span{grid-column:1/-1}');
     append_line(p_html, '.gs-bore-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px}.gs-bore-table{width:100%;border-collapse:collapse;background:#fff}.gs-bore-table th,.gs-bore-table td{padding:.55rem .65rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.gs-bore-table th{font-size:.75rem;text-transform:uppercase;color:var(--muted);background:#f7fafc}.gs-bore-chip{display:inline-flex;border-radius:999px;background:#eef7f1;color:#276749;padding:.12rem .45rem;font-weight:850;font-size:.75rem}.gs-bore-thread{border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:1rem;min-height:24rem;max-height:58vh;overflow:auto}.gs-bore-msg{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1rem;margin-bottom:.8rem}.gs-bore-msg--user{background:#eaf4fb;margin-left:auto;max-width:80%}.gs-bore-label{font-size:.72rem;text-transform:uppercase;font-weight:850;color:var(--muted);margin-bottom:.35rem}.gs-bore-answer-head{border-left:4px solid var(--green);padding-left:.8rem}.gs-bore-mode{display:inline-flex;border-radius:999px;background:#edf7ff;color:#1d5d86;padding:.15rem .5rem;font-weight:850;font-size:.72rem;text-transform:uppercase}');
+    append_line(p_html, '.gs-bore--assistant{height:calc(100dvh - 7.5rem);min-height:38rem;display:flex;flex-direction:column;gap:.8rem}.gs-bore--assistant h1{flex:0 0 auto}.gs-bore-ai-shell{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(18rem,.32fr) minmax(0,.68fr);gap:1rem;align-items:stretch}.gs-bore-ai-panel{min-height:0;display:flex;flex-direction:column}.gs-bore-ai-panel .gs-bore-form{height:100%;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:auto minmax(18rem,1fr) auto auto;gap:.7rem}.gs-bore-chat-main{display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0}.gs-bore-ai-panel .gs-bore-form label,.gs-bore-ai-panel .gs-bore-form textarea{min-height:0}.gs-bore-ai-panel .gs-bore-chat-main textarea{height:100%;min-height:18rem;resize:none}.gs-bore-ai-panel select,.gs-bore-ai-panel input,.gs-bore-ai-panel textarea{font-size:.95rem}.gs-bore-ai-actions{display:flex;gap:.6rem;align-items:center}.gs-bore-ai-actions .gs-bore-btn{flex:1 1 8rem;justify-content:center;min-height:2.75rem}.gs-bore-file-input{position:absolute;inline-size:1px;block-size:1px;opacity:0;pointer-events:none}.gs-bore-attachments{display:grid;gap:.35rem}.gs-bore-attachments[hidden]{display:none}.gs-bore-attachment{display:flex;align-items:center;justify-content:space-between;gap:.5rem;border:1px solid var(--line);border-radius:8px;background:#f7fafc;padding:.42rem .55rem;color:var(--muted);font-size:.8rem}.gs-bore-attachment strong{color:var(--ink)}.gs-bore-attachment button{border:0;background:transparent;color:var(--blue);font-weight:800}.gs-bore-ai-output{min-height:0;display:flex}.gs-bore-ai-output .gs-bore-thread{flex:1 1 auto;height:100%;max-height:none;min-height:0}.gs-bore-ai-output .gs-bore-msg{max-width:100%}.gs-bore-ai-output .gs-bore-viz-grid{grid-template-columns:repeat(2,minmax(15rem,1fr))}.gs-bore-ai-output .gs-bore-viz-metrics{grid-template-columns:repeat(4,minmax(7rem,1fr))}');
     append_line(p_html, '@media(max-width:800px){.gs-bore-hero,.gs-bore-layout,.gs-bore-grid,.gs-bore-stats{grid-template-columns:1fr}.gs-bore-form{grid-template-columns:1fr}.gs-bore-msg--user{max-width:100%}}');
+    append_line(p_html, '@media(max-width:1024px){.gs-bore--assistant{height:auto;min-height:0}.gs-bore-ai-shell{grid-template-columns:1fr}.gs-bore-ai-panel .gs-bore-form{min-height:34rem}.gs-bore-ai-output .gs-bore-thread{min-height:32rem}.gs-bore-ai-output .gs-bore-viz-grid,.gs-bore-ai-output .gs-bore-viz-metrics{grid-template-columns:1fr}}');
     append_line(p_html, '</style>');
   end append_css;
 
@@ -175,12 +177,153 @@ create or replace package body gs_borehole_page_api as
     l_html clob;
   begin
     dbms_lob.createtemporary(l_html, true);
-    append_line(l_html, '<div class="gs-bore"><h1>AI Data Assistant</h1>');
+    append_line(l_html, '<div class="gs-bore gs-bore--assistant"><h1>AI Data Assistant</h1>');
     append_css(l_html);
-    append_line(l_html, '<div class="gs-bore-layout"><section class="gs-bore-panel"><div class="gs-bore-form"><label class="gs-bore-span">Service / AI model<select id="gsAiModel">');
+    append_line(l_html, '<div class="gs-bore-ai-shell"><section class="gs-bore-panel gs-bore-ai-panel"><div class="gs-bore-form"><label class="gs-bore-span">Service / AI model<select id="gsAiModel">');
     append_model_options(l_html);
-    append_line(l_html, '</select></label><label class="gs-bore-span">Ask about boreholes<textarea id="gsAiPrompt" placeholder="Ask about borehole counts, provinces, depth, reports, operators, or the current map area"></textarea></label><label class="gs-bore-span">Pasted screen/context<textarea id="gsAiContext" placeholder="Paste a screenshot OCR note, copied report rows, coordinates, or other context"></textarea></label><label class="gs-bore-span">Screenshot or file input<input id="gsAiFile" type="file" accept="image/*,.txt,.csv,.json"></label><div class="gs-bore-span"><button class="gs-bore-btn gs-bore-btn--primary" id="gsAiAsk" type="button">Ask</button></div></div></section><section><div class="gs-bore-thread" id="gsAiThread"><div class="gs-bore-msg"><div class="gs-bore-label">Boreholes Agent</div><p>Ask questions grounded in the loaded borehole data. Pasted context is sent as text. Image files are accepted as attachment context metadata in this first slice.</p></div></div></section></div>');
-    append_line(l_html, '<script>(function(){function esc(v){return String(v||"").replace(/[&<>"' || '''' || ']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","' || '''' || '":"&#39;"}[c];});}function add(k,html){var t=document.getElementById("gsAiThread"),d=document.createElement("div");d.className="gs-bore-msg"+(k==="user"?" gs-bore-msg--user":"");d.innerHTML="<div class=\"gs-bore-label\">"+(k==="user"?"You":"Boreholes Agent")+"</div>"+html;t.appendChild(d);t.scrollTop=t.scrollHeight;return d;}function simpleMd(v){return "<p>"+esc(v).replace(/\\n\\n+/g,"</p><p>").replace(/\\n/g,"<br>")+"</p>";}var b=document.getElementById("gsAiAsk"),p=document.getElementById("gsAiPrompt"),m=document.getElementById("gsAiModel"),c=document.getElementById("gsAiContext"),f=document.getElementById("gsAiFile");if(!b){return;}b.addEventListener("click",function(){var q=p.value.trim();if(!q||b.disabled){return;}var ctx=c.value||"";if(f.files&&f.files[0]){ctx+="\\n\\nAttached file metadata: "+f.files[0].name+"; type "+f.files[0].type+"; bytes "+f.files[0].size+". Binary image interpretation requires a follow-up multimodal extraction path; this request includes metadata and any pasted text.";}add("user","<p>"+esc(q)+"</p>");b.disabled=true;var hold=add("agent","<p>Thinking...</p>");apex.server.process("GS_BOREHOLES_AGENT_ASK",{x01:q,x02:m.value,x03:ctx},{dataType:"json"}).then(function(r){if(!r||!r.success){hold.innerHTML="<div class=\"gs-bore-label\">Boreholes Agent</div><p>"+esc((r&&r.message)||"No response returned.")+"</p>";return;}var html=r.answerHtml||simpleMd(r.answerMarkdown||"");if(r.selectedServiceName){html="<p><strong>Model:</strong> "+esc(r.selectedServiceName)+" <span class=\"gs-bore-chip\">"+esc(r.mode)+"</span></p>"+html;}if(r.supportingHtml){html+="<details class=\"gs-bore-section\"><summary>Grounding details</summary>"+r.supportingHtml+"</details>";}hold.innerHTML="<div class=\"gs-bore-label\">Boreholes Agent</div>"+html;}).catch(function(e){hold.innerHTML="<div class=\"gs-bore-label\">Boreholes Agent</div><p>"+esc(e.message||e)+"</p>";}).finally(function(){b.disabled=false;p.focus();});});})();</script></div>');
+    append_line(l_html, q'~</select></label><label class="gs-bore-span gs-bore-chat-main">Ask about boreholes<textarea id="gsAiPrompt" placeholder="Ask about borehole counts, maps, provinces, depth, reports, operators, pasted notes, or pasted images. Press Enter to ask; Shift+Enter adds a new line."></textarea></label><div class="gs-bore-span gs-bore-attachments" id="gsAiAttachmentList" hidden></div><div class="gs-bore-span gs-bore-ai-actions"><button class="gs-bore-btn gs-bore-btn--primary" id="gsAiAsk" type="button">Ask</button><label class="gs-bore-btn" for="gsAiFile">Insert File</label><input id="gsAiFile" class="gs-bore-file-input" type="file" accept="image/*,.txt,.csv,.json,.pdf" multiple></div></div></section><section class="gs-bore-ai-output"><div class="gs-bore-thread" id="gsAiThread"><div class="gs-bore-msg"><div class="gs-bore-label">Boreholes Agent</div><p>Ask questions grounded in the loaded borehole data. Pasted text is sent with the prompt, and pasted images or inserted files are captured as request attachment context.</p></div></div></section></div>~');
+    append_line(l_html, q'~<script>
+(function(){
+  function esc(v){
+    return String(v || "").replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function add(k, html){
+    var t = document.getElementById("gsAiThread");
+    var d = document.createElement("div");
+    d.className = "gs-bore-msg" + (k === "user" ? " gs-bore-msg--user" : "");
+    d.innerHTML = "<div class=\"gs-bore-label\">" + (k === "user" ? "You" : "Boreholes Agent") + "</div>" + html;
+    t.appendChild(d);
+    t.scrollTop = t.scrollHeight;
+    return d;
+  }
+  function simpleMd(v){
+    return "<p>" + esc(v).replace(/\n\n+/g, "</p><p>").replace(/\n/g, "<br>") + "</p>";
+  }
+  function insertAtCursor(text){
+    var start = p.selectionStart || p.value.length;
+    var end = p.selectionEnd || p.value.length;
+    var before = p.value.slice(0, start);
+    var after = p.value.slice(end);
+    var prefix = before && !/\s$/.test(before) ? "\n" : "";
+    var suffix = after && !/^\s/.test(after) ? "\n" : "";
+    p.value = before + prefix + text + suffix + after;
+    var pos = (before + prefix + text + suffix).length;
+    p.setSelectionRange(pos, pos);
+    p.focus();
+  }
+  function renderAttachments(){
+    if (!list) { return; }
+    if (!attachments.length) {
+      list.hidden = true;
+      list.innerHTML = "";
+      return;
+    }
+    list.hidden = false;
+    list.innerHTML = attachments.map(function(a, i){
+      return "<div class=\"gs-bore-attachment\"><span><strong>" + esc(a.name) + "</strong> " +
+             esc(a.type || "unknown") + " " + esc(String(a.size || 0)) +
+             " bytes</span><button type=\"button\" data-remove=\"" + i + "\">Remove</button></div>";
+    }).join("");
+  }
+  function addAttachment(file, source, insertMarker){
+    if (!file) { return; }
+    var name = file.name || (source === "pasted image" ? "pasted-image" : "attachment");
+    attachments.push({name:name, type:file.type || "", size:file.size || 0, source:source});
+    if (insertMarker) {
+      insertAtCursor("[" + source + ": " + name + "]");
+    }
+    renderAttachments();
+  }
+  function attachmentContext(){
+    if (!attachments.length) { return ""; }
+    return attachments.map(function(a){
+      return a.source + " metadata: " + a.name + "; type " + (a.type || "unknown") +
+             "; bytes " + (a.size || 0) + ". Binary content was supplied through the prompt attachment workflow; this APEX text request includes attachment metadata and any pasted prompt text.";
+    }).join("\n");
+  }
+  function clearEntry(){
+    p.value = "";
+    attachments = [];
+    if (f) { f.value = ""; }
+    renderAttachments();
+  }
+  function finish(){
+    b.disabled = false;
+    p.focus();
+  }
+  function showResponse(hold, r){
+    if (!r || !r.success) {
+      hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div><p>" + esc((r && r.message) || "No response returned.") + "</p>";
+      return;
+    }
+    var html = r.answerHtml || simpleMd(r.answerMarkdown || "");
+    if (r.selectedServiceName) {
+      html = "<p><strong>Model:</strong> " + esc(r.selectedServiceName) + " <span class=\"gs-bore-chip\">" + esc(r.mode) + "</span></p>" + html;
+    }
+    if (r.supportingHtml) {
+      html += "<details class=\"gs-bore-section\"><summary>Grounding details</summary>" + r.supportingHtml + "</details>";
+    }
+    hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div>" + html;
+  }
+
+  var b = document.getElementById("gsAiAsk");
+  var p = document.getElementById("gsAiPrompt");
+  var m = document.getElementById("gsAiModel");
+  var f = document.getElementById("gsAiFile");
+  var list = document.getElementById("gsAiAttachmentList");
+  var attachments = [];
+  if (!b || !p || !m) { return; }
+
+  list && list.addEventListener("click", function(e){
+    var ix = e.target && e.target.getAttribute("data-remove");
+    if (ix === null) { return; }
+    attachments.splice(Number(ix), 1);
+    renderAttachments();
+  });
+  p.addEventListener("paste", function(e){
+    var files = Array.prototype.slice.call((e.clipboardData && e.clipboardData.files) || []);
+    var imageFiles = files.filter(function(file){ return /^image\//.test(file.type || ""); });
+    if (!imageFiles.length) { return; }
+    e.preventDefault();
+    imageFiles.forEach(function(file){ addAttachment(file, "pasted image", true); });
+  });
+  f && f.addEventListener("change", function(){
+    Array.prototype.slice.call(f.files || []).forEach(function(file){
+      addAttachment(file, "inserted file", true);
+    });
+  });
+  p.addEventListener("keydown", function(e){
+    if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+      e.preventDefault();
+      b.click();
+    }
+  });
+  b.addEventListener("click", function(){
+    var q = p.value.trim();
+    if (!q || b.disabled) { return; }
+    var ctx = attachmentContext();
+    add("user", "<p>" + esc(q) + "</p>");
+    clearEntry();
+    b.disabled = true;
+    var hold = add("agent", "<p>Thinking...</p>");
+    var req = apex.server.process("GS_BOREHOLES_AGENT_ASK", {x01:q, x02:m.value, x03:ctx}, {dataType:"json"});
+    if (req && typeof req.done === "function") {
+      req.done(function(r){ showResponse(hold, r); })
+         .fail(function(jqXHR, textStatus, errorThrown){ hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div><p>" + esc(errorThrown || textStatus || "Request failed.") + "</p>"; })
+         .always(finish);
+    } else if (req && typeof req.then === "function") {
+      Promise.resolve(req).then(function(r){ showResponse(hold, r); })
+        .catch(function(e){ hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div><p>" + esc((e && e.message) || e || "Request failed.") + "</p>"; })
+        .finally(finish);
+    } else {
+      hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div><p>Request could not be started.</p>";
+      finish();
+    }
+  });
+})();
+</script></div>~');
     return l_html;
   end assistant_html;
 end gs_borehole_page_api;

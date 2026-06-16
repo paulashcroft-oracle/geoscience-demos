@@ -619,8 +619,34 @@ create or replace package body gs_borehole_agent_api as
     l_max_lat number;
     l_x number;
     l_y number;
+    l_prompt varchar2(4000);
+    l_focus_title varchar2(200);
+    l_focus_summary varchar2(1000);
   begin
     dbms_lob.createtemporary(l_html, true);
+    l_prompt := lower(coalesce(dbms_lob.substr(p_user_prompt, 4000, 1), ''));
+    l_focus_title := 'Key insights from the loaded boreholes';
+    l_focus_summary := 'Charts are generated directly from GEOSCIENCE schema data so the visual answer remains grounded while the selected model supplies question-specific interpretation.';
+
+    if regexp_like(l_prompt, 'map|spatial|location|where|area|drill') then
+      l_focus_title := 'Spatial borehole distribution';
+      l_focus_summary := 'The map and location plot are the primary answer for this question; use narrower refresh areas to build state and local drill-down views.';
+    elsif regexp_like(l_prompt, 'state|territor|wa|western australia|nsw|queensland|qld|south australia|northern territory|nt') then
+      l_focus_title := 'State and territory borehole distribution';
+      l_focus_summary := 'The state chart is the primary answer for this question; it shows the current loaded slice is heavily weighted toward Western Australia.';
+    elsif regexp_like(l_prompt, 'operator|company|owner') then
+      l_focus_title := 'Borehole operators and data quality';
+      l_focus_summary := 'The operator chart is the primary answer for this question; unknown or inconsistent operators are useful follow-up targets before drawing prospectivity conclusions.';
+    elsif regexp_like(l_prompt, 'length|depth|deep|longest|metre|meter') then
+      l_focus_title := 'Borehole length and depth profile';
+      l_focus_summary := 'The length profile and longest-record review are the primary answer for this question; missing lengths should be separated from interpreted depth trends.';
+    elsif regexp_like(l_prompt, 'purpose|commodity|mineral|gold|copper|iron|groundwater|stratig') then
+      l_focus_title := 'Borehole purpose and commodity mix';
+      l_focus_summary := 'The purpose chart is the primary answer for this question; it separates mineral exploration, stratigraphic, groundwater, and unclassified records.';
+    elsif regexp_like(l_prompt, 'report|source|refresh|wfs|data|quality|missing') then
+      l_focus_title := 'Source, refresh, and data-quality evidence';
+      l_focus_summary := 'The refresh provenance and quality notes are the primary answer for this question; the visuals stay tied to the loaded Geoscience Australia WFS records.';
+    end if;
 
     select count(*),
            count(distinct state_code),
@@ -639,7 +665,7 @@ create or replace package body gs_borehole_agent_api as
     append_line(l_html, '.gs-bore-viz{display:grid;gap:1rem}.gs-bore-viz-hero{border:1px solid #d7dde5;border-radius:8px;background:linear-gradient(135deg,#f7fbff,#eef7f1);padding:1rem}.gs-bore-viz-hero h2{margin:.1rem 0 .35rem;font-size:1.45rem}.gs-bore-viz-hero p{margin:.2rem 0;color:#4e5c6c}.gs-bore-viz-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.gs-bore-viz-card{border:1px solid #d7dde5;border-radius:8px;background:#fff;padding:1rem}.gs-bore-viz-card h3{margin:.1rem 0 .7rem;font-size:1rem}.gs-bore-viz-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}.gs-bore-viz-metric{border:1px solid #d7dde5;border-radius:8px;background:#fff;padding:.85rem}.gs-bore-viz-metric span{display:block;color:#5d6876;font-size:.72rem;text-transform:uppercase;font-weight:850}.gs-bore-viz-metric strong{display:block;font-size:1.35rem;margin-top:.2rem}.gs-bore-bar-row{display:grid;grid-template-columns:minmax(5.5rem,.45fr) minmax(0,1fr) auto;gap:.55rem;align-items:center;margin:.45rem 0}.gs-bore-bar-label{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gs-bore-bar-track{height:1rem;border-radius:999px;background:#eef2f6;overflow:hidden}.gs-bore-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#1d6fa5,#2f7d57)}.gs-bore-viz-note{font-size:.85rem;color:#5d6876}.gs-bore-mini-map{border:1px solid #d7dde5;border-radius:8px;background:#f8fbfd;overflow:hidden}.gs-bore-mini-map svg{width:100%;height:auto;display:block}.gs-bore-action-list{display:grid;gap:.5rem;margin:0;padding:0;list-style:none}.gs-bore-action-list li{border-left:4px solid #2f7d57;background:#f7fafc;padding:.55rem .7rem}.gs-bore-narrative{white-space:pre-wrap;max-height:14rem;overflow:auto;background:#f7fafc;border:1px solid #d7dde5;border-radius:8px;padding:.7rem}@media(max-width:900px){.gs-bore-viz-grid,.gs-bore-viz-metrics{grid-template-columns:1fr}}');
     append_line(l_html, '</style>');
     append_line(l_html, '<div class="gs-bore-viz">');
-    append_line(l_html, '<section class="gs-bore-viz-hero"><span class="gs-bore-mode">Graphical Boreholes Insight</span><h2>Key insights from the loaded boreholes</h2><p>Charts are generated directly from GEOSCIENCE schema data so the visual answer remains grounded even when the model supplies narrative text.</p></section>');
+    append_line(l_html, '<section class="gs-bore-viz-hero"><span class="gs-bore-mode">Graphical Boreholes Insight</span><h2>' || html_escape(l_focus_title) || '</h2><p>' || html_escape(l_focus_summary) || '</p></section>');
     append_line(l_html, '<div class="gs-bore-viz-metrics">');
     append_line(l_html, '<div class="gs-bore-viz-metric"><span>Boreholes</span><strong>' || to_char(l_total, 'FM999G999G999') || '</strong></div>');
     append_line(l_html, '<div class="gs-bore-viz-metric"><span>States</span><strong>' || to_char(l_states, 'FM999G999G999') || '</strong></div>');
@@ -798,7 +824,7 @@ create or replace package body gs_borehole_agent_api as
     append_line(l_html, '</ul><p class="gs-bore-viz-note">Last successful refresh: ' || html_escape(coalesce(l_last_run, 'Pending')) || '. Source: Geoscience Australia Boreholes WFS, feature type bh:Boreholes.</p></section>');
 
     if p_model_markdown is not null then
-      append_line(l_html, '<details class="gs-bore-viz-card"><summary>AI narrative used as supporting commentary</summary><div class="gs-bore-narrative">' || html_escape(dbms_lob.substr(p_model_markdown, 3000, 1)) || '</div></details>');
+      append_line(l_html, '<section class="gs-bore-viz-card"><h3>AI interpretation from selected model</h3><div class="gs-bore-narrative">' || html_escape(dbms_lob.substr(p_model_markdown, 3000, 1)) || '</div></section>');
     end if;
 
     append_line(l_html, '</div>');
