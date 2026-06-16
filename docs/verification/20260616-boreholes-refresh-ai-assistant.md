@@ -62,6 +62,13 @@ Runtime Ajax checks passed:
   `https://services.ga.gov.au/gis/boreholes/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=bh%3ABoreholes&outputFormat=application%2Fjson&count=10&bbox=129,-24,139,-17,EPSG%3A4326`
 - `GS_BOREHOLES_AGENT_ASK` returned `success: true`, mode `APEX_AI`, selected service `cohere.command-latest`, and a grounded boreholes-by-state answer.
 
+Follow-up graphical-output correction:
+
+- User test feedback showed the assistant response was too textual for graphical insight prompts.
+- `GS_BOREHOLE_AGENT_API` now returns a deterministic visual `answerHtml` panel for every successful assistant call.
+- Visual output includes metric cards, state/purpose/length/operator bar charts, and a spatial SVG plot.
+- Verification note: `docs/verification/20260616-boreholes-graphical-assistant.md`.
+
 The assistant accepts screenshot/file input in this slice as attachment metadata plus pasted text context. Binary image interpretation still requires a future multimodal extraction path before claiming screenshot vision.
 
 ## Replayable Scripts

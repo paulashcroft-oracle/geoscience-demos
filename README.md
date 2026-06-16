@@ -59,3 +59,5 @@ Verified on 2026-06-16:
 - Assistant smoke: selected `cohere.command-latest`, returned `success: true` with mode `APEX_AI` and grounded boreholes-by-state response.
 - Verification note: `docs/verification/20260616-boreholes-refresh-ai-assistant.md`.
 - Post-change APEX export: `exports/apex/f105_boreholes_demo_20260616_refresh_ai_assistant.sql`.
+- Graphical assistant correction: `docs/verification/20260616-boreholes-graphical-assistant.md`.
+- Graphical assistant export: `exports/apex/f105_boreholes_demo_20260616_graphical_assistant.sql`.
