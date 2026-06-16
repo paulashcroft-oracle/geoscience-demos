@@ -435,6 +435,7 @@ end gs_borehole_refresh_api;
 create or replace package gs_borehole_agent_api as
   function dataset_summary_markdown return clob;
   function deterministic_answer_html(p_user_prompt in clob) return clob;
+  function dashboard_report_html return clob;
   function build_ai_context(p_user_prompt in clob, p_screen_context in clob default null) return clob;
   function ask_json(
     p_user_prompt       in clob,
@@ -620,30 +621,42 @@ create or replace package body gs_borehole_agent_api as
     l_x number;
     l_y number;
     l_prompt varchar2(4000);
+    l_intent varchar2(20);
     l_focus_title varchar2(200);
     l_focus_summary varchar2(1000);
   begin
     dbms_lob.createtemporary(l_html, true);
     l_prompt := lower(coalesce(dbms_lob.substr(p_user_prompt, 4000, 1), ''));
+    l_intent := 'OVERVIEW';
     l_focus_title := 'Key insights from the loaded boreholes';
     l_focus_summary := 'Charts are generated directly from GEOSCIENCE schema data so the visual answer remains grounded while the selected model supplies question-specific interpretation.';
 
-    if regexp_like(l_prompt, 'map|spatial|location|where|area|drill') then
+    if instr(l_prompt, '__report_dashboard__') > 0 then
+      l_intent := 'REPORT';
+      l_focus_title := 'Boreholes reports dashboard';
+      l_focus_summary := 'This report page keeps the reusable graphical overview cards together for scanning, demo walkthroughs, and comparison with assistant answers.';
+    elsif regexp_like(l_prompt, 'map|spatial|location|where|area|coordinate|lat|lon') then
+      l_intent := 'SPATIAL';
       l_focus_title := 'Spatial borehole distribution';
       l_focus_summary := 'The map and location plot are the primary answer for this question; use narrower refresh areas to build state and local drill-down views.';
     elsif regexp_like(l_prompt, 'state|territor|wa|western australia|nsw|queensland|qld|south australia|northern territory|nt') then
+      l_intent := 'STATE';
       l_focus_title := 'State and territory borehole distribution';
       l_focus_summary := 'The state chart is the primary answer for this question; it shows the current loaded slice is heavily weighted toward Western Australia.';
     elsif regexp_like(l_prompt, 'operator|company|owner') then
+      l_intent := 'OPERATOR';
       l_focus_title := 'Borehole operators and data quality';
       l_focus_summary := 'The operator chart is the primary answer for this question; unknown or inconsistent operators are useful follow-up targets before drawing prospectivity conclusions.';
     elsif regexp_like(l_prompt, 'length|depth|deep|longest|metre|meter') then
+      l_intent := 'LENGTH';
       l_focus_title := 'Borehole length and depth profile';
       l_focus_summary := 'The length profile and longest-record review are the primary answer for this question; missing lengths should be separated from interpreted depth trends.';
     elsif regexp_like(l_prompt, 'purpose|commodity|mineral|gold|copper|iron|groundwater|stratig') then
+      l_intent := 'PURPOSE';
       l_focus_title := 'Borehole purpose and commodity mix';
       l_focus_summary := 'The purpose chart is the primary answer for this question; it separates mineral exploration, stratigraphic, groundwater, and unclassified records.';
     elsif regexp_like(l_prompt, 'report|source|refresh|wfs|data|quality|missing') then
+      l_intent := 'SOURCE';
       l_focus_title := 'Source, refresh, and data-quality evidence';
       l_focus_summary := 'The refresh provenance and quality notes are the primary answer for this question; the visuals stay tied to the loaded Geoscience Australia WFS records.';
     end if;
@@ -666,59 +679,93 @@ create or replace package body gs_borehole_agent_api as
     append_line(l_html, '</style>');
     append_line(l_html, '<div class="gs-bore-viz">');
     append_line(l_html, '<section class="gs-bore-viz-hero"><span class="gs-bore-mode">Graphical Boreholes Insight</span><h2>' || html_escape(l_focus_title) || '</h2><p>' || html_escape(l_focus_summary) || '</p></section>');
-    append_line(l_html, '<div class="gs-bore-viz-metrics">');
-    append_line(l_html, '<div class="gs-bore-viz-metric"><span>Boreholes</span><strong>' || to_char(l_total, 'FM999G999G999') || '</strong></div>');
-    append_line(l_html, '<div class="gs-bore-viz-metric"><span>States</span><strong>' || to_char(l_states, 'FM999G999G999') || '</strong></div>');
-    append_line(l_html, '<div class="gs-bore-viz-metric"><span>Avg length</span><strong>' || coalesce(to_char(l_avg_depth, 'FM999G999G990D0'), '-') || ' m</strong></div>');
-    append_line(l_html, '<div class="gs-bore-viz-metric"><span>Max length</span><strong>' || coalesce(to_char(l_max_depth, 'FM999G999G990D0'), '-') || ' m</strong></div>');
-    append_line(l_html, '</div>');
+
+    if p_model_markdown is not null then
+      append_line(l_html, '<section class="gs-bore-viz-card"><h3>Assistant answer</h3><div class="gs-bore-narrative">' || html_escape(dbms_lob.substr(p_model_markdown, 3000, 1)) || '</div></section>');
+    end if;
+
+    if l_intent in ('REPORT', 'OVERVIEW') then
+      append_line(l_html, '<div class="gs-bore-viz-metrics">');
+      append_line(l_html, '<div class="gs-bore-viz-metric"><span>Boreholes</span><strong>' || to_char(l_total, 'FM999G999G999') || '</strong></div>');
+      append_line(l_html, '<div class="gs-bore-viz-metric"><span>States</span><strong>' || to_char(l_states, 'FM999G999G999') || '</strong></div>');
+      append_line(l_html, '<div class="gs-bore-viz-metric"><span>Avg length</span><strong>' || coalesce(to_char(l_avg_depth, 'FM999G999G990D0'), '-') || ' m</strong></div>');
+      append_line(l_html, '<div class="gs-bore-viz-metric"><span>Max length</span><strong>' || coalesce(to_char(l_max_depth, 'FM999G999G990D0'), '-') || ' m</strong></div>');
+      append_line(l_html, '</div>');
+    end if;
+
     append_line(l_html, '<div class="gs-bore-viz-grid">');
 
-    append_line(l_html, '<section class="gs-bore-viz-card"><h3>Boreholes by state</h3>');
-    select max(cnt)
-      into l_max_count
-      from (
-        select count(*) cnt
+    if l_intent in ('REPORT', 'OVERVIEW', 'STATE') then
+      append_line(l_html, '<section class="gs-bore-viz-card"><h3>Boreholes by state</h3>');
+      select max(cnt)
+        into l_max_count
+        from (
+          select count(*) cnt
+            from gs_boreholes
+           group by coalesce(state_code, 'Unknown')
+        );
+      for r in (
+        select coalesce(state_code, 'Unknown') label,
+               count(*) cnt
           from gs_boreholes
          group by coalesce(state_code, 'Unknown')
-      );
-    for r in (
-      select coalesce(state_code, 'Unknown') label,
-             count(*) cnt
-        from gs_boreholes
-       group by coalesce(state_code, 'Unknown')
-       order by count(*) desc, label
-       fetch first 8 rows only
-    ) loop
-      append_line(l_html, '<div class="gs-bore-bar-row"><div class="gs-bore-bar-label">' || html_escape(r.label) || '</div><div class="gs-bore-bar-track"><div class="gs-bore-bar-fill" style="width:' || to_char(round((r.cnt / greatest(l_max_count, 1)) * 100, 1), 'FM990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '%"></div></div><strong>' || to_char(r.cnt, 'FM999G999G999') || '</strong></div>');
-    end loop;
-    append_line(l_html, '<p class="gs-bore-viz-note">WA dominates the current Tanami/central Australia slice; use this as a prompt to compare narrower BBOX refreshes.</p></section>');
+         order by count(*) desc, label
+         fetch first 8 rows only
+      ) loop
+        append_line(l_html, '<div class="gs-bore-bar-row"><div class="gs-bore-bar-label">' || html_escape(r.label) || '</div><div class="gs-bore-bar-track"><div class="gs-bore-bar-fill" style="width:' || to_char(round((r.cnt / greatest(l_max_count, 1)) * 100, 1), 'FM990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '%"></div></div><strong>' || to_char(r.cnt, 'FM999G999G999') || '</strong></div>');
+      end loop;
+      append_line(l_html, '<p class="gs-bore-viz-note">WA dominates the current Tanami/central Australia slice; use this as a prompt to compare narrower BBOX refreshes.</p></section>');
+    end if;
 
-    append_line(l_html, '<section class="gs-bore-viz-card"><h3>Borehole purpose mix</h3>');
-    select max(cnt)
-      into l_max_count
-      from (
-        select count(*) cnt
+    if l_intent in ('REPORT', 'OVERVIEW', 'PURPOSE') then
+      append_line(l_html, '<section class="gs-bore-viz-card"><h3>Borehole purpose mix</h3>');
+      select max(cnt)
+        into l_max_count
+        from (
+          select count(*) cnt
+            from gs_boreholes
+           group by coalesce(purpose, commodity_group, 'Unknown')
+        );
+      for r in (
+        select coalesce(purpose, commodity_group, 'Unknown') label,
+               count(*) cnt
           from gs_boreholes
          group by coalesce(purpose, commodity_group, 'Unknown')
-      );
-    for r in (
-      select coalesce(purpose, commodity_group, 'Unknown') label,
-             count(*) cnt
-        from gs_boreholes
-       group by coalesce(purpose, commodity_group, 'Unknown')
-       order by count(*) desc, label
-       fetch first 8 rows only
-    ) loop
-      append_line(l_html, '<div class="gs-bore-bar-row"><div class="gs-bore-bar-label" title="' || apex_escape.html_attribute(r.label) || '">' || html_escape(r.label) || '</div><div class="gs-bore-bar-track"><div class="gs-bore-bar-fill" style="width:' || to_char(round((r.cnt / greatest(l_max_count, 1)) * 100, 1), 'FM990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '%"></div></div><strong>' || to_char(r.cnt, 'FM999G999G999') || '</strong></div>');
-    end loop;
-    append_line(l_html, '<p class="gs-bore-viz-note">Purpose distribution helps separate mineral exploration, stratigraphic, groundwater, and unclassified records.</p></section>');
+         order by count(*) desc, label
+         fetch first 8 rows only
+      ) loop
+        append_line(l_html, '<div class="gs-bore-bar-row"><div class="gs-bore-bar-label" title="' || apex_escape.html_attribute(r.label) || '">' || html_escape(r.label) || '</div><div class="gs-bore-bar-track"><div class="gs-bore-bar-fill" style="width:' || to_char(round((r.cnt / greatest(l_max_count, 1)) * 100, 1), 'FM990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '%"></div></div><strong>' || to_char(r.cnt, 'FM999G999G999') || '</strong></div>');
+      end loop;
+      append_line(l_html, '<p class="gs-bore-viz-note">Purpose distribution helps separate mineral exploration, stratigraphic, groundwater, and unclassified records.</p></section>');
+    end if;
 
-    append_line(l_html, '<section class="gs-bore-viz-card"><h3>Length profile</h3>');
-    select max(cnt)
-      into l_max_count
-      from (
-        select count(*) cnt
+    if l_intent in ('REPORT', 'OVERVIEW', 'LENGTH') then
+      append_line(l_html, '<section class="gs-bore-viz-card"><h3>Length profile</h3>');
+      select max(cnt)
+        into l_max_count
+        from (
+          select count(*) cnt
+            from (
+              select case
+                       when depth_metres is null then 5
+                       when depth_metres < 50 then 1
+                       when depth_metres < 100 then 2
+                       when depth_metres < 250 then 3
+                       else 4
+                     end bucket
+                from gs_boreholes
+            )
+           group by bucket
+        );
+      for r in (
+        select case bucket
+                 when 1 then '< 50 m'
+                 when 2 then '50-99 m'
+                 when 3 then '100-249 m'
+                 when 4 then '250 m+'
+                 else 'Unknown'
+               end label,
+               cnt
           from (
             select case
                      when depth_metres is null then 5
@@ -726,110 +773,131 @@ create or replace package body gs_borehole_agent_api as
                      when depth_metres < 100 then 2
                      when depth_metres < 250 then 3
                      else 4
-                   end bucket
+                   end bucket,
+                   count(*) cnt
               from gs_boreholes
+             group by case
+                        when depth_metres is null then 5
+                        when depth_metres < 50 then 1
+                        when depth_metres < 100 then 2
+                        when depth_metres < 250 then 3
+                        else 4
+                      end
           )
-         group by bucket
-      );
-    for r in (
-      select case bucket
-               when 1 then '< 50 m'
-               when 2 then '50-99 m'
-               when 3 then '100-249 m'
-               when 4 then '250 m+'
-               else 'Unknown'
-             end label,
-             cnt
-        from (
-          select case
-                   when depth_metres is null then 5
-                   when depth_metres < 50 then 1
-                   when depth_metres < 100 then 2
-                   when depth_metres < 250 then 3
-                   else 4
-                 end bucket,
-                 count(*) cnt
-            from gs_boreholes
-           group by case
-                      when depth_metres is null then 5
-                      when depth_metres < 50 then 1
-                      when depth_metres < 100 then 2
-                      when depth_metres < 250 then 3
-                      else 4
-                    end
-        )
-       order by bucket
-    ) loop
-      append_line(l_html, '<div class="gs-bore-bar-row"><div class="gs-bore-bar-label">' || html_escape(r.label) || '</div><div class="gs-bore-bar-track"><div class="gs-bore-bar-fill" style="width:' || to_char(round((r.cnt / greatest(l_max_count, 1)) * 100, 1), 'FM990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '%"></div></div><strong>' || to_char(r.cnt, 'FM999G999G999') || '</strong></div>');
-    end loop;
-    append_line(l_html, '<p class="gs-bore-viz-note">Long holes deserve immediate detail/report review; missing lengths should be flagged before analysis claims.</p></section>');
+         order by bucket
+      ) loop
+        append_line(l_html, '<div class="gs-bore-bar-row"><div class="gs-bore-bar-label">' || html_escape(r.label) || '</div><div class="gs-bore-bar-track"><div class="gs-bore-bar-fill" style="width:' || to_char(round((r.cnt / greatest(l_max_count, 1)) * 100, 1), 'FM990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '%"></div></div><strong>' || to_char(r.cnt, 'FM999G999G999') || '</strong></div>');
+      end loop;
+      append_line(l_html, '<p class="gs-bore-viz-note">Long holes deserve immediate detail/report review; missing lengths should be flagged before analysis claims.</p></section>');
+    end if;
 
-    append_line(l_html, '<section class="gs-bore-viz-card"><h3>Top operators</h3>');
-    select max(cnt)
-      into l_max_count
-      from (
-        select count(*) cnt
+    if l_intent in ('REPORT', 'OVERVIEW', 'OPERATOR') then
+      append_line(l_html, '<section class="gs-bore-viz-card"><h3>Top operators</h3>');
+      select max(cnt)
+        into l_max_count
+        from (
+          select count(*) cnt
+            from gs_boreholes
+           group by coalesce(operator_name, 'Unknown / Not Specified')
+        );
+      for r in (
+        select coalesce(operator_name, 'Unknown / Not Specified') label,
+               count(*) cnt
           from gs_boreholes
          group by coalesce(operator_name, 'Unknown / Not Specified')
-      );
-    for r in (
-      select coalesce(operator_name, 'Unknown / Not Specified') label,
-             count(*) cnt
-        from gs_boreholes
-       group by coalesce(operator_name, 'Unknown / Not Specified')
-       order by count(*) desc, label
-       fetch first 8 rows only
-    ) loop
-      append_line(l_html, '<div class="gs-bore-bar-row"><div class="gs-bore-bar-label" title="' || apex_escape.html_attribute(r.label) || '">' || html_escape(r.label) || '</div><div class="gs-bore-bar-track"><div class="gs-bore-bar-fill" style="width:' || to_char(round((r.cnt / greatest(l_max_count, 1)) * 100, 1), 'FM990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '%"></div></div><strong>' || to_char(r.cnt, 'FM999G999G999') || '</strong></div>');
-    end loop;
-    append_line(l_html, '<p class="gs-bore-viz-note">Operator quality is an early data-quality signal; unknown operators are useful feedback targets.</p></section>');
+         order by count(*) desc, label
+         fetch first 8 rows only
+      ) loop
+        append_line(l_html, '<div class="gs-bore-bar-row"><div class="gs-bore-bar-label" title="' || apex_escape.html_attribute(r.label) || '">' || html_escape(r.label) || '</div><div class="gs-bore-bar-track"><div class="gs-bore-bar-fill" style="width:' || to_char(round((r.cnt / greatest(l_max_count, 1)) * 100, 1), 'FM990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '%"></div></div><strong>' || to_char(r.cnt, 'FM999G999G999') || '</strong></div>');
+      end loop;
+      append_line(l_html, '<p class="gs-bore-viz-note">Operator quality is an early data-quality signal; unknown operators are useful feedback targets.</p></section>');
+    end if;
 
     append_line(l_html, '</div>');
 
-    append_line(l_html, '<section class="gs-bore-viz-card"><h3>Spatial distribution</h3>');
-    begin
-      select min(longitude), max(longitude), min(latitude), max(latitude)
-        into l_min_lon, l_max_lon, l_min_lat, l_max_lat
-        from gs_boreholes
-       where latitude is not null
-         and longitude is not null;
-
-      append_line(l_html, '<div class="gs-bore-mini-map"><svg viewBox="0 0 720 300" role="img" aria-label="Graphical plot of loaded borehole locations">');
-      append_line(l_html, '<rect width="720" height="300" fill="#f8fbfd"/><path d="M35 252C128 206 190 236 274 176c89-64 154-26 244-87 60-40 111-44 164-22v233H35z" fill="#e7f2e8" stroke="#c7dcc9"/>');
-      append_line(l_html, '<g fill="none" stroke="#d3dce6" stroke-width="1"><path d="M50 80H680M50 150H680M50 220H680M170 35V265M320 35V265M470 35V265M620 35V265"/></g><g>');
-      for r in (
-        select borehole_ref, borehole_name, state_code, latitude, longitude, depth_metres
+    if l_intent in ('REPORT', 'OVERVIEW', 'SPATIAL') then
+      append_line(l_html, '<section class="gs-bore-viz-card"><h3>Spatial distribution</h3>');
+      begin
+        select min(longitude), max(longitude), min(latitude), max(latitude)
+          into l_min_lon, l_max_lon, l_min_lat, l_max_lat
           from gs_boreholes
          where latitude is not null
-           and longitude is not null
-         order by updated_at desc
-         fetch first 120 rows only
-      ) loop
-        l_x := 55 + ((r.longitude - l_min_lon) / greatest(l_max_lon - l_min_lon, .0001)) * 610;
-        l_y := 250 - ((r.latitude - l_min_lat) / greatest(l_max_lat - l_min_lat, .0001)) * 205;
-        append_line(l_html, '<circle cx="' || to_char(round(l_x, 1), 'FM9990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '" cy="' || to_char(round(l_y, 1), 'FM9990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '" r="' || case when coalesce(r.depth_metres, 0) >= 250 then '6' else '4' end || '" fill="#1d6fa5" opacity=".8"><title>' || html_escape(r.borehole_name || ' (' || r.borehole_ref || ') ' || r.state_code || ' ' || r.depth_metres || 'm') || '</title></circle>');
-      end loop;
-      append_line(l_html, '</g><text x="55" y="285" fill="#5d6876" font-size="13">Lon ' || html_escape(to_char(round(l_min_lon, 2))) || ' to ' || html_escape(to_char(round(l_max_lon, 2))) || ', Lat ' || html_escape(to_char(round(l_min_lat, 2))) || ' to ' || html_escape(to_char(round(l_max_lat, 2))) || '</text></svg></div>');
-    exception
-      when others then
-        append_line(l_html, '<p>No coordinate-bearing boreholes are loaded yet.</p>');
-    end;
-    append_line(l_html, '</section>');
+           and longitude is not null;
 
-    append_line(l_html, '<section class="gs-bore-viz-card"><h3>Recommended next actions</h3><ul class="gs-bore-action-list">');
-    append_line(l_html, '<li>Open the longest borehole reports and compare purpose/operator consistency.</li>');
-    append_line(l_html, '<li>Refresh a narrower BBOX around the densest cluster to reduce mixed regional signals.</li>');
-    append_line(l_html, '<li>Ask the assistant to compare state, purpose, operator, or province slices shown in the charts.</li>');
-    append_line(l_html, '<li>Flag missing operator/length values as data-quality follow-up before prospectivity claims.</li>');
-    append_line(l_html, '</ul><p class="gs-bore-viz-note">Last successful refresh: ' || html_escape(coalesce(l_last_run, 'Pending')) || '. Source: Geoscience Australia Boreholes WFS, feature type bh:Boreholes.</p></section>');
+        append_line(l_html, '<div class="gs-bore-mini-map"><svg viewBox="0 0 720 300" role="img" aria-label="Graphical plot of loaded borehole locations">');
+        append_line(l_html, '<rect width="720" height="300" fill="#f8fbfd"/><path d="M35 252C128 206 190 236 274 176c89-64 154-26 244-87 60-40 111-44 164-22v233H35z" fill="#e7f2e8" stroke="#c7dcc9"/>');
+        append_line(l_html, '<g fill="none" stroke="#d3dce6" stroke-width="1"><path d="M50 80H680M50 150H680M50 220H680M170 35V265M320 35V265M470 35V265M620 35V265"/></g><g>');
+        for r in (
+          select borehole_ref, borehole_name, state_code, latitude, longitude, depth_metres
+            from gs_boreholes
+           where latitude is not null
+             and longitude is not null
+           order by updated_at desc
+           fetch first 120 rows only
+        ) loop
+          l_x := 55 + ((r.longitude - l_min_lon) / greatest(l_max_lon - l_min_lon, .0001)) * 610;
+          l_y := 250 - ((r.latitude - l_min_lat) / greatest(l_max_lat - l_min_lat, .0001)) * 205;
+          append_line(l_html, '<circle cx="' || to_char(round(l_x, 1), 'FM9990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '" cy="' || to_char(round(l_y, 1), 'FM9990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '" r="' || case when coalesce(r.depth_metres, 0) >= 250 then '6' else '4' end || '" fill="#1d6fa5" opacity=".8"><title>' || html_escape(r.borehole_name || ' (' || r.borehole_ref || ') ' || r.state_code || ' ' || r.depth_metres || 'm') || '</title></circle>');
+        end loop;
+        append_line(l_html, '</g><text x="55" y="285" fill="#5d6876" font-size="13">Lon ' || html_escape(to_char(round(l_min_lon, 2))) || ' to ' || html_escape(to_char(round(l_max_lon, 2))) || ', Lat ' || html_escape(to_char(round(l_min_lat, 2))) || ' to ' || html_escape(to_char(round(l_max_lat, 2))) || '</text></svg></div>');
+      exception
+        when others then
+          append_line(l_html, '<p>No coordinate-bearing boreholes are loaded yet.</p>');
+      end;
+      append_line(l_html, '</section>');
+    end if;
 
-    if p_model_markdown is not null then
-      append_line(l_html, '<section class="gs-bore-viz-card"><h3>AI interpretation from selected model</h3><div class="gs-bore-narrative">' || html_escape(dbms_lob.substr(p_model_markdown, 3000, 1)) || '</div></section>');
+    if l_intent = 'SOURCE' then
+      append_line(l_html, '<section class="gs-bore-viz-card"><h3>Source and refresh evidence</h3>');
+      append_line(l_html, '<ul class="gs-bore-action-list">');
+      append_line(l_html, '<li>Source service: Geoscience Australia Boreholes WFS.</li>');
+      append_line(l_html, '<li>Feature type: bh:Boreholes.</li>');
+      append_line(l_html, '<li>Last successful refresh: ' || html_escape(coalesce(l_last_run, 'Pending')) || '.</li>');
+      append_line(l_html, '<li>Loaded boreholes: ' || to_char(l_total, 'FM999G999G999') || '; distinct states: ' || to_char(l_states, 'FM999G999G999') || '.</li>');
+      append_line(l_html, '</ul></section>');
+    elsif l_intent in ('REPORT', 'OVERVIEW') then
+      append_line(l_html, '<section class="gs-bore-viz-card"><h3>Recommended next actions</h3><ul class="gs-bore-action-list">');
+      append_line(l_html, '<li>Open the longest borehole reports and compare purpose/operator consistency.</li>');
+      append_line(l_html, '<li>Refresh a narrower BBOX around the densest cluster to reduce mixed regional signals.</li>');
+      append_line(l_html, '<li>Ask the assistant to compare state, purpose, operator, or province slices shown in the charts.</li>');
+      append_line(l_html, '<li>Flag missing operator/length values as data-quality follow-up before prospectivity claims.</li>');
+      append_line(l_html, '</ul><p class="gs-bore-viz-note">Last successful refresh: ' || html_escape(coalesce(l_last_run, 'Pending')) || '. Source: Geoscience Australia Boreholes WFS, feature type bh:Boreholes.</p></section>');
     end if;
 
     append_line(l_html, '</div>');
     return l_html;
   end graphical_insights_html;
+
+  function dashboard_report_html return clob is
+  begin
+    return graphical_insights_html('__REPORT_DASHBOARD__', null);
+  end dashboard_report_html;
+
+  function wants_visual_output(p_user_prompt in clob) return boolean is
+    l_prompt varchar2(4000) := lower(coalesce(dbms_lob.substr(p_user_prompt, 4000, 1), ''));
+  begin
+    return regexp_like(l_prompt, 'graph|graphic|chart|visual|map|plot|distribution|compare|breakdown|top|count|profile|mix|where|spatial|show|dashboard');
+  end wants_visual_output;
+
+  function assistant_text_html(p_user_prompt in clob, p_model_markdown in clob, p_error in varchar2 default null) return clob is
+    l_html clob;
+  begin
+    dbms_lob.createtemporary(l_html, true);
+    append_line(l_html, '<div class="gs-bore-viz">');
+    append_line(l_html, '<style>.gs-bore-viz{display:grid;gap:1rem}.gs-bore-viz-card{border:1px solid #d7dde5;border-radius:8px;background:#fff;padding:1rem}.gs-bore-viz-card h3{margin:.1rem 0 .7rem;font-size:1rem}.gs-bore-narrative{white-space:pre-wrap;background:#f7fafc;border:1px solid #d7dde5;border-radius:8px;padding:.7rem}.gs-bore-viz-note{font-size:.85rem;color:#5d6876}</style>');
+    append_line(l_html, '<section class="gs-bore-viz-card"><h3>Assistant answer</h3>');
+    if p_model_markdown is not null then
+      append_line(l_html, '<div class="gs-bore-narrative">' || html_escape(dbms_lob.substr(p_model_markdown, 4000, 1)) || '</div>');
+    else
+      append_line(l_html, '<p>I could not get a model response, so this fallback is grounded directly in the loaded borehole records.</p>');
+      append_match_table(l_html, p_user_prompt);
+    end if;
+    if p_error is not null then
+      append_line(l_html, '<p class="gs-bore-viz-note">Model fallback note: ' || html_escape(p_error) || '</p>');
+    end if;
+    append_line(l_html, '</section></div>');
+    return l_html;
+  end assistant_text_html;
 
   function deterministic_answer_html(p_user_prompt in clob) return clob is
     l_html clob;
@@ -864,7 +932,7 @@ create or replace package body gs_borehole_agent_api as
     dbms_lob.createtemporary(l_context, true);
     append_line(l_context, 'You are the Geoscience Boreholes Agent in an Oracle APEX demo.');
     append_line(l_context, 'Answer from the supplied Geoscience Australia boreholes context only. If the data cannot answer the question, say what is missing.');
-    append_line(l_context, 'Return 3 to 5 concise plain-text observations only. Do not return Mermaid, code fences, chart syntax, or large tables: the APEX UI renders grounded charts separately. Do not invent boreholes, coordinates, source URLs, or production claims.');
+    append_line(l_context, 'Answer the user question directly. Use concise paragraphs or bullets. If the user asks for a visual, chart, graph, map, comparison, or distribution, describe the most useful visual and cite the fields used; the APEX app may add a matching graphical companion. Do not invent boreholes, coordinates, source URLs, or production claims.');
     append_line(l_context);
     append_line(l_context, dataset_summary_markdown);
     append_line(l_context);
@@ -921,7 +989,7 @@ create or replace package body gs_borehole_agent_api as
       begin
         l_answer_markdown := apex_ai.chat(
           p_prompt => build_ai_context(p_user_prompt, p_screen_context),
-          p_system_prompt => 'You are the Geoscience Boreholes Agent. Answer from supplied borehole data only. Be concise and cite loaded fields. Do not output Mermaid, code fences, or raw chart syntax because the APEX app renders graphical charts separately.',
+          p_system_prompt => 'You are the Geoscience Boreholes Agent. Answer the user question directly from the supplied borehole data and context. Be concise, cite relevant loaded fields, and say what is missing when the data cannot answer. If a graphical answer is appropriate, explain the chart or map in words so the APEX app can render a companion visual.',
           p_service_static_id => l_service_static_id,
           p_temperature => 0.2,
           p_messages => l_messages
@@ -933,7 +1001,11 @@ create or replace package body gs_borehole_agent_api as
       end;
     end if;
 
-    l_answer_html := graphical_insights_html(p_user_prompt, l_answer_markdown);
+    if wants_visual_output(p_user_prompt) then
+      l_answer_html := graphical_insights_html(p_user_prompt, l_answer_markdown);
+    else
+      l_answer_html := assistant_text_html(p_user_prompt, l_answer_markdown, l_error);
+    end if;
 
     apex_json.initialize_clob_output;
     apex_json.open_object;

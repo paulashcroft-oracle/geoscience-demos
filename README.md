@@ -25,6 +25,7 @@ Verified on 2026-06-16:
 - App Builder entry point: `https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/apex/app-builder/apps`
 - Geoscience Demos runtime entry point: `https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/geoscience/geoscience-demos/home`
 - Boreholes Demo runtime entry point: `https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/geoscience/boreholes-demo/home`
+- Boreholes Reports runtime entry point: `https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/geoscience/boreholes-demo/boreholes-reports`
 - Demo entry: open either app login page and choose `Continue as Demo User`; normal `CODEX`/administrator login remains available.
 - Feedback entry: use the generated APEX Feedback affordance. Submissions are captured by native APEX Feedback and queued in `GS_AI_HUB_FEEDBACK_FORWARDS` with AI Hub source payload, idempotency key, and source task provenance. Live forwarding remains pending endpoint/credential activation; raw API keys are not stored in this repo.
 
@@ -49,6 +50,7 @@ Verified on 2026-06-16:
 - `exports/apex/f105_boreholes_demo_20260616_refresh_ai_assistant.sql`: post-refresh/AI-assistant export for app 105.
 - `exports/apex/f105_boreholes_demo_20260616_graphical_assistant.sql`: post-graphical-assistant correction export for app 105.
 - `exports/apex/f105_boreholes_demo_20260616_assistant_left_panel_enter.sql`: post-left-panel/Enter-key assistant export for app 105.
+- `exports/apex/f105_boreholes_demo_20260616_prompt_specific_assistant_reports.sql`: post-prompt-specific-assistant/Reports-page export for app 105.
 
 ## Boreholes Demo Data And AI
 
@@ -65,3 +67,5 @@ Verified on 2026-06-16:
 - Graphical assistant export: `exports/apex/f105_boreholes_demo_20260616_graphical_assistant.sql`.
 - Assistant left-panel and Enter-key correction: `docs/verification/20260616-boreholes-assistant-left-panel-enter.md`.
 - Assistant left-panel and Enter-key export: `exports/apex/f105_boreholes_demo_20260616_assistant_left_panel_enter.sql`.
+- Prompt-specific assistant and Reports page correction: `docs/verification/20260616-boreholes-prompt-specific-assistant-reports.md`.
+- Prompt-specific assistant and Reports page export: `exports/apex/f105_boreholes_demo_20260616_prompt_specific_assistant_reports.sql`.

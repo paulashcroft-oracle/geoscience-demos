@@ -6,6 +6,7 @@ create or replace package gs_borehole_page_api as
   function home_html return clob;
   function explorer_html return clob;
   function refresh_html return clob;
+  function reports_html return clob;
   function assistant_html return clob;
 end gs_borehole_page_api;
 /
@@ -127,7 +128,7 @@ create or replace package body gs_borehole_page_api as
     append_line(l_html, '<div class="gs-bore">');
     append_css(l_html);
     append_line(l_html, '<section class="gs-bore-hero"><div><div class="gs-bore-kicker">Geoscience Australia WFS demo</div><h1>Australian Boreholes Demo</h1><p>Explore Australian borehole data from the Geoscience Australia Boreholes WFS, refresh a bounded area, and ask an AI assistant questions grounded in the loaded dataset.</p>');
-    append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(2) || '">Explore Boreholes</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Data</a><a class="gs-bore-btn" href="' || page_url(5) || '">Ask AI</a></div>');
+    append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(2) || '">Explore Boreholes</a><a class="gs-bore-btn" href="' || page_url(6) || '">Reports</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Data</a><a class="gs-bore-btn" href="' || page_url(5) || '">Ask AI</a></div>');
     append_line(l_html, '<div class="gs-bore-stats"><div><span>Total boreholes</span><strong>' || to_char(l_total, 'FM999G999G999') || '</strong></div><div><span>WFS refreshed</span><strong>' || to_char(l_wfs, 'FM999G999G999') || '</strong></div><div><span>Last refresh</span><strong>' || h(coalesce(l_last_refresh, 'Pending')) || '</strong></div></div></div>');
     append_map(l_html);
     append_line(l_html, '</section><section class="gs-bore-grid"><article class="gs-bore-panel"><h3>Real source</h3><p>Uses `https://services.ga.gov.au/gis/boreholes/ows` with feature type `bh:Boreholes` and GeoJSON output.</p></article><article class="gs-bore-panel"><h3>Refreshable area</h3><p>Authorized users can refresh by longitude/latitude bounding box and retain provenance for source URL, request URL, row count, and errors.</p></article><article class="gs-bore-panel"><h3>AI grounded</h3><p>The assistant sees loaded borehole rows, refresh provenance, current screen/pasted context, and falls back to deterministic reports if AI is unavailable.</p></article></section></div>');
@@ -140,7 +141,7 @@ create or replace package body gs_borehole_page_api as
     dbms_lob.createtemporary(l_html, true);
     append_line(l_html, '<div class="gs-bore"><h1>Boreholes Explorer</h1>');
     append_css(l_html);
-    append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn" href="' || page_url(1) || '">Home</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Area</a><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(5) || '">Ask AI</a></div>');
+    append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn" href="' || page_url(1) || '">Home</a><a class="gs-bore-btn" href="' || page_url(6) || '">Reports</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Area</a><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(5) || '">Ask AI</a></div>');
     append_line(l_html, '<div class="gs-bore-layout"><div>');
     append_map(l_html);
     append_line(l_html, '</div><div class="gs-bore-table-wrap"><table class="gs-bore-table"><thead><tr><th>Ref</th><th>Name</th><th>State</th><th>Operator</th><th>Province</th><th>Length</th><th>Report</th></tr></thead><tbody>');
@@ -172,6 +173,19 @@ create or replace package body gs_borehole_page_api as
     append_line(l_html, '<script>(function(){var b=document.getElementById("gsRunRefresh"),out=document.getElementById("gsRefreshResult");if(!b){return;}b.addEventListener("click",function(){b.disabled=true;out.innerHTML="<p>Refreshing...</p>";apex.server.process("GS_BOREHOLES_REFRESH",{x01:gsMinLon.value,x02:gsMinLat.value,x03:gsMaxLon.value,x04:gsMaxLat.value,x05:gsLimit.value},{dataType:"json"}).then(function(r){out.innerHTML=r.success?"<p><strong>Refresh complete.</strong> Run "+r.refreshRunId+"</p><p><code>"+String(r.requestUrl||"").replace(/[&<>]/g,function(c){return {\"&\":\"&amp;\",\"<\":\"&lt;\",\">\":\"&gt;\"}[c];})+"</code></p>":"<p><strong>Refresh failed.</strong> "+String(r.message||"")+"</p>";}).catch(function(e){out.innerHTML="<p><strong>Refresh failed.</strong> "+(e.message||e)+"</p>";}).finally(function(){b.disabled=false;});});})();</script></div>');
     return l_html;
   end refresh_html;
+
+  function reports_html return clob is
+    l_html clob;
+  begin
+    dbms_lob.createtemporary(l_html, true);
+    append_line(l_html, '<div class="gs-bore"><h1>Boreholes Reports</h1>');
+    append_css(l_html);
+    append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn" href="' || page_url(1) || '">Home</a><a class="gs-bore-btn" href="' || page_url(2) || '">Explore Boreholes</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Area</a><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(5) || '">Ask AI</a></div>');
+    append_line(l_html, '<p>Reusable report cards for the loaded borehole dataset. The AI assistant now answers the prompt directly; these cards remain here for dashboard-style review.</p>');
+    append_line(l_html, gs_borehole_agent_api.dashboard_report_html);
+    append_line(l_html, '</div>');
+    return l_html;
+  end reports_html;
 
   function assistant_html return clob is
     l_html clob;
@@ -352,7 +366,7 @@ begin
     select page_id
       from apex_application_pages
      where application_id = c_app_id
-       and page_id in (1, 2, 4, 5)
+       and page_id in (1, 2, 4, 5, 6)
      order by page_id desc
   ) loop
     wwv_flow_imp_page.remove_page(p_flow_id => c_app_id, p_page_id => existing_page.page_id);
@@ -504,6 +518,31 @@ end;
 ~',
     p_process_clob_language => 'PLSQL',
     p_error_display_location => 'INLINE_IN_NOTIFICATION'
+  );
+
+  wwv_flow_imp_page.create_page(
+    p_id => 6,
+    p_name => 'Boreholes Reports',
+    p_alias => 'BOREHOLES-REPORTS',
+    p_step_title => 'Boreholes Reports',
+    p_autocomplete_on_off => 'OFF',
+    p_page_template_options => '#DEFAULT#',
+    p_protection_level => 'C',
+    p_page_component_map => '24'
+  );
+
+  wwv_flow_imp_page.create_page_plug(
+    p_id => wwv_flow_imp.id(1050100601),
+    p_plug_name => 'Boreholes Reports',
+    p_region_name => 'gs-boreholes-reports',
+    p_region_template_options => '#DEFAULT#',
+    p_plug_template => c_region_blank,
+    p_plug_display_sequence => 10,
+    p_plug_display_point => 'BODY',
+    p_plug_source => 'return gs_borehole_page_api.reports_html;',
+    p_function_body_language => 'PLSQL',
+    p_plug_source_type => 'NATIVE_DYNAMIC_CONTENT',
+    p_lazy_loading => false
   );
 
   wwv_flow_imp.import_end(p_auto_install_sup_obj => false);
