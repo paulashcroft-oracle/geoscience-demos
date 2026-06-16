@@ -51,6 +51,7 @@ Verified on 2026-06-16:
 - `exports/apex/f105_boreholes_demo_20260616_graphical_assistant.sql`: post-graphical-assistant correction export for app 105.
 - `exports/apex/f105_boreholes_demo_20260616_assistant_left_panel_enter.sql`: post-left-panel/Enter-key assistant export for app 105.
 - `exports/apex/f105_boreholes_demo_20260616_prompt_specific_assistant_reports.sql`: post-prompt-specific-assistant/Reports-page export for app 105.
+- `exports/apex/f105_boreholes_demo_20260616_visual_layout_followup.sql`: post-visual-layout follow-up export for app 105.
 
 ## Boreholes Demo Data And AI
 
@@ -69,3 +70,5 @@ Verified on 2026-06-16:
 - Assistant left-panel and Enter-key export: `exports/apex/f105_boreholes_demo_20260616_assistant_left_panel_enter.sql`.
 - Prompt-specific assistant and Reports page correction: `docs/verification/20260616-boreholes-prompt-specific-assistant-reports.md`.
 - Prompt-specific assistant and Reports page export: `exports/apex/f105_boreholes_demo_20260616_prompt_specific_assistant_reports.sql`.
+- Visual layout follow-up correction: `docs/verification/20260616-boreholes-visual-layout-followup.md`.
+- Visual layout follow-up export: `exports/apex/f105_boreholes_demo_20260616_visual_layout_followup.sql`.
