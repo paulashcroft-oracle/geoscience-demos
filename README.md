@@ -18,6 +18,7 @@ Verified on 2026-06-16:
 - Workspace users:
   - `GEOSCIENCE`: workspace administrator and application developer
   - `CODEX`: workspace administrator and application developer
+- Workspace Generative AI Services are configured with the same standard OCI GenAI catalog used by AFMA, backed by workspace credential `genai_credentials`. `google.gemini-2.5-pro` is the App Builder service.
 - Current App Builder state: 2 generated applications.
 - Application 104: `Geoscience Demos`, alias `GEOSCIENCE-DEMOS`, native APEX Feedback enabled, passwordless `DEMO_USER` entry enabled, AI Hub feedback queue enabled for `geoscience-001`.
 - Application 105: `Boreholes Demo`, alias `BOREHOLES-DEMO`, native APEX Feedback enabled, passwordless `DEMO_USER` entry enabled, AI Hub feedback queue enabled for `geoscience-003`.
@@ -36,9 +37,25 @@ Verified on 2026-06-16:
 - `database/005_add_demo_user_login.sql`: AFMA-style passwordless `DEMO_USER` entry for app 104 and app 105.
 - `database/006_create_geoscience_feedback_queue.sql`: native APEX Feedback to AI Hub source-feedback queue bridge for both apps.
 - `database/007_geoscience_feedback_queue_verification.sql`: queue object, page process, and ledger verification query.
+- `database/008_configure_geoscience_genai_services.sql`: standard workspace OCI Generative AI Services catalog using existing `genai_credentials`.
+- `database/009_create_boreholes_refresh_agent_api.sql`: GA Boreholes WFS refresh API, provenance extensions, summary/status views, and AI assistant API for app 105.
+- `database/010_configure_boreholes_app_pages.sql`: app 105 Home, Boreholes Explorer, Data Refresh, and AI Data Assistant pages plus refresh/assistant Ajax processes.
 - `exports/apex/f104_geoscience_demos_20260616_post_creation.sql`: post-creation export for app 104.
 - `exports/apex/f105_boreholes_demo_20260616_post_creation.sql`: post-creation export for app 105.
 - `exports/apex/f104_geoscience_demos_20260616_demo_user_entry.sql`: post-demo-user export for app 104.
 - `exports/apex/f105_boreholes_demo_20260616_demo_user_entry.sql`: post-demo-user export for app 105.
 - `exports/apex/f104_geoscience_demos_20260616_feedback_queue.sql`: post-feedback-queue export for app 104.
 - `exports/apex/f105_boreholes_demo_20260616_feedback_queue.sql`: post-feedback-queue export for app 105.
+- `exports/apex/f105_boreholes_demo_20260616_refresh_ai_assistant.sql`: post-refresh/AI-assistant export for app 105.
+
+## Boreholes Demo Data And AI
+
+Verified on 2026-06-16:
+
+- Public source: Geoscience Australia Boreholes WFS at `https://services.ga.gov.au/gis/boreholes/ows`, feature type `bh:Boreholes`.
+- Refresh entry: app 105 page 4, `Data Refresh`, Ajax process `GS_BOREHOLES_REFRESH`.
+- Assistant entry: app 105 page 5, `AI Data Assistant`, Ajax process `GS_BOREHOLES_AGENT_ASK`.
+- Runtime smoke: `Continue as Demo User`, refresh BBOX `129,-24,139,-17`, limit `10`, run `5`, status `SUCCESS`.
+- Assistant smoke: selected `cohere.command-latest`, returned `success: true` with mode `APEX_AI` and grounded boreholes-by-state response.
+- Verification note: `docs/verification/20260616-boreholes-refresh-ai-assistant.md`.
+- Post-change APEX export: `exports/apex/f105_boreholes_demo_20260616_refresh_ai_assistant.sql`.
