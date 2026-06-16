@@ -140,9 +140,9 @@ create or replace package body gs_borehole_page_api as
     l_html clob;
   begin
     dbms_lob.createtemporary(l_html, true);
-    append_line(l_html, '<div class="gs-bore"><h1>Boreholes Explorer</h1>');
+    append_line(l_html, '<div class="gs-bore"><h1>Explore Data</h1>');
     append_css(l_html);
-    append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn" href="' || page_url(1) || '">Home</a><a class="gs-bore-btn" href="' || page_url(6) || '">Reports</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Area</a><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(5) || '">Ask AI</a></div>');
+    append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn" href="' || page_url(1) || '">Home</a><a class="gs-bore-btn" href="' || page_url(6) || '">Reports</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Data</a><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(5) || '">Ask AI</a></div>');
     append_line(l_html, '<div class="gs-bore-layout"><div>');
     append_map(l_html);
     append_line(l_html, '</div><div class="gs-bore-table-wrap"><table class="gs-bore-table"><thead><tr><th>Ref</th><th>Name</th><th>State</th><th>Operator</th><th>Province</th><th>Length</th><th>Report</th></tr></thead><tbody>');
@@ -162,7 +162,7 @@ create or replace package body gs_borehole_page_api as
     l_html clob;
   begin
     dbms_lob.createtemporary(l_html, true);
-    append_line(l_html, '<div class="gs-bore"><h1>Data Refresh</h1>');
+    append_line(l_html, '<div class="gs-bore"><h1>Refresh Data</h1>');
     append_css(l_html);
     append_line(l_html, '<p>Refresh boreholes from the Geoscience Australia Boreholes WFS source, feature type <code>bh:Boreholes</code>. The default area matches the first live Tanami/central Australia slice used for verification.</p>');
     append_line(l_html, '<div class="gs-bore-layout"><section class="gs-bore-panel"><div class="gs-bore-form" id="gsBoreRefreshForm"><label>Min longitude<input id="gsMinLon" type="number" step="0.000001" value="129"></label><label>Min latitude<input id="gsMinLat" type="number" step="0.000001" value="-24"></label><label>Max longitude<input id="gsMaxLon" type="number" step="0.000001" value="139"></label><label>Max latitude<input id="gsMaxLat" type="number" step="0.000001" value="-17"></label><label>Limit<input id="gsLimit" type="number" min="1" max="10000" value="250"></label><div class="gs-bore-span"><button class="gs-bore-btn gs-bore-btn--primary" type="button" id="gsRunRefresh">Run GA WFS Refresh</button></div></div><div id="gsRefreshResult" style="margin-top:1rem"></div></section>');
@@ -179,9 +179,9 @@ create or replace package body gs_borehole_page_api as
     l_html clob;
   begin
     dbms_lob.createtemporary(l_html, true);
-    append_line(l_html, '<div class="gs-bore"><h1>Boreholes Reports</h1>');
+    append_line(l_html, '<div class="gs-bore"><h1>Reports</h1>');
     append_css(l_html);
-    append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn" href="' || page_url(1) || '">Home</a><a class="gs-bore-btn" href="' || page_url(2) || '">Explore Boreholes</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Area</a><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(5) || '">Ask AI</a></div>');
+    append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn" href="' || page_url(1) || '">Home</a><a class="gs-bore-btn" href="' || page_url(2) || '">Explore Data</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Data</a><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(5) || '">Ask AI</a></div>');
     append_line(l_html, '<p>Reusable report cards for the loaded borehole dataset. The AI assistant now answers the prompt directly; these cards remain here for dashboard-style review.</p>');
     append_line(l_html, gs_borehole_agent_api.dashboard_report_html);
     append_line(l_html, '</div>');
@@ -401,9 +401,9 @@ begin
 
   wwv_flow_imp_page.create_page(
     p_id => 2,
-    p_name => 'Boreholes Explorer',
+    p_name => 'Explore Data',
     p_alias => 'BOREHOLES-EXPLORER',
-    p_step_title => 'Boreholes Explorer',
+    p_step_title => 'Explore Data',
     p_autocomplete_on_off => 'OFF',
     p_page_template_options => '#DEFAULT#',
     p_protection_level => 'C',
@@ -412,7 +412,7 @@ begin
 
   wwv_flow_imp_page.create_page_plug(
     p_id => wwv_flow_imp.id(1050100201),
-    p_plug_name => 'Boreholes Explorer',
+    p_plug_name => 'Explore Data',
     p_region_name => 'gs-boreholes-explorer',
     p_region_template_options => '#DEFAULT#',
     p_plug_template => c_region_blank,
@@ -426,9 +426,9 @@ begin
 
   wwv_flow_imp_page.create_page(
     p_id => 4,
-    p_name => 'Data Refresh',
+    p_name => 'Refresh Data',
     p_alias => 'DATA-REFRESH',
-    p_step_title => 'Boreholes Data Refresh',
+    p_step_title => 'Refresh Data',
     p_autocomplete_on_off => 'OFF',
     p_page_template_options => '#DEFAULT#',
     p_protection_level => 'C',
@@ -437,7 +437,7 @@ begin
 
   wwv_flow_imp_page.create_page_plug(
     p_id => wwv_flow_imp.id(1050100401),
-    p_plug_name => 'Boreholes Data Refresh',
+    p_plug_name => 'Refresh Data',
     p_region_name => 'gs-boreholes-refresh',
     p_region_template_options => '#DEFAULT#',
     p_plug_template => c_region_blank,
@@ -524,9 +524,9 @@ end;
 
   wwv_flow_imp_page.create_page(
     p_id => 6,
-    p_name => 'Boreholes Reports',
+    p_name => 'Reports',
     p_alias => 'BOREHOLES-REPORTS',
-    p_step_title => 'Boreholes Reports',
+    p_step_title => 'Reports',
     p_autocomplete_on_off => 'OFF',
     p_page_template_options => '#DEFAULT#',
     p_protection_level => 'C',
@@ -535,7 +535,7 @@ end;
 
   wwv_flow_imp_page.create_page_plug(
     p_id => wwv_flow_imp.id(1050100601),
-    p_plug_name => 'Boreholes Reports',
+    p_plug_name => 'Reports',
     p_region_name => 'gs-boreholes-reports',
     p_region_template_options => '#DEFAULT#',
     p_plug_template => c_region_blank,

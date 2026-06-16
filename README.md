@@ -40,7 +40,8 @@ Verified on 2026-06-16:
 - `database/007_geoscience_feedback_queue_verification.sql`: queue object, page process, and ledger verification query.
 - `database/008_configure_geoscience_genai_services.sql`: standard workspace OCI Generative AI Services catalog using existing `genai_credentials`.
 - `database/009_create_boreholes_refresh_agent_api.sql`: GA Boreholes WFS refresh API, provenance extensions, summary/status views, and AI assistant API for app 105.
-- `database/010_configure_boreholes_app_pages.sql`: app 105 Home, Boreholes Explorer, Data Refresh, and AI Data Assistant pages plus refresh/assistant Ajax processes.
+- `database/010_configure_boreholes_app_pages.sql`: app 105 Home, Explore Data, Refresh Data, Reports, and AI assistant pages plus refresh/assistant Ajax processes.
+- `database/011_update_boreholes_navigation.sql`: app 105 shared navigation/page-navigation lists aligned to Explore Data, Reports, Refresh Data, and Ask AI.
 - `exports/apex/f104_geoscience_demos_20260616_post_creation.sql`: post-creation export for app 104.
 - `exports/apex/f105_boreholes_demo_20260616_post_creation.sql`: post-creation export for app 105.
 - `exports/apex/f104_geoscience_demos_20260616_demo_user_entry.sql`: post-demo-user export for app 104.
@@ -52,14 +53,15 @@ Verified on 2026-06-16:
 - `exports/apex/f105_boreholes_demo_20260616_assistant_left_panel_enter.sql`: post-left-panel/Enter-key assistant export for app 105.
 - `exports/apex/f105_boreholes_demo_20260616_prompt_specific_assistant_reports.sql`: post-prompt-specific-assistant/Reports-page export for app 105.
 - `exports/apex/f105_boreholes_demo_20260616_visual_layout_followup.sql`: post-visual-layout follow-up export for app 105.
+- `exports/apex/f105_boreholes_demo_20260616_navigation_pages.sql`: post-navigation and functional-page alignment export for app 105.
 
 ## Boreholes Demo Data And AI
 
 Verified on 2026-06-16:
 
 - Public source: Geoscience Australia Boreholes WFS at `https://services.ga.gov.au/gis/boreholes/ows`, feature type `bh:Boreholes`.
-- Refresh entry: app 105 page 4, `Data Refresh`, Ajax process `GS_BOREHOLES_REFRESH`.
-- Assistant entry: app 105 page 5, `AI Data Assistant`, Ajax process `GS_BOREHOLES_AGENT_ASK`.
+- Refresh entry: app 105 page 4, `Refresh Data`, Ajax process `GS_BOREHOLES_REFRESH`.
+- Assistant entry: app 105 page 5, nav label `Ask AI`, Ajax process `GS_BOREHOLES_AGENT_ASK`.
 - Runtime smoke: `Continue as Demo User`, refresh BBOX `129,-24,139,-17`, limit `10`, run `5`, status `SUCCESS`.
 - Assistant smoke: selected `cohere.command-latest`, returned `success: true` with mode `APEX_AI` and grounded boreholes-by-state response.
 - Verification note: `docs/verification/20260616-boreholes-refresh-ai-assistant.md`.
@@ -72,3 +74,5 @@ Verified on 2026-06-16:
 - Prompt-specific assistant and Reports page export: `exports/apex/f105_boreholes_demo_20260616_prompt_specific_assistant_reports.sql`.
 - Visual layout follow-up correction: `docs/verification/20260616-boreholes-visual-layout-followup.md`.
 - Visual layout follow-up export: `exports/apex/f105_boreholes_demo_20260616_visual_layout_followup.sql`.
+- Navigation and functional-page alignment: `docs/verification/20260616-boreholes-navigation-pages.md`.
+- Navigation and functional-page export: `exports/apex/f105_boreholes_demo_20260616_navigation_pages.sql`.
