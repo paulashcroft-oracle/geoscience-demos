@@ -1,0 +1,13 @@
+# Geoscience Demo Notes
+
+- This repo is the Geoscience demo project onboarding shell.
+- Use it to hold verified Geoscience database scripts, APEX exports, runbooks, readiness checks, and integration assets as the project is established.
+- The live AIDEMODB target workspace is `GEOSCIENCE`.
+- The live AIDEMODB target schema is `GEOSCIENCE`.
+- For the Geoscience Demos project, AIDEMODB workspace `GEOSCIENCE` is the live collaboration build target. Allowed actions there are surgical SQL, package/view changes, APEX Page Designer edits, APEX metadata API/component-level scripts, workspace user administration, and narrowly scoped runtime configuration changes. Forbidden action: full APEX application import/replace into AIDEMODB workspace `GEOSCIENCE` unless Paul Ashcroft explicitly names AIDEMODB `GEOSCIENCE` as a promotion-style replacement target after current exports/backups are captured. The only acceptable exception path is to stop before the full replace, record the exact app/workspace/export names and approval requirement, and wait for explicit human approval. If this rule is violated, stop further changes, capture the current reachable export/evidence, and record the incident and recovery path before doing more AIDEMODB work.
+- Current generated APEX applications in AIDEMODB workspace `GEOSCIENCE`:
+  - App 104 `Geoscience Demos`, alias `GEOSCIENCE-DEMOS`, native APEX Feedback enabled, generated with an Account Requests interactive report and form, passwordless `DEMO_USER` login button on page 9999, AI Hub feedback queue hook on page 10030 with source task `geoscience-001`.
+  - App 105 `Boreholes Demo`, alias `BOREHOLES-DEMO`, native APEX Feedback enabled, generated with a Boreholes interactive report and form, passwordless `DEMO_USER` login button on page 9999, AI Hub feedback queue hook on page 10030 with source task `geoscience-003`.
+- The Geoscience demo-user model follows AFMA: page 9999 remains public, normal APEX account login remains available for `CODEX` and administrators, and the `Continue as Demo User` button submits `DEMO_USER_LOGIN` to call `apex_authentication.post_login` as `DEMO_USER` before redirecting to page 1. Keep this path in any new Geoscience APEX app unless Paul Ashcroft explicitly asks for a different entry model.
+- The Geoscience feedback model follows the shared AI Hub/GovernMate pattern in queue-first form: native APEX Feedback is the user capture surface; `GS_AI_HUB_FEEDBACK_FORWARDS` stores replayable AI Hub source-feedback payloads, idempotency keys, source app/page/user context, and task provenance; live forwarding requires an approved endpoint credential outside Git.
+- Before changing either application, follow the shared APEX export and Git checkpoint rules in the parent `AGENTS.md`.

@@ -1,0 +1,6 @@
+.local/
+.tmp*/
+tmp_*.mjs
+*.local.*
+*.log
+oci-aidemodb-detail.png
