@@ -6,6 +6,7 @@ create or replace package gs_borehole_page_api as
   function home_html return clob;
   function explorer_html return clob;
   function refresh_html return clob;
+  function reports_intro_html return clob;
   function reports_html return clob;
   function assistant_html return clob;
 end gs_borehole_page_api;
@@ -34,6 +35,85 @@ create or replace package body gs_borehole_page_api as
     return apex_escape.html_attribute(p_value);
   end ha;
 
+  function svg_num(p_value in number) return varchar2 is
+  begin
+    return to_char(round(p_value, 1), 'FM9990D0', 'NLS_NUMERIC_CHARACTERS=.,');
+  end svg_num;
+
+  function map_x(
+    p_lon     in number,
+    p_min_lon in number,
+    p_max_lon in number,
+    p_left    in number,
+    p_width   in number
+  ) return varchar2 is
+  begin
+    return svg_num(
+      p_left + ((p_lon - p_min_lon) / greatest(p_max_lon - p_min_lon, 0.0001)) * p_width
+    );
+  end map_x;
+
+  function map_y(
+    p_lat     in number,
+    p_min_lat in number,
+    p_max_lat in number,
+    p_top     in number,
+    p_height  in number
+  ) return varchar2 is
+  begin
+    return svg_num(
+      p_top + p_height - ((p_lat - p_min_lat) / greatest(p_max_lat - p_min_lat, 0.0001)) * p_height
+    );
+  end map_y;
+
+  procedure append_australia_base(
+    p_html    in out nocopy clob,
+    p_min_lon in number,
+    p_max_lon in number,
+    p_min_lat in number,
+    p_max_lat in number,
+    p_left    in number,
+    p_top     in number,
+    p_width   in number,
+    p_height  in number
+  ) is
+  begin
+    append_line(
+      p_html,
+      '<path d="M ' || map_x(113.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-35.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(114.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-25.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(116.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-21.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(120.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-19.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(123.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-17.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(130.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-13.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(138.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-12.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(142.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-12.5, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(145.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-16.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(147.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-20.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(150.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-22.5, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(153.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-27.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(153.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-33.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(151.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-36.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(147.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-38.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(143.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-38.6, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(140.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-37.6, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(136.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-35.6, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(132.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-33.6, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(128.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-32.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(124.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-33.2, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(120.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-34.5, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(116.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-35.8, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' Z" fill="#e7f2e8" stroke="#c7dcc9" stroke-width="1.5"/>'
+    );
+    append_line(p_html, '<g fill="none" stroke="#a9bac9" stroke-width="1.2" stroke-linecap="round">');
+    append_line(p_html, '<path d="M ' || map_x(129.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-14.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(129.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-35.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '<path d="M ' || map_x(129.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-26.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(138.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-26.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '<path d="M ' || map_x(138.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-26.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(138.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-11.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '<path d="M ' || map_x(141.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-38.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(141.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-29.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '<path d="M ' || map_x(141.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-29.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(153.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-29.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '</g>');
+  end append_australia_base;
+
   function page_url(p_page in number) return varchar2 is
   begin
     return apex_util.prepare_url('f?p=' || v('APP_ID') || ':' || p_page || ':' || v('APP_SESSION') || ':::::');
@@ -44,7 +124,7 @@ create or replace package body gs_borehole_page_api as
     append_line(p_html, '<style>');
     append_line(p_html, '.gs-bore{--ink:#18212f;--muted:#5d6876;--line:#d7dde5;--soft:#f6f8fb;--blue:#1d6fa5;--green:#2f7d57;--gold:#b7791f;color:var(--ink)}');
     append_line(p_html, '.gs-bore a{color:var(--blue)}.gs-bore h1{font-size:clamp(2rem,4vw,3.8rem);line-height:1.05;margin:.2rem 0 .6rem}.gs-bore h2{font-size:1.45rem;margin:.2rem 0 .7rem}.gs-bore p{color:var(--muted);line-height:1.55}.gs-bore-kicker{font-size:.78rem;text-transform:uppercase;font-weight:850;color:var(--green);letter-spacing:.08em}.gs-bore-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(18rem,.95fr);gap:clamp(1rem,3vw,2.4rem);align-items:center;min-height:min(62vh,40rem);padding:clamp(1rem,3vw,2rem) 0;border-bottom:1px solid var(--line)}');
-    append_line(p_html, '.gs-bore-actions{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1rem}.gs-bore-btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-weight:800;padding:.56rem .72rem;min-height:2.6rem;text-decoration:none;white-space:nowrap;box-sizing:border-box}.gs-bore .gs-bore-btn{color:var(--blue)}.gs-bore .gs-bore-btn--primary,.gs-bore a.gs-bore-btn--primary,.gs-bore a.gs-bore-btn--primary:visited{background:var(--blue);border-color:var(--blue);color:#fff}.gs-bore-btn:hover{text-decoration:none;transform:translateY(-1px)}');
+    append_line(p_html, '.gs-bore-actions{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1rem}.gs-bore-btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-weight:800;padding:.56rem .72rem;min-height:2.6rem;text-decoration:none;white-space:nowrap;box-sizing:border-box}.gs-bore .gs-bore-btn{color:var(--blue)}.gs-bore .gs-bore-btn--primary,.gs-bore a.gs-bore-btn--primary,.gs-bore a.gs-bore-btn--primary:visited{background:var(--blue);border-color:var(--blue);color:#fff}.gs-bore-btn:hover{text-decoration:none;transform:translateY(-1px)}.gs-bore-btn[disabled]{opacity:.72;cursor:wait;transform:none}.gs-bore-btn.is-loading{position:relative;padding-left:1rem;padding-right:1rem}.gs-bore-btn.is-loading::before{content:\"\";width:.9rem;height:.9rem;border-radius:999px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;display:inline-block;animation:gs-bore-spin .8s linear infinite}.gs-bore-btn:not(.gs-bore-btn--primary).is-loading::before{border-color:rgba(29,111,165,.25);border-top-color:#1d6fa5}.gs-bore-status{border:1px solid var(--line);border-radius:8px;background:#f7fafc;padding:.75rem .85rem}.gs-bore-status strong{display:block;margin-bottom:.2rem}.gs-bore-status code{display:block;margin-top:.35rem;white-space:pre-wrap;overflow-wrap:anywhere}.gs-bore-status--working{border-left:4px solid var(--blue);background:#eef6fd}.gs-bore-status--success{border-left:4px solid var(--green);background:#eef7f1}.gs-bore-status--error{border-left:4px solid #c05621;background:#fff7ed}@keyframes gs-bore-spin{to{transform:rotate(360deg)}}');
     append_line(p_html, '.gs-bore-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:1rem 0}.gs-bore-stats div{border:1px solid var(--line);border-radius:8px;background:#fff;padding:.85rem}.gs-bore-stats span{display:block;color:var(--muted);font-size:.74rem;text-transform:uppercase;font-weight:850}.gs-bore-stats strong{display:block;font-size:1.55rem;margin-top:.2rem}.gs-bore-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1rem}.gs-bore-panel{border:1px solid var(--line);border-radius:8px;background:#fff;padding:1rem}.gs-bore-panel h3{margin:.1rem 0 .45rem;font-size:1rem}');
     append_line(p_html, '.gs-bore-map{border:1px solid var(--line);border-radius:8px;background:linear-gradient(180deg,#f8fbfd,#eef6f1);min-height:20rem;overflow:hidden}.gs-bore-map svg{width:100%;height:auto;display:block}.gs-bore-layout{display:grid;grid-template-columns:minmax(18rem,.42fr) minmax(0,1fr);gap:1rem}.gs-bore-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.gs-bore-form label{display:grid;gap:.25rem;font-weight:800;font-size:.82rem;color:var(--muted)}.gs-bore-form input,.gs-bore-form select,.gs-bore-form textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:.55rem .65rem;font:inherit;background:#fff}.gs-bore-form textarea{min-height:7rem;resize:vertical}.gs-bore-span{grid-column:1/-1}');
     append_line(p_html, '.gs-bore-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px}.gs-bore-table{width:100%;border-collapse:collapse;background:#fff}.gs-bore-table th,.gs-bore-table td{padding:.55rem .65rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.gs-bore-table th{font-size:.75rem;text-transform:uppercase;color:var(--muted);background:#f7fafc}.gs-bore-chip{display:inline-flex;border-radius:999px;background:#eef7f1;color:#276749;padding:.12rem .45rem;font-weight:850;font-size:.75rem}.gs-bore-thread{border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:1rem;min-height:24rem;max-height:58vh;overflow:auto}.gs-bore-msg{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1rem;margin-bottom:.8rem}.gs-bore-msg--user{background:#eaf4fb;margin-left:auto;max-width:80%}.gs-bore-label{font-size:.72rem;text-transform:uppercase;font-weight:850;color:var(--muted);margin-bottom:.35rem}.gs-bore-answer-head{border-left:4px solid var(--green);padding-left:.8rem}.gs-bore-mode{display:inline-flex;border-radius:999px;background:#edf7ff;color:#1d5d86;padding:.15rem .5rem;font-weight:850;font-size:.72rem;text-transform:uppercase}');
@@ -70,7 +150,18 @@ create or replace package body gs_borehole_page_api as
        and longitude is not null;
 
     append_line(p_html, '<div class="gs-bore-map"><svg viewBox="0 0 720 430" role="img" aria-label="Loaded boreholes map plot">');
-    append_line(p_html, '<rect width="720" height="430" fill="#f8fbfd"/><path d="M50 348C142 268 214 318 291 241c82-82 159-28 241-112 42-43 86-53 138-26v327H50z" fill="#e7f2e8" stroke="#c7dcc9"/>');
+    append_line(p_html, '<rect width="720" height="430" fill="#f8fbfd"/>');
+    append_australia_base(
+      p_html => p_html,
+      p_min_lon => l_min_lon,
+      p_max_lon => l_max_lon,
+      p_min_lat => l_min_lat,
+      p_max_lat => l_max_lat,
+      p_left => 60,
+      p_top => 60,
+      p_width => 600,
+      p_height => 310
+    );
     append_line(p_html, '<g fill="none" stroke="#d3dce6" stroke-width="1">');
     for i in 1 .. 5 loop
       append_line(p_html, '<path d="M60 ' || to_char(60 + i * 60) || 'H680"/><path d="M' || to_char(70 + i * 100) || ' 35V395"/>');
@@ -171,18 +262,28 @@ create or replace package body gs_borehole_page_api as
       append_line(l_html, '<tr><td>' || r.refresh_run_id || '</td><td><span class="gs-bore-chip">' || h(r.status_code) || '</span></td><td>' || r.rows_loaded || '</td><td>' || h(r.bbox_text) || '</td><td>' || h(to_char(r.finished_at, 'YYYY-MM-DD HH24:MI')) || '</td></tr>');
     end loop;
     append_line(l_html, '</tbody></table></div></section></div>');
-    append_line(l_html, '<script>(function(){var b=document.getElementById("gsRunRefresh"),out=document.getElementById("gsRefreshResult");if(!b){return;}b.addEventListener("click",function(){b.disabled=true;out.innerHTML="<p>Refreshing...</p>";apex.server.process("GS_BOREHOLES_REFRESH",{x01:gsMinLon.value,x02:gsMinLat.value,x03:gsMaxLon.value,x04:gsMaxLat.value,x05:gsLimit.value},{dataType:"json"}).then(function(r){out.innerHTML=r.success?"<p><strong>Refresh complete.</strong> Run "+r.refreshRunId+"</p><p><code>"+String(r.requestUrl||"").replace(/[&<>]/g,function(c){return {\"&\":\"&amp;\",\"<\":\"&lt;\",\">\":\"&gt;\"}[c];})+"</code></p>":"<p><strong>Refresh failed.</strong> "+String(r.message||"")+"</p>";}).catch(function(e){out.innerHTML="<p><strong>Refresh failed.</strong> "+(e.message||e)+"</p>";}).finally(function(){b.disabled=false;});});})();</script></div>');
+    append_line(l_html, '<script>(function(){var b=document.getElementById("gsRunRefresh"),out=document.getElementById("gsRefreshResult"),defaultLabel="Run GA WFS Refresh";function esc(v){return String(v==null?"":v).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}function setBusy(isBusy,label){b.disabled=!!isBusy;b.classList.toggle("is-loading",!!isBusy);b.textContent=label||defaultLabel;b.setAttribute("aria-busy",isBusy?"true":"false");}if(!b){return;}b.addEventListener("click",function(){var bbox=[gsMinLon.value,gsMinLat.value,gsMaxLon.value,gsMaxLat.value].join(",");setBusy(true,"Refreshing GA WFS...");out.innerHTML="<div class=\"gs-bore-status gs-bore-status--working\"><strong>Refreshing boreholes from Geoscience Australia WFS...</strong><div>BBOX: <code>"+esc(bbox)+"</code></div><div>Limit: <code>"+esc(gsLimit.value)+"</code></div></div>";apex.server.process("GS_BOREHOLES_REFRESH",{x01:gsMinLon.value,x02:gsMinLat.value,x03:gsMaxLon.value,x04:gsMaxLat.value,x05:gsLimit.value},{dataType:"json"}).then(function(r){out.innerHTML=r.success?"<div class=\"gs-bore-status gs-bore-status--success\"><strong>Refresh complete.</strong><div>Run "+esc(r.refreshRunId)+" loaded "+esc(r.rowsLoaded||"0")+" rows.</div><code>"+esc(r.requestUrl||"")+"</code></div>":"<div class=\"gs-bore-status gs-bore-status--error\"><strong>Refresh failed.</strong><div>"+esc(r.message||"Unknown error")+"</div></div>";if(r&&r.success){setTimeout(function(){location.reload();},1200);}}).catch(function(e){out.innerHTML="<div class=\"gs-bore-status gs-bore-status--error\"><strong>Refresh failed.</strong><div>"+esc(e&&e.message?e.message:e)+"</div></div>";}).finally(function(){setBusy(false,defaultLabel);});});})();</script></div>');
     return l_html;
   end refresh_html;
 
-  function reports_html return clob is
+  function reports_intro_html return clob is
     l_html clob;
   begin
     dbms_lob.createtemporary(l_html, true);
     append_line(l_html, '<div class="gs-bore"><h1>Reports</h1>');
     append_css(l_html);
     append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn" href="' || page_url(1) || '">Home</a><a class="gs-bore-btn" href="' || page_url(2) || '">Explore Data</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Data</a><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(5) || '">Ask AI</a></div>');
-    append_line(l_html, '<p>Reusable report cards for the loaded borehole dataset. The AI assistant now answers the prompt directly; these cards remain here for dashboard-style review.</p>');
+    append_line(l_html, '<p>Use the interactive native APEX map to pan and zoom across Australia, then scan the supporting report cards below for state, purpose, length, and operator summaries.</p>');
+    append_line(l_html, '</div>');
+    return l_html;
+  end reports_intro_html;
+
+  function reports_html return clob is
+    l_html clob;
+  begin
+    dbms_lob.createtemporary(l_html, true);
+    append_line(l_html, '<div class="gs-bore">');
+    append_css(l_html);
     append_line(l_html, gs_borehole_agent_api.dashboard_report_html);
     append_line(l_html, '</div>');
     return l_html;
@@ -368,7 +469,7 @@ begin
     select page_id
       from apex_application_pages
      where application_id = c_app_id
-       and page_id in (1, 2, 4, 5, 6)
+       and page_id in (1, 2, 4, 5, 6, 7)
      order by page_id desc
   ) loop
     wwv_flow_imp_page.remove_page(p_flow_id => c_app_id, p_page_id => existing_page.page_id);
@@ -535,11 +636,96 @@ end;
 
   wwv_flow_imp_page.create_page_plug(
     p_id => wwv_flow_imp.id(1050100601),
-    p_plug_name => 'Reports',
-    p_region_name => 'gs-boreholes-reports',
+    p_plug_name => 'Reports Intro',
+    p_region_name => 'gs-boreholes-reports-intro',
     p_region_template_options => '#DEFAULT#',
     p_plug_template => c_region_blank,
     p_plug_display_sequence => 10,
+    p_plug_display_point => 'BODY',
+    p_plug_source => 'return gs_borehole_page_api.reports_intro_html;',
+    p_function_body_language => 'PLSQL',
+    p_plug_source_type => 'NATIVE_DYNAMIC_CONTENT',
+    p_lazy_loading => false
+  );
+
+  wwv_flow_imp_page.create_page_plug(
+    p_id => wwv_flow_imp.id(1050100602),
+    p_plug_name => 'Interactive Boreholes Map',
+    p_region_name => 'gs-boreholes-reports-map',
+    p_region_template_options => '#DEFAULT#',
+    p_plug_template => c_region_blank,
+    p_plug_display_sequence => 20,
+    p_plug_display_point => 'BODY',
+    p_plug_source_type => 'NATIVE_MAP_REGION',
+    p_lazy_loading => false
+  );
+
+  wwv_flow_imp_page.create_map_region(
+    p_id => wwv_flow_imp.id(1050100603),
+    p_region_id => wwv_flow_imp.id(1050100602),
+    p_height => 640,
+    p_tilelayer_type => 'DEFAULT',
+    p_navigation_bar_type => 'SMALL',
+    p_navigation_bar_position => 'END',
+    p_init_position_zoom_type => 'STATIC',
+    p_init_position_lon_static => '134.5',
+    p_init_position_lat_static => '-25.0',
+    p_init_zoomlevel_static => '3',
+    p_show_legend => false,
+    p_unit_system => 'METRIC'
+  );
+
+  wwv_flow_imp_page.create_map_region_layer(
+    p_id => wwv_flow_imp.id(1050100604),
+    p_map_region_id => wwv_flow_imp.id(1050100603),
+    p_name => 'Boreholes',
+    p_label => 'Boreholes',
+    p_layer_type => 'POINT',
+    p_display_sequence => 10,
+    p_location => 'LOCAL',
+    p_query_type => 'SQL',
+    p_layer_source => q'~
+select borehole_id,
+       borehole_ref,
+       borehole_name,
+       state_code,
+       region_name,
+       operator_name,
+       depth_metres,
+       apex_spatial.point(longitude, latitude) as geom,
+       borehole_name as tooltip_text,
+       borehole_name as info_title,
+       state_code || ' | ' || region_name || ' | depth ' || nvl(to_char(depth_metres), 'n/a') || ' m' as info_body
+  from gs_boreholes
+ where latitude is not null
+   and longitude is not null
+~',
+    p_has_spatial_index => false,
+    p_pk_column => 'BOREHOLE_ID',
+    p_geometry_column_data_type => 'SDO_GEOMETRY',
+    p_geometry_column => 'GEOM',
+    p_point_display_type => 'SVG',
+    p_point_svg_shape => 'CIRCLE',
+    p_point_svg_shape_scale => '0.9',
+    p_fill_color => '#1d6fa5',
+    p_fill_opacity => 0.85,
+    p_stroke_color => '#ffffff',
+    p_stroke_width => 1,
+    p_feature_clustering => true,
+    p_tooltip_column => 'TOOLTIP_TEXT',
+    p_info_window_title_column => 'INFO_TITLE',
+    p_info_window_body_column => 'INFO_BODY',
+    p_display_in_legend => true,
+    p_allow_hide => true
+  );
+
+  wwv_flow_imp_page.create_page_plug(
+    p_id => wwv_flow_imp.id(1050100605),
+    p_plug_name => 'Reports Cards',
+    p_region_name => 'gs-boreholes-reports-cards',
+    p_region_template_options => '#DEFAULT#',
+    p_plug_template => c_region_blank,
+    p_plug_display_sequence => 30,
     p_plug_display_point => 'BODY',
     p_plug_source => 'return gs_borehole_page_api.reports_html;',
     p_function_body_language => 'PLSQL',

@@ -471,6 +471,105 @@ create or replace package body gs_borehole_agent_api as
     return trim(dbms_lob.substr(p_value, 500, 1));
   end compact_prompt;
 
+  function wants_spatial_view(p_prompt in varchar2) return boolean is
+  begin
+    return regexp_like(
+      p_prompt,
+      'map|spatial|location|where|area|coordinate|lat|lon|zoom|extent|australia|national|nationwide'
+    );
+  end wants_spatial_view;
+
+  function spatial_scope_for_prompt(p_prompt in varchar2) return varchar2 is
+  begin
+    if regexp_like(
+      p_prompt,
+      'australia|nationwide|national|continent|country|full map|whole map|zoom out|zoomed out|wider'
+    ) then
+      return 'AUSTRALIA';
+    end if;
+
+    return 'DATA_FIT';
+  end spatial_scope_for_prompt;
+
+  function svg_num(p_value in number) return varchar2 is
+  begin
+    return to_char(round(p_value, 1), 'FM9990D0', 'NLS_NUMERIC_CHARACTERS=.,');
+  end svg_num;
+
+  function map_x(
+    p_lon     in number,
+    p_min_lon in number,
+    p_max_lon in number,
+    p_left    in number,
+    p_width   in number
+  ) return varchar2 is
+  begin
+    return svg_num(
+      p_left + ((p_lon - p_min_lon) / greatest(p_max_lon - p_min_lon, 0.0001)) * p_width
+    );
+  end map_x;
+
+  function map_y(
+    p_lat     in number,
+    p_min_lat in number,
+    p_max_lat in number,
+    p_top     in number,
+    p_height  in number
+  ) return varchar2 is
+  begin
+    return svg_num(
+      p_top + p_height - ((p_lat - p_min_lat) / greatest(p_max_lat - p_min_lat, 0.0001)) * p_height
+    );
+  end map_y;
+
+  procedure append_australia_base(
+    p_html    in out nocopy clob,
+    p_min_lon in number,
+    p_max_lon in number,
+    p_min_lat in number,
+    p_max_lat in number,
+    p_left    in number,
+    p_top     in number,
+    p_width   in number,
+    p_height  in number
+  ) is
+  begin
+    append_line(
+      p_html,
+      '<path d="M ' || map_x(113.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-35.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(114.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-25.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(116.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-21.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(120.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-19.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(123.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-17.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(130.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-13.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(138.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-12.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(142.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-12.5, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(145.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-16.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(147.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-20.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(150.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-22.5, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(153.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-27.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(153.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-33.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(151.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-36.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(147.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-38.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(143.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-38.6, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(140.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-37.6, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(136.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-35.6, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(132.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-33.6, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(128.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-32.0, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(124.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-33.2, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(120.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-34.5, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' L ' || map_x(116.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-35.8, p_min_lat, p_max_lat, p_top, p_height) ||
+      ' Z" fill="#e7f2e8" stroke="#c7dcc9" stroke-width="1.5"/>'
+    );
+    append_line(p_html, '<g fill="none" stroke="#a9bac9" stroke-width="1.2" stroke-linecap="round">');
+    append_line(p_html, '<path d="M ' || map_x(129.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-14.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(129.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-35.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '<path d="M ' || map_x(129.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-26.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(138.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-26.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '<path d="M ' || map_x(138.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-26.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(138.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-11.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '<path d="M ' || map_x(141.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-38.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(141.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-29.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '<path d="M ' || map_x(141.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-29.0, p_min_lat, p_max_lat, p_top, p_height) || ' L ' || map_x(153.0, p_min_lon, p_max_lon, p_left, p_width) || ' ' || map_y(-29.0, p_min_lat, p_max_lat, p_top, p_height) || '"/>');
+    append_line(p_html, '</g>');
+  end append_australia_base;
+
   function service_name_for_static_id(p_service_static_id in varchar2) return varchar2 is
     l_name varchar2(255);
   begin
@@ -624,21 +723,36 @@ create or replace package body gs_borehole_agent_api as
     l_intent varchar2(20);
     l_focus_title varchar2(200);
     l_focus_summary varchar2(1000);
+    l_spatial_scope varchar2(20);
+    l_spatial_note varchar2(1000);
+    l_spatial_cta varchar2(1000);
+    l_lon_pad number;
+    l_lat_pad number;
   begin
     dbms_lob.createtemporary(l_html, true);
     l_prompt := lower(coalesce(dbms_lob.substr(p_user_prompt, 4000, 1), ''));
     l_intent := 'OVERVIEW';
     l_focus_title := 'Key insights from the loaded boreholes';
     l_focus_summary := 'Charts are generated directly from GEOSCIENCE schema data so the visual answer remains grounded while the selected model supplies question-specific interpretation.';
+    l_spatial_scope := 'DATA_FIT';
 
     if instr(l_prompt, '__report_dashboard__') > 0 then
       l_intent := 'REPORT';
       l_focus_title := 'Boreholes reports dashboard';
       l_focus_summary := 'This report page keeps the reusable graphical overview cards together for scanning, demo walkthroughs, and comparison with assistant answers.';
-    elsif regexp_like(l_prompt, 'map|spatial|location|where|area|coordinate|lat|lon') then
+    elsif wants_spatial_view(l_prompt) then
       l_intent := 'SPATIAL';
-      l_focus_title := 'Spatial borehole distribution';
-      l_focus_summary := 'The map and location plot are the primary answer for this question; use narrower refresh areas to build state and local drill-down views.';
+      l_spatial_scope := spatial_scope_for_prompt(l_prompt);
+      if l_spatial_scope = 'AUSTRALIA' then
+        l_focus_title := 'Australia-wide borehole distribution';
+        l_focus_summary := 'Use the interactive Reports map to view the current loaded boreholes in national context instead of auto-fitting to the densest cluster.';
+      elsif regexp_like(l_prompt, 'zoom in|closer|detail|local|drill.?down') then
+        l_focus_title := 'Closer borehole distribution view';
+        l_focus_summary := 'Open the interactive Reports map for the current slice, then refresh a narrower area for a true local drill-down.';
+      else
+        l_focus_title := 'Spatial borehole distribution';
+        l_focus_summary := 'Use the interactive Reports map for the primary spatial answer, then narrow the refresh area to build state and local drill-down views.';
+      end if;
     elsif regexp_like(l_prompt, 'state|territor|wa|western australia|nsw|queensland|qld|south australia|northern territory|nt') then
       l_intent := 'STATE';
       l_focus_title := 'State and territory borehole distribution';
@@ -680,7 +794,7 @@ create or replace package body gs_borehole_agent_api as
     append_line(l_html, '.gs-bore-viz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(14rem,100%),1fr));gap:1rem}.gs-bore-viz-card{border:1px solid #d7dde5;border-radius:8px;background:#fff;padding:1rem}.gs-bore-viz-card h3{margin:.1rem 0 .7rem;font-size:1rem}.gs-bore-viz-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(7rem,100%),1fr));gap:.65rem}');
     append_line(l_html, '.gs-bore-viz-metric{border:1px solid #d7dde5;border-radius:8px;background:#fff;padding:.85rem}.gs-bore-viz-metric span{display:block;color:#5d6876;font-size:.72rem;text-transform:uppercase;font-weight:850}.gs-bore-viz-metric strong{display:block;font-size:1.35rem;margin-top:.2rem}');
     append_line(l_html, '.gs-bore-bar-row{display:grid;grid-template-columns:minmax(4.75rem,.42fr) minmax(0,1fr) auto;gap:.5rem;align-items:center;margin:.45rem 0}.gs-bore-bar-label{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gs-bore-bar-track{height:1rem;border-radius:999px;background:#eef2f6;overflow:hidden}.gs-bore-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#1d6fa5,#2f7d57)}');
-    append_line(l_html, '.gs-bore-viz-note{font-size:.85rem;color:#5d6876}.gs-bore-mini-map{border:1px solid #d7dde5;border-radius:8px;background:#f8fbfd;overflow:hidden}.gs-bore-mini-map svg{width:100%;height:auto;display:block}.gs-bore-action-list{display:grid;gap:.5rem;margin:0;padding:0;list-style:none}.gs-bore-action-list li{border-left:4px solid #2f7d57;background:#f7fafc;padding:.55rem .7rem}.gs-bore-narrative{white-space:pre-wrap;max-height:14rem;overflow:auto;background:#f7fafc;border:1px solid #d7dde5;border-radius:8px;padding:.7rem}');
+    append_line(l_html, '.gs-bore-viz-note{font-size:.85rem;color:#5d6876}.gs-bore-mini-map{border:1px solid #d7dde5;border-radius:8px;background:#f8fbfd;overflow:hidden}.gs-bore-mini-map svg{width:100%;height:auto;display:block}.gs-bore-viz-cta{display:grid;gap:.6rem}.gs-bore-viz-btn{display:inline-flex;align-items:center;justify-content:center;min-height:2.6rem;padding:.56rem .9rem;border-radius:8px;border:1px solid #1d6fa5;background:#1d6fa5;color:#fff;font-weight:850;text-decoration:none}.gs-bore-viz-btn:hover,.gs-bore-viz-btn:focus{color:#fff;text-decoration:none;transform:translateY(-1px)}.gs-bore-action-list{display:grid;gap:.5rem;margin:0;padding:0;list-style:none}.gs-bore-action-list li{border-left:4px solid #2f7d57;background:#f7fafc;padding:.55rem .7rem}.gs-bore-narrative{white-space:pre-wrap;max-height:14rem;overflow:auto;background:#f7fafc;border:1px solid #d7dde5;border-radius:8px;padding:.7rem}');
     append_line(l_html, '</style>');
     append_line(l_html, '<div class="gs-bore-viz">');
     append_line(l_html, '<section class="gs-bore-viz-hero"><span class="gs-bore-mode">Graphical Boreholes Insight</span><h2>' || html_escape(l_focus_title) || '</h2><p>' || html_escape(l_focus_summary) || '</p></section>');
@@ -700,7 +814,7 @@ create or replace package body gs_borehole_agent_api as
 
     append_line(l_html, '<div class="gs-bore-viz-grid">');
 
-    if l_intent in ('REPORT', 'OVERVIEW', 'STATE') then
+    if l_intent in ('REPORT', 'OVERVIEW', 'STATE', 'SPATIAL') then
       append_line(l_html, '<section class="gs-bore-viz-card"><h3>Boreholes by state</h3>');
       select max(cnt)
         into l_max_count
@@ -820,31 +934,44 @@ create or replace package body gs_borehole_agent_api as
 
     append_line(l_html, '</div>');
 
-    if l_intent in ('REPORT', 'OVERVIEW', 'SPATIAL') then
-      append_line(l_html, '<section class="gs-bore-viz-card"><h3>Spatial distribution</h3>');
+    if l_intent = 'SPATIAL' then
+      append_line(
+        l_html,
+        '<section class="gs-bore-viz-card"><h3>' ||
+        case
+          when l_spatial_scope = 'AUSTRALIA' then 'Australia-wide spatial distribution'
+          else 'Spatial distribution'
+        end ||
+        '</h3>'
+      );
       begin
-        select min(longitude), max(longitude), min(latitude), max(latitude)
-          into l_min_lon, l_max_lon, l_min_lat, l_max_lat
-          from gs_boreholes
-         where latitude is not null
-           and longitude is not null;
-
-        append_line(l_html, '<div class="gs-bore-mini-map"><svg viewBox="0 0 720 300" role="img" aria-label="Graphical plot of loaded borehole locations">');
-        append_line(l_html, '<rect width="720" height="300" fill="#f8fbfd"/><path d="M35 252C128 206 190 236 274 176c89-64 154-26 244-87 60-40 111-44 164-22v233H35z" fill="#e7f2e8" stroke="#c7dcc9"/>');
-        append_line(l_html, '<g fill="none" stroke="#d3dce6" stroke-width="1"><path d="M50 80H680M50 150H680M50 220H680M170 35V265M320 35V265M470 35V265M620 35V265"/></g><g>');
-        for r in (
-          select borehole_ref, borehole_name, state_code, latitude, longitude, depth_metres
+        if l_spatial_scope = 'AUSTRALIA' then
+          l_spatial_note := 'The interactive Reports map now opens at a fixed Australia extent so you can pan, zoom, and inspect boreholes in real national context.';
+        else
+          select min(longitude), max(longitude), min(latitude), max(latitude)
+            into l_min_lon, l_max_lon, l_min_lat, l_max_lat
             from gs_boreholes
            where latitude is not null
-             and longitude is not null
-           order by updated_at desc
-           fetch first 120 rows only
-        ) loop
-          l_x := 55 + ((r.longitude - l_min_lon) / greatest(l_max_lon - l_min_lon, .0001)) * 610;
-          l_y := 250 - ((r.latitude - l_min_lat) / greatest(l_max_lat - l_min_lat, .0001)) * 205;
-          append_line(l_html, '<circle cx="' || to_char(round(l_x, 1), 'FM9990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '" cy="' || to_char(round(l_y, 1), 'FM9990D0', 'NLS_NUMERIC_CHARACTERS=.,') || '" r="' || case when coalesce(r.depth_metres, 0) >= 250 then '6' else '4' end || '" fill="#1d6fa5" opacity=".8"><title>' || html_escape(r.borehole_name || ' (' || r.borehole_ref || ') ' || r.state_code || ' ' || r.depth_metres || 'm') || '</title></circle>');
-        end loop;
-        append_line(l_html, '</g><text x="55" y="285" fill="#5d6876" font-size="13">Lon ' || html_escape(to_char(round(l_min_lon, 2))) || ' to ' || html_escape(to_char(round(l_max_lon, 2))) || ', Lat ' || html_escape(to_char(round(l_min_lat, 2))) || ' to ' || html_escape(to_char(round(l_max_lat, 2))) || '</text></svg></div>');
+             and longitude is not null;
+
+          l_lon_pad := greatest((l_max_lon - l_min_lon) * 0.08, 0.75);
+          l_lat_pad := greatest((l_max_lat - l_min_lat) * 0.08, 0.50);
+          l_min_lon := l_min_lon - l_lon_pad;
+          l_max_lon := l_max_lon + l_lon_pad;
+          l_min_lat := l_min_lat - l_lat_pad;
+          l_max_lat := l_max_lat + l_lat_pad;
+          l_spatial_note := 'The interactive Reports map opens from the current loaded slice and supports pan/zoom; refresh a narrower BBOX for a true local drill-down.';
+        end if;
+
+        if instr(l_prompt, '__report_dashboard__') = 0 then
+          l_spatial_cta := '<div class="gs-bore-viz-cta"><a class="gs-bore-viz-btn" href="' ||
+            apex_util.prepare_url('f?p=' || v('APP_ID') || ':6:' || v('APP_SESSION') || ':::::') ||
+            '">Open Interactive Reports Map</a>';
+        else
+          l_spatial_cta := null;
+        end if;
+        append_line(l_html, '<p class="gs-bore-viz-note">' || html_escape(l_spatial_note) || '</p>');
+        append_line(l_html, '<ul class="gs-bore-action-list"><li>Native APEX map with pan, zoom, clustering, and hover details for each loaded borehole.</li><li>Loaded rows remain grounded in the current GEOSCIENCE schema data, not an invented sketch map.</li><li>Use Australia-wide prompts for national context, or refresh a smaller BBOX before reopening Reports for local detail.</li></ul>' || nvl(l_spatial_cta || '</div>', ''));
       exception
         when others then
           append_line(l_html, '<p>No coordinate-bearing boreholes are loaded yet.</p>');
@@ -874,14 +1001,24 @@ create or replace package body gs_borehole_agent_api as
   end graphical_insights_html;
 
   function dashboard_report_html return clob is
+    l_html clob;
   begin
-    return graphical_insights_html('__REPORT_DASHBOARD__', null);
+    l_html := graphical_insights_html('__REPORT_DASHBOARD__', null);
+    return regexp_replace(
+      l_html,
+      '<section class="gs-bore-viz-card"><h3>(Australia-wide spatial distribution|Spatial distribution)</h3>.*?</section>',
+      '',
+      1,
+      1,
+      'n'
+    );
   end dashboard_report_html;
 
   function wants_visual_output(p_user_prompt in clob) return boolean is
     l_prompt varchar2(4000) := lower(coalesce(dbms_lob.substr(p_user_prompt, 4000, 1), ''));
   begin
-    return regexp_like(l_prompt, 'graph|graphic|chart|visual|map|plot|distribution|compare|breakdown|top|count|profile|mix|where|spatial|show|dashboard');
+    return regexp_like(l_prompt, 'graph|graphic|chart|visual|plot|distribution|compare|breakdown|top|count|profile|mix|show|dashboard')
+       or wants_spatial_view(l_prompt);
   end wants_visual_output;
 
   function assistant_text_html(p_user_prompt in clob, p_model_markdown in clob, p_error in varchar2 default null) return clob is
