@@ -1,4 +1,11 @@
-# Geoscience Demo Notes
+<!-- codex-projects-shared-guidance:v1 -->
+# Geoscience Demos Instructions
+
+Read `../AGENTS.md` first. It is the canonical shared instruction file for every project under `Codex Projects`.
+
+This file contains only project-specific additions or explicit exceptions. Shared rules belong in the parent or routed standards, not in this file.
+
+## Geoscience Demo Notes
 
 - This repo is the Geoscience demo project onboarding shell.
 - Use it to hold verified Geoscience database scripts, APEX exports, runbooks, readiness checks, and integration assets as the project is established.
@@ -14,15 +21,7 @@
 - The Geoscience feedback model follows the shared AI Hub/GovernMate pattern in queue-first form: native APEX Feedback is the user capture surface; `GS_AI_HUB_FEEDBACK_FORWARDS` stores replayable AI Hub source-feedback payloads, idempotency keys, source app/page/user context, and task provenance; live forwarding requires an approved endpoint credential outside Git.
 - Before changing either application, follow the shared APEX export and Git checkpoint rules in the parent `AGENTS.md`.
 
-## Shared Credential Access
+## Project Credential References
 
-- Canonical filesystem root: `C:\Users\pashcrof\Documents\Codex Projects\Shared Credentials`. This section supersedes earlier statements that make a child project `.local` directory the canonical source for a credential now registered in the shared store.
-- Allowed: Codex may read only the credential required for an authorised task in this project. All project chats may use the shared store; do not copy one project's raw secret into another project repository.
-- Shared APEX `CODEX` password: `Shared Credentials\passwords\standard-codex-workspace-admin-password.txt`. Shared project/schema-owner password: `Shared Credentials\passwords\standard-project-schema-password.txt`. Environment and username mappings are in `Shared Credentials\logins\apex-codex-logins.local.json`.
-- Approved OCI signing key for APEX OCI Web Credentials, including `genai_credentials` and DocGen/`OCI_FN_CREDS`: `Shared Credentials\oci\paul.ashcroft.profile.private.key.pem`. The live private value remains encrypted in each APEX workspace credential store.
-- Project-specific shared files:
-  - `Shared Credentials\logins\afma-geoscience-demo-user.local.json`
-  - `Shared Credentials\api-keys\ai-hub\codex-geoscience.local.json`
-- Platform-native credentials remain native: Oracle SSO/passkeys in Windows Hello, GitHub tokens in Git Credential Manager, browser sessions in Chrome, live APEX secret values in APEX Web Credentials, and `OCI$RESOURCE_PRINCIPAL` in Autonomous Database.
-- Project-local ignored files may remain temporarily as compatibility or activation artifacts, but do not create a new canonical raw secret there when a shared file exists. Update the consumer to read the shared path, verify it, and only then retire the duplicate.
-- Forbidden: committing, staging, printing, screenshotting, or copying raw values into SQL, APEXlang, exports, documentation, AI Hub tasks, PR text, or chat summaries. If a tracked value is found, stop using it as canonical, rotate it where exposure is possible, and replace tracked content with a placeholder.
+- `Shared Credentials\logins\afma-geoscience-demo-user.local.json`
+- `Shared Credentials\api-keys\ai-hub\codex-geoscience.local.json`
