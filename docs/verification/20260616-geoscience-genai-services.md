@@ -40,9 +40,9 @@ The APEX `Generative AI Details` page `TestGenAIConn` Ajax process returned stat
 | `openai.gpt-oss-20b` | `openai_gpt_oss_20b` | OCI Generative AI Service | No |
 | `xai.grok-4.3` | `xai_grok_4_3` | OCI Generative AI Service | No |
 
-Replayable setup script:
+Source-control note:
 
-- `database/008_configure_geoscience_genai_services.sql`
+- `database/008_configure_geoscience_genai_services.sql` was the original live-delivery script for workspace Generative AI Services and is retired from canonical numbered SQL. The live service catalog is workspace metadata; for APEX 26.1+ work it should be captured through the owning application source export/APEXlang or workspace metadata source path rather than retained as a numbered SQL migration.
 
 Task evidence:
 

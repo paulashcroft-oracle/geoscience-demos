@@ -14,7 +14,7 @@ Baseline:
 - Existing current app export before this follow-up: `exports/apex/f105_boreholes_demo_20260616_prompt_specific_assistant_reports.sql`
 - User screenshot showed the Home primary CTA rendering as a blank blue button and the assistant graphical response leaving unused horizontal space / clipping at expanded side-nav width.
 
-Changes replayed surgically:
+Historical live-delivery changes replayed surgically:
 
 - `database/009_create_boreholes_refresh_agent_api.sql`
   - Made generated graphical insight CSS intrinsically responsive with `auto-fit` grids.
@@ -49,3 +49,5 @@ Live verification:
 Post-change export:
 
 - `exports/apex/f105_boreholes_demo_20260616_visual_layout_followup.sql`
+
+Source-control note: `database/010_configure_boreholes_app_pages.sql` was a transient APEX metadata delivery script. The reusable database package source now lives in `database/010_create_boreholes_page_api.sql`; page/component state is represented by this dated application export and later app 105 exports.

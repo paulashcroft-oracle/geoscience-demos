@@ -1,0 +1,115 @@
+---
+# ====== Page: Refresh Data ==================================
+id: 4
+identification: 
+  name: Refresh Data
+  alias: DATA-REFRESH
+  title: Refresh Data
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Refresh Data ================================
+  id: 1050100401
+  identification: 
+    name: Refresh Data
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: return gs_borehole_page_api.refresh_html;
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: gs-boreholes-refresh
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+processes: 
+- # ====== Process: GS_BOREHOLES_REFRESH =======================
+  id: 1050100402
+  identification: 
+    name: GS_BOREHOLES_REFRESH
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      
+      begin
+        htp.prn(
+          gs_borehole_refresh_api.remote_refresh_json(
+            p_min_lon => to_number(apex_application.g_x01, '999999999D999999', 'NLS_NUMERIC_CHARACTERS=.,'),
+            p_min_lat => to_number(apex_application.g_x02, '999999999D999999', 'NLS_NUMERIC_CHARACTERS=.,'),
+            p_max_lon => to_number(apex_application.g_x03, '999999999D999999', 'NLS_NUMERIC_CHARACTERS=.,'),
+            p_max_lat => to_number(apex_application.g_x04, '999999999D999999', 'NLS_NUMERIC_CHARACTERS=.,'),
+            p_limit => to_number(apex_application.g_x05)
+          )
+        );
+      end;
+      
+
+  execution: 
+    sequence: 10
+    point: Ajax Callback
+    run-process: Once Per Page Visit (default)
+

@@ -61,5 +61,7 @@ Observed results:
 ## Replayable Assets
 
 - `database/009_create_boreholes_refresh_agent_api.sql`
-- `database/010_configure_boreholes_app_pages.sql`
+- `database/010_create_boreholes_page_api.sql`
 - `exports/apex/f105_boreholes_demo_20260616_assistant_left_panel_enter.sql`
+
+Source-control note: the former `database/010_configure_boreholes_app_pages.sql` mixed database package source with APEX component delivery. The package source is retained in `database/010_create_boreholes_page_api.sql`; page/process component state is represented by the application export.

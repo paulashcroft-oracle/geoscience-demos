@@ -15,7 +15,7 @@ Baseline:
 - User feedback called out that the key functional areas were not exposed as pages in the app navigation, specifically `Reports` and `Ask AI`.
 - Existing current app export before this follow-up: `exports/apex/f105_boreholes_demo_20260616_visual_layout_followup.sql`
 
-Changes replayed surgically:
+Historical live-delivery changes replayed surgically:
 
 - `database/010_configure_boreholes_app_pages.sql`
   - Renamed page 2 surface and headings from `Boreholes Explorer` to `Explore Data`.
@@ -48,3 +48,5 @@ Live verification:
 Post-change export:
 
 - `exports/apex/f105_boreholes_demo_20260616_navigation_pages.sql`
+
+Source-control note: `database/010_configure_boreholes_app_pages.sql` and `database/011_update_boreholes_navigation.sql` were transient APEX metadata delivery scripts. The database package portion now lives in `database/010_create_boreholes_page_api.sql`; the page and navigation components are represented by this dated application export and later app 105 exports.

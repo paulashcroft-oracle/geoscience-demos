@@ -12,7 +12,7 @@ Applications:
 - App 104 `Geoscience Demos`, alias `GEOSCIENCE-DEMOS`
 - App 105 `Boreholes Demo`, alias `BOREHOLES-DEMO`
 
-SQL verification after `database/005_add_demo_user_login.sql`:
+Historical live-delivery verification after `database/005_add_demo_user_login.sql`:
 
 | Check Type | App | Page | Item | Detail |
 | --- | ---: | ---: | --- | --- |
@@ -38,6 +38,8 @@ Post-change exports:
 - `exports/apex/f105_boreholes_demo_20260616_feedback_queue.sql`
 
 The exports were normalized from APEX download archives to plain SQL and checked for `Demo User Login`, `Continue as Demo User`, `DEMO_USER_LOGIN`, and `Queue AI Hub Feedback`.
+
+Source-control note: `database/005_add_demo_user_login.sql` and the APEX page-process portion originally embedded in `database/006_create_geoscience_feedback_queue.sql` were transient APEX metadata delivery scripts. The database feedback queue remains in numbered SQL; the page 9999 demo-user components and page 10030 feedback hooks are represented by the dated application exports above.
 
 Shared feedback queue verification:
 

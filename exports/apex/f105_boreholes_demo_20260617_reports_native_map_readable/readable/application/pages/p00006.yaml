@@ -1,0 +1,260 @@
+---
+# ====== Page: Reports =======================================
+id: 6
+identification: 
+  name: Reports
+  alias: BOREHOLES-REPORTS
+  title: Reports
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Reports Intro ===============================
+  id: 1050100601
+  identification: 
+    name: Reports Intro
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: return gs_borehole_page_api.reports_intro_html;
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: gs-boreholes-reports-intro
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Interactive Boreholes Map ===================
+  id: 1050100602
+  identification: 
+    name: Interactive Boreholes Map
+    type: Map
+
+  source: 
+    location: None
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: gs-boreholes-reports-map
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 1050100603
+    map: 
+      background: Default
+      height: 640
+
+    controls: 
+      navigation-bar: Zoom Only
+      navigation-bar-position: End
+
+    initial-position-and-zoom: 
+      type: Static Values
+      longitude: 134.5
+      latitude: '-25.0'
+      zoom-level: 3
+
+    legend: 
+      show: false
+
+    attributes: 
+      messages-position: Hide
+      unit-system: Metric
+
+    performance: 
+      lazy-loading: false
+
+    layers: 
+    - # ====== Layer: Boreholes ====================================
+      id: 1050100604
+      identification: 
+        name: Boreholes
+        layer-type: Points
+
+      label: 
+        label: Boreholes
+
+      layout: 
+        sequence: 10
+
+      source: 
+        location: Local Database
+        type: SQL Query
+        sql-query: |
+          
+          select borehole_id,
+                 borehole_ref,
+                 borehole_name,
+                 state_code,
+                 region_name,
+                 operator_name,
+                 depth_metres,
+                 apex_spatial.point(longitude, latitude) as geom,
+                 borehole_name as tooltip_text,
+                 borehole_name as info_title,
+                 state_code || ' | ' || region_name || ' | depth ' || nvl(to_char(depth_metres), 'n/a') || ' m' as info_body
+            from gs_boreholes
+           where latitude is not null
+             and longitude is not null
+          
+        use-spatial-index: false
+
+      column-mapping: 
+        geometry-column-data-type: SDO_GEOMETRY
+        geometry-column: GEOM
+        primary-key-column: BOREHOLE_ID
+
+      point-objects: 
+        style: SVG
+        shape: CIRCLE
+        shape-scale: 0.9
+
+      appearance: 
+        fill-color: '#1d6fa5'
+        fill-opacity: 0.85
+        stroke-color: '#ffffff'
+        stroke-width: 1
+
+      point-clustering: 
+        enable: true
+        clustering-radius: 80
+
+      tooltip: 
+        advanced-formatting: false
+        column: TOOLTIP_TEXT
+
+      info-window: 
+        advanced-formatting: false
+        title-column: INFO_TITLE
+        body-column: INFO_BODY
+
+      legend: 
+        show: true
+        enable-to-hide: true
+
+- # ====== Region: Reports Cards ===============================
+  id: 1050100605
+  identification: 
+    name: Reports Cards
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: return gs_borehole_page_api.reports_html;
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: gs-boreholes-reports-cards
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+

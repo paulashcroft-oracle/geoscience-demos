@@ -1,0 +1,279 @@
+---
+# ====== Application: Boreholes Demo =========================
+identification: 
+  name: Boreholes Demo
+  alias: BOREHOLES-DEMO
+  version: Release 1.0
+
+row-search: 
+  tokenize: true
+  text-query-function: None
+
+availability: 
+  status: Available with Developer Toolbar
+  build-status: Run and Build Application
+
+error-handling: 
+  default-display-location: Inline with Field and in Notification
+
+report-printing: 
+  type: Native Printing
+
+advanced: 
+  friendly-urls: true
+  allow-feedback: true
+  logging: true
+  debugging: true
+  compatibility-mode: 24.2
+  accessible-read-only-items: true
+  pass-ecid: Y
+
+authentication: 
+  public-user: APEX_PUBLIC_USER
+  authentication-scheme: Oracle APEX Accounts # 16344979398978242
+
+authorization: 
+  source-for-role-or-group-schemes: Access Control User Role Assignments
+
+session-management: 
+  rejoin-sessions: Disabled
+
+session-state-protection: 
+  enabled: true
+
+security: 
+  deep-linking: Disabled
+  browser-cache: Disabled
+  embed-in-frames: Deny
+  referrer-policy: strict-origin
+  html-escaping-mode: Extended
+  runtime-api-usage: 
+  - Modify This Application
+
+database-session: 
+  parsing-schema: GEOSCIENCE
+
+globalization: 
+  primary-language: English (en)
+  document-direction: Language Default
+  language-derived-from: Application Primary Language
+  automatic-time-zone: false
+  automatic-csv-encoding: true
+
+application-format-masks: 
+  date: DS
+  timestamp: DS
+  timestamp-time-zone: DS
+
+character-value-comparison: 
+  behavior: Database session NLS setting (default)
+
+logo: 
+  type: Text
+  text: Boreholes Demo
+
+progressive-web-app: 
+  enable: true
+  installable: false
+  display: Standalone
+  screen-orientation: Any
+  ios-status-bar-style: Default
+  enable-push-notifications: false
+
+navigation: 
+  home-url: 
+    url: 'f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.:::'
+    page: 1 # Home
+
+  login-url: 
+    url: 'f?p=&APP_ID.:LOGIN:&APP_SESSION.::&DEBUG.:::'
+    page: LOGIN
+
+navigation-menu: 
+  list-template: Side Navigation Menu
+  template-options: 
+  - '#DEFAULT#'
+  - t-TreeNav--styleA
+  - js-navCollapsed--hidden
+  list-position: Side
+  list: Navigation Menu # 16345769667978244
+
+navigation-bar: 
+  implementation: List
+  list: Navigation Bar # 16346976299978247
+  list-template: Navigation Bar
+  template-options: 
+  - '#DEFAULT#'
+
+javascript: 
+  include-jquery-migrate: false
+
+attributes: 
+  theme: Universal Theme # 42
+  global-page: 0
+  enable-end-users-to-choose-theme-style: false
+  add-"built-with-apex"-to-footer: false
+  auto-dismiss-success-messages: false
+
+subscription: 
+  version-number: 47286134349289
+
+substitutions: 
+- # ====== Substitution: APP_NAME ==============================
+  id: 1
+  identification: 
+    name: APP_NAME
+
+  value: 
+    static-value: Boreholes Demo
+
+component-settings: 
+- # ====== Component Setting: NATIVE_DISPLAY_SELECTOR ==========
+  id: 16340498227978236
+  identification: 
+    name: NATIVE_DISPLAY_SELECTOR
+    type: Region
+
+  subscription: 
+    version-number: 47286134241614
+
+- # ====== Component Setting: NATIVE_ADFBC =====================
+  id: 16340788246978237
+  identification: 
+    name: NATIVE_ADFBC
+    type: REST Data Source
+
+  subscription: 
+    version-number: 47286134241644
+
+- # ====== Component Setting: NATIVE_DATE_PICKER_APEX ==========
+  id: 16341058858978237
+  identification: 
+    name: NATIVE_DATE_PICKER_APEX
+    type: Item
+
+  subscription: 
+    version-number: 47286134241669
+
+- # ====== Component Setting: NATIVE_MAP_REGION ================
+  id: 16341338727978238
+  identification: 
+    name: NATIVE_MAP_REGION
+    type: Region
+
+  subscription: 
+    version-number: 47286134241704
+
+- # ====== Component Setting: NATIVE_GEOCODING =================
+  id: 16341666861978238
+  identification: 
+    name: NATIVE_GEOCODING
+    type: Process
+
+  settings: 
+    attribute-1: RELAX_HOUSE_NUMBER
+
+  subscription: 
+    version-number: 47286134241729
+
+- # ====== Component Setting: NATIVE_SELECT_MANY ===============
+  id: 16341912848978239
+  identification: 
+    name: NATIVE_SELECT_MANY
+    type: Item
+
+  subscription: 
+    version-number: 47286134241754
+
+- # ====== Component Setting: NATIVE_SINGLE_CHECKBOX ===========
+  id: 16342246085978239
+  identification: 
+    name: NATIVE_SINGLE_CHECKBOX
+    type: Item
+
+  subscription: 
+    version-number: 47286134241780
+
+- # ====== Component Setting: NATIVE_COLOR_PICKER ==============
+  id: 16342514866978239
+  identification: 
+    name: NATIVE_COLOR_PICKER
+    type: Item
+
+  subscription: 
+    version-number: 47286134241803
+
+- # ====== Component Setting: NATIVE_STAR_RATING ===============
+  id: 16342839937978240
+  identification: 
+    name: NATIVE_STAR_RATING
+    type: Item
+
+  subscription: 
+    version-number: 47286134241828
+
+- # ====== Component Setting: NATIVE_GEOCODED_ADDRESS ==========
+  id: 16343110564978240
+  identification: 
+    name: NATIVE_GEOCODED_ADDRESS
+    type: Item
+
+  subscription: 
+    version-number: 47286134241851
+
+- # ====== Component Setting: NATIVE_IR ========================
+  id: 16343472589978240
+  identification: 
+    name: NATIVE_IR
+    type: Region
+
+  subscription: 
+    version-number: 47286134241877
+
+- # ====== Component Setting: NATIVE_OPEN_AI_ASSISTANT =========
+  id: 16343737572978241
+  identification: 
+    name: NATIVE_OPEN_AI_ASSISTANT
+    type: Dynamic Action
+
+  subscription: 
+    version-number: 47286134241916
+
+- # ====== Component Setting: NATIVE_BOSS ======================
+  id: 16344036811978241
+  identification: 
+    name: NATIVE_BOSS
+    type: REST Data Source
+
+  subscription: 
+    version-number: 47286134241944
+
+- # ====== Component Setting: NATIVE_YES_NO ====================
+  id: 16344391836978242
+  identification: 
+    name: NATIVE_YES_NO
+    type: Item
+
+  subscription: 
+    version-number: 47286134241954
+
+application-settings: 
+- # ====== Application Setting: FEEDBACK_ATTACHMENTS_YN ========
+  id: 16351656222978254
+  identification: 
+    name: FEEDBACK_ATTACHMENTS_YN
+
+  value: 
+    value: Y
+    required: false
+
+  advanced: 
+    valid-values: Y, N
+    on-upgrade-keep-value: true
+
+  subscription: 
+    version-number: 47286134242957
+
+  configuration: 
+    build-option: 'Feature: Feedback' # 16349552887978252
+

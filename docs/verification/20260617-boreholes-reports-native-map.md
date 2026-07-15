@@ -28,7 +28,7 @@ Two distinct runtime behaviors are now separated:
 - `Reports` is now the real spatial surface and uses a native APEX map region with pan, zoom, clustering, and hover details.
 - The AI assistant no longer renders the misleading pseudo-map for spatial prompts. Instead, it keeps the assistant answer and grounded companion cards, then hands the user to the interactive Reports map with an explicit call-to-action.
 
-Implemented surgically in replayable source:
+Implemented surgically through live-delivery scripts that are now retired from canonical numbered SQL:
 
 - `database/009_create_boreholes_refresh_agent_api.sql`
   - Removed the SVG mini-map from assistant spatial responses.
@@ -75,5 +75,7 @@ Verification evidence:
 ## Replayable Assets
 
 - `database/009_create_boreholes_refresh_agent_api.sql`
-- `database/010_configure_boreholes_app_pages.sql`
+- `database/010_create_boreholes_page_api.sql`
 - `exports/apex/f105_boreholes_demo_20260617_reports_native_map.sql`
+
+Source-control note: the former `database/010_configure_boreholes_app_pages.sql` mixed database package source with APEX page, region, process, and navigation metadata delivery. The database package source is retained as `database/010_create_boreholes_page_api.sql`; the app component state is represented by the dated app export above. For APEX 26.1+ targets, the same component state should be captured as APEXlang Standard Export.

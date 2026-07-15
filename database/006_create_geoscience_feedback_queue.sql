@@ -1,71 +1,11 @@
--- Geoscience 006 - Shared AI Hub feedback queue foundation
+-- Geoscience 006 - Shared AI Hub feedback database foundation
 --
 -- This keeps native APEX Feedback as the user capture surface and queues each
 -- feedback record into a Geoscience-owned ledger using the shared AI Hub source
 -- feedback payload shape. It deliberately stores no API key in source.
 
 declare
-  c_workspace_id constant number := 16120412504054324;
-  c_schema       constant varchar2(30) := 'GEOSCIENCE';
-  l_count        number;
-
-  procedure add_feedback_queue_process(
-    p_app_id       in number,
-    p_component_id in number
-  ) is
-    l_process_count number;
-  begin
-    apex_application_install.set_workspace_id(c_workspace_id);
-    apex_application_install.set_application_id(p_app_id);
-    apex_application_install.set_schema(c_schema);
-
-    wwv_flow_imp.import_begin(
-      p_version_yyyy_mm_dd => '2024.11.30',
-      p_release => '24.2.16',
-      p_default_workspace_id => c_workspace_id,
-      p_default_application_id => p_app_id,
-      p_default_id_offset => 0,
-      p_default_owner => c_schema
-    );
-
-    select count(*)
-      into l_process_count
-      from apex_application_page_proc
-     where application_id = p_app_id
-       and page_id = 10030
-       and process_name = 'Queue AI Hub Feedback';
-
-    if l_process_count = 0 then
-      wwv_flow_imp_page.create_page_process(
-        p_id => wwv_flow_imp.id(p_component_id),
-        p_flow_id => p_app_id,
-        p_flow_step_id => 10030,
-        p_process_sequence => 20,
-        p_process_point => 'AFTER_SUBMIT',
-        p_process_type => 'NATIVE_PLSQL',
-        p_process_name => 'Queue AI Hub Feedback',
-        p_process_sql_clob => q'~
-begin
-  gs_ai_hub_feedback.queue_latest_feedback(
-    p_application_id => :APP_ID,
-    p_page_id        => :P10030_PAGE_ID,
-    p_created_by     => :APP_USER,
-    p_feedback       => :P10030_FEEDBACK
-  );
-exception
-  when others then
-    null;
-end;
-~',
-        p_process_clob_language => 'PLSQL',
-        p_error_display_location => 'INLINE_IN_NOTIFICATION',
-        p_process_when => 'SUBMIT',
-        p_process_when_type => 'REQUEST_EQUALS_CONDITION'
-      );
-    end if;
-
-    wwv_flow_imp.import_end(p_auto_install_sup_obj => false);
-  end add_feedback_queue_process;
+  l_count number;
 begin
   select count(*)
     into l_count
@@ -486,9 +426,6 @@ begin
     comment on table gs_ai_hub_feedback_forwards is
       'Geoscience ledger for native APEX Feedback queued for the shared AI Hub source feedback API.'
   ]';
-
-  add_feedback_queue_process(104, 1040600000);
-  add_feedback_queue_process(105, 1050600000);
 
   commit;
 end;

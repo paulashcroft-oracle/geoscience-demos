@@ -1,0 +1,203 @@
+---
+- # ====== List of Values: GS_BOREHOLE_SOURCES.SOURCE_NAME =====
+  id: 16363167805978406
+  identification: 
+    name: GS_BOREHOLE_SOURCES.SOURCE_NAME
+
+  subscription: 
+    version-number: 47286134251862
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: GS_BOREHOLE_SOURCES
+
+  column-mapping: 
+    return: SOURCE_ID
+    display: SOURCE_NAME
+    default-sort: SOURCE_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: DESKTOP THEME STYLES ================
+  id: 16414638821978483
+  identification: 
+    name: DESKTOP THEME STYLES
+
+  subscription: 
+    version-number: 47286134257942
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select s.name d,
+             s.theme_style_id r
+        from apex_application_theme_styles s,
+             apex_application_themes t
+       where s.application_id = :app_id
+         and t.application_id = s.application_id
+         and t.theme_number   = s.theme_number
+         and t.is_current     = 'Yes'
+       order by 1
+
+  column-mapping: 
+    return: R
+    display: D
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: USER_THEME_PREFERENCE ===============
+  id: 16415365329978485
+  identification: 
+    name: USER_THEME_PREFERENCE
+
+  subscription: 
+    version-number: 47286134258052
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Allow End Users to choose Theme Style ========
+    id: 16415677696978485
+    entry: 
+      sequence: 1
+      display: Allow End Users to choose Theme Style
+      return: Yes
+
+- # ====== List of Values: TIMEFRAME (4 WEEKS) =================
+  id: 16434471018979035
+  identification: 
+    name: TIMEFRAME (4 WEEKS)
+
+  subscription: 
+    version-number: 47286134304583
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val as seconds
+        from table( apex_util.get_timeframe_lov_data )
+       order by insert_order
+
+  column-mapping: 
+    return: SECONDS
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: VIEW_AS_REPORT_CHART ================
+  id: 16482029468979110
+  identification: 
+    name: VIEW_AS_REPORT_CHART
+
+  subscription: 
+    version-number: 47286134312565
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Add Report Page ==============================
+    id: 16482365619979110
+    entry: 
+      sequence: 1
+      display: Add Report Page
+      return: REPORT
+
+    globalization: 
+      template: <span class="fa fa-table" aria-hidden="true"></span><span class="u-VisuallyHidden">#DISPLAY_VALUE#</span>
+
+  - # ====== Entry: Add Chart Page ===============================
+    id: 16482703368979111
+    entry: 
+      sequence: 2
+      display: Add Chart Page
+      return: CHART
+
+    globalization: 
+      template: <span class="fa fa-pie-chart" aria-hidden="true"></span><span class="u-VisuallyHidden">#DISPLAY_VALUE#</span>
+
+- # ====== List of Values: FEEDBACK_RATING =====================
+  id: 16505447484979141
+  identification: 
+    name: FEEDBACK_RATING
+
+  subscription: 
+    version-number: 47286134315384
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Positive =====================================
+    id: 16505729058979141
+    entry: 
+      sequence: 1
+      display: Positive
+      return: 3
+
+    globalization: 
+      template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-smile-o fa-2x feedback-positive" aria-hidden="true" ></span></span>
+
+  - # ====== Entry: Neutral ======================================
+    id: 16506181971979142
+    entry: 
+      sequence: 2
+      display: Neutral
+      return: 2
+
+    globalization: 
+      template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-emoji-neutral fa-2x feedback-neutral" aria-hidden="true" ></span></span>
+
+  - # ====== Entry: Negative =====================================
+    id: 16506510229979142
+    entry: 
+      sequence: 3
+      display: Negative
+      return: 1
+
+    globalization: 
+      template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-frown-o fa-2x feedback-negative" aria-hidden="true" ></span></span>
+
+- # ====== List of Values: FEEDBACK_STATUS =====================
+  id: 16517796883979158
+  identification: 
+    name: FEEDBACK_STATUS
+
+  subscription: 
+    version-number: 47286134317115
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: No Action ====================================
+    id: 16518055115979158
+    entry: 
+      sequence: 1
+      display: No Action
+      return: 0
+
+  - # ====== Entry: Acknowledged =================================
+    id: 16518428820979158
+    entry: 
+      sequence: 2
+      display: Acknowledged
+      return: 1
+
+  - # ====== Entry: Open =========================================
+    id: 16518816500979159
+    entry: 
+      sequence: 3
+      display: Open
+      return: 3
+
+  - # ====== Entry: Closed =======================================
+    id: 16519216192979159
+    entry: 
+      sequence: 4
+      display: Closed
+      return: 4
+
