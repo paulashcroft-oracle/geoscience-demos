@@ -5,7 +5,7 @@ Target:
 - AIDEMODB APEX workspace: `GEOSCIENCE`
 - Applications: app 104 `Geoscience Demos`, app 105 `Boreholes Demo`
 - Branch: `codex/geoscience-boreholes-ai`
-- Shared guidance refresh: `2026-07-15.2`, topic `apex-source-control`
+- Shared guidance refresh: `2026-07-15.3`, topic `apex-source-control`
 
 ## Source Ownership Decision
 
