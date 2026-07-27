@@ -38,7 +38,7 @@ target exists until the AI Hub control plane is deployed and queried.
 The AI Hub master task must run these only after the AIDEMODB installer is live:
 
 ```sql
-select project_key, project_name, status,
+select project_key, project_name, project_status,
        apex_workspace, apex_schema, apex_application_id,
        apex_application_name, apex_application_alias
   from hub_projects
@@ -50,7 +50,7 @@ Expected single row: `boreholes`, `Boreholes Demo`, `ACTIVE`, `GEOSCIENCE`,
 
 ```sql
 select actor_key from hub_actors where actor_key = 'codex-boreholes';
-select client_key, status from hub_api_clients where client_key = 'codex-boreholes';
+select client_key, client_status from hub_api_clients where client_key = 'codex-boreholes';
 select count(*) as normalized_grants
   from hub_current_api_client_grants
  where client_key = 'codex-boreholes';

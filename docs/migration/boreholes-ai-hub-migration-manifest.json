@@ -17,7 +17,7 @@
     "applicationId": 105,
     "applicationName": "Boreholes Demo",
     "applicationAlias": "BOREHOLES-DEMO",
-    "builderUrl": "https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/apex/app-builder/home?fb_flow_id=105",
+    "builderUrl": "https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/apex/app-builder/home?fb_flow_id=105&f4000_p1_flow=105",
     "runtimeUrl": "https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/geoscience/boreholes-demo/home",
     "reportsRuntimeUrl": "https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/geoscience/boreholes-demo/boreholes-reports"
   },
