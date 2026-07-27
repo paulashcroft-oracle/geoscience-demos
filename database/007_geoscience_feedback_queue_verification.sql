@@ -11,15 +11,6 @@ select 'OBJECT' check_type,
        'GS_AI_HUB_FEEDBACK'
        )
 union all
-select 'PAGE_PROCESS',
-       to_char(application_id) || ':10030',
-       process_name,
-       process_point || ' sequence ' || execution_sequence
-  from apex_application_page_proc
- where application_id in (104, 105)
-   and page_id = 10030
-   and process_name = 'Queue AI Hub Feedback'
-union all
 select 'QUEUE_COUNT',
        'Candidates',
        to_char(count(*)),

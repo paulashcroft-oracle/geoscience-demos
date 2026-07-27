@@ -1,13 +1,33 @@
-# Geoscience Demo Notes
+<!-- codex-projects-shared-guidance:v1 -->
+# Geoscience Demos Instructions
+
+Read `../AGENTS.md` first. It is the canonical shared instruction file for every project under `Codex Projects`.
+
+This file contains only project-specific additions or explicit exceptions. Shared rules belong in the parent or routed standards, not in this file.
+
+## Geoscience Demo Notes
 
 - This repo is the Geoscience demo project onboarding shell.
 - Use it to hold verified Geoscience database scripts, APEX exports, runbooks, readiness checks, and integration assets as the project is established.
 - The live AIDEMODB target workspace is `GEOSCIENCE`.
 - The live AIDEMODB target schema is `GEOSCIENCE`.
-- For the Geoscience Demos project, AIDEMODB workspace `GEOSCIENCE` is the live collaboration build target. Allowed actions there are surgical SQL, package/view changes, APEX Page Designer edits, APEX metadata API/component-level scripts, workspace user administration, and narrowly scoped runtime configuration changes. Forbidden action: full APEX application import/replace into AIDEMODB workspace `GEOSCIENCE` unless Paul Ashcroft explicitly names AIDEMODB `GEOSCIENCE` as a promotion-style replacement target after current exports/backups are captured. The only acceptable exception path is to stop before the full replace, record the exact app/workspace/export names and approval requirement, and wait for explicit human approval. If this rule is violated, stop further changes, capture the current reachable export/evidence, and record the incident and recovery path before doing more AIDEMODB work.
+- The live AIDEMODB target workspace users include `GEOSCIENCE` and `CODEX`. `GEOSCIENCE` is the workspace/schema owner path used to establish the workspace and schema. `CODEX` is the shared Codex workspace administrator/developer account used for routine App Builder, SQL Workshop, and runtime administration work after the workspace exists.
+- For the Geoscience Demos project, when an existing approved AIDEMODB browser session for workspace `GEOSCIENCE` expires back to an APEX or Database Actions sign-in page, Codex must first attempt to continue work by re-authenticating with the shared `CODEX` workspace account through the approved local secret source or browser-managed credential path already established for Codex Projects. Forbidden behavior: declaring the task blocked only because the sign-in page fields are blank or the prior browser session expired. Required preconditions: the sign-in target is confirmed to be the `GEOSCIENCE` workspace on AIDEMODB and the action is routine continuation of already-approved work. The only acceptable exception path is that the approved local secret source, browser-managed credential, or valid session token is not available in the current Codex session; in that case record the blocker as `shared CODEX credential source unavailable in-session`, avoid writing the password into repo files, and ask Paul to restore the sign-in path or sign in directly.
+- For the Geoscience Demos project, AIDEMODB workspace `GEOSCIENCE` is the live collaboration build target. Allowed actions there are surgical SQL, package/view changes, APEX Page Designer edits, APEX metadata API/component-level scripts, workspace user administration, and narrowly scoped runtime configuration changes. APEX metadata API/component-level scripts are transient live-delivery mechanisms only: they must not remain canonical numbered SQL, and application behavior must be captured in the owning application source export/APEXlang or application static assets. Numbered SQL owns database/data evolution only. Forbidden action: full APEX application import/replace into AIDEMODB workspace `GEOSCIENCE` unless Paul Ashcroft explicitly names AIDEMODB `GEOSCIENCE` as a promotion-style replacement target after current exports/backups are captured. The only acceptable exception path is to stop before the full replace, record the exact app/workspace/export names and approval requirement, and wait for explicit human approval. If this rule is violated, stop further changes, capture the current reachable export/evidence, and record the incident and recovery path before doing more AIDEMODB work.
 - Current generated APEX applications in AIDEMODB workspace `GEOSCIENCE`:
   - App 104 `Geoscience Demos`, alias `GEOSCIENCE-DEMOS`, native APEX Feedback enabled, generated with an Account Requests interactive report and form, passwordless `DEMO_USER` login button on page 9999, AI Hub feedback queue hook on page 10030 with source task `geoscience-001`.
   - App 105 `Boreholes Demo`, alias `BOREHOLES-DEMO`, native APEX Feedback enabled, generated with a Boreholes interactive report and form, passwordless `DEMO_USER` login button on page 9999, AI Hub feedback queue hook on page 10030 with source task `geoscience-003`.
+- AIDEMODB AI Hub uses application-based project keys inside this shared workspace/repository:
+  - App `104` uses project `geoscience`, client `codex-geoscience`, and `codex-geoscience-aidemodb.local.json`.
+  - App `105` uses project `boreholes`, client `codex-boreholes`, and `codex-boreholes-aidemodb.local.json`.
+  Do not use the app `104`/`geoscience` credential for Boreholes tasks, designs, feedback, or Kanban writes.
 - The Geoscience demo-user model follows AFMA: page 9999 remains public, normal APEX account login remains available for `CODEX` and administrators, and the `Continue as Demo User` button submits `DEMO_USER_LOGIN` to call `apex_authentication.post_login` as `DEMO_USER` before redirecting to page 1. Keep this path in any new Geoscience APEX app unless Paul Ashcroft explicitly asks for a different entry model.
 - The Geoscience feedback model follows the shared AI Hub/GovernMate pattern in queue-first form: native APEX Feedback is the user capture surface; `GS_AI_HUB_FEEDBACK_FORWARDS` stores replayable AI Hub source-feedback payloads, idempotency keys, source app/page/user context, and task provenance; live forwarding requires an approved endpoint credential outside Git.
 - Before changing either application, follow the shared APEX export and Git checkpoint rules in the parent `AGENTS.md`.
+
+## Project Credential References
+
+- `Shared Credentials\logins\afma-geoscience-demo-user.local.json`
+- `Shared Credentials\api-keys\ai-hub\codex-geoscience-aidemodb.local.json` — AIDEMODB app `104` / AI Hub project `geoscience`
+- `Shared Credentials\api-keys\ai-hub\codex-boreholes-aidemodb.local.json` — AIDEMODB app `105` / AI Hub project `boreholes`
+- `Shared Credentials\api-keys\ai-hub\codex-geoscience.local.json` — legacy ASHCROFT source only; never use or repoint it for AIDEMODB

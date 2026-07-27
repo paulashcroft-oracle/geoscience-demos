@@ -1,0 +1,598 @@
+---
+# ====== Page: Feedback ======================================
+id: 10030
+identification: 
+  name: Feedback
+  alias: FEEDBACK
+  title: Feedback
+  page-group: Administration # 16351802320978255
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  width: 480
+  chained: false
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+css: 
+  inline: |
+    .feedback-positive, .feedback-negative, .feedback-neutral { padding: 8px; border-radius: 100%; background-color: white; margin: 4px; }
+    .feedback-positive { color: var(--ut-feedback-positive-text-color, var(--ut-palette-success)); }
+    .feedback-neutral { color: var(--ut-feedback-neutral-text-color, var(--ut-palette-warning)); }
+    .feedback-negative { color: var(--ut-feedback-negative-text-color, var(--ut-palette-danger)); }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+configuration: 
+  build-option: 'Feature: Feedback' # 16349552887978252
+
+regions: 
+- # ====== Region: Form on Feedback ============================
+  id: 16499688359979135
+  identification: 
+    name: Form on Feedback
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Buttons =====================================
+  id: 16499774633979135
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P10030_APPLICATION_ID ====================
+  id: 16504102708979139
+  identification: 
+    name: P10030_APPLICATION_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Form on Feedback # 16499688359979135
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10030_PAGE_ID ===========================
+  id: 16504542462979140
+  identification: 
+    name: P10030_PAGE_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Form on Feedback # 16499688359979135
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10030_USER_AGENT ========================
+  id: 16504953275979141
+  identification: 
+    name: P10030_USER_AGENT
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Form on Feedback # 16499688359979135
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select sys.owa_util.get_cgi_env('user-agent') x
+      from dual
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10030_RATING ============================
+  id: 16505301770979141
+  identification: 
+    name: P10030_RATING
+    type: Radio Group
+
+  label: 
+    label: Experience
+    alignment: Left
+
+  settings: 
+    number-of-columns: 3
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 35
+    region: Form on Feedback # 16499688359979135
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--radioButtonGroup
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: FEEDBACK_RATING # 16505447484979141
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10030_FEEDBACK ==========================
+  id: 16507184562979143
+  identification: 
+    name: P10030_FEEDBACK
+    type: Textarea
+
+  label: 
+    label: Feedback
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 40
+    region: Form on Feedback # 16499688359979135
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    width: 64
+    height: 4
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: SUBMIT ======================================
+  id: 16499884682979135
+  identification: 
+    button-name: SUBMIT
+    label: Submit Feedback
+
+  layout: 
+    sequence: 10
+    region: Buttons # 16499774633979135
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--gapLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CANCEL ======================================
+  id: 16502899493979138
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: Buttons # 16499774633979135
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: false
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 16502949975979138
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 16502899493979138
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 16503636160979139
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 16502949975979138
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: At least One Feedback Required ==========
+  id: 16510030371979147
+  identification: 
+    name: At least One Feedback Required
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Function Body (returning Boolean)
+    language: PL/SQL
+    pl/sql-function-body: |
+      if :P10030_FEEDBACK is null and :P10030_RATING is null then
+          return false;
+      else
+          return true;
+      end if;
+    always-execute: false
+
+  error: 
+    error-message: Please provide feedback or your experience.
+    display-location: Inline in Notification
+
+processes: 
+- # ====== Process: Queue AI Hub Feedback ======================
+  id: 1050600000
+  identification: 
+    name: Queue AI Hub Feedback
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      
+      begin
+        gs_ai_hub_feedback.queue_latest_feedback(
+          p_application_id => :APP_ID,
+          p_page_id        => :P10030_PAGE_ID,
+          p_created_by     => :APP_USER,
+          p_feedback       => :P10030_FEEDBACK
+        );
+      exception
+        when others then
+          null;
+      end;
+      
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request = Value
+    value: SUBMIT
+
+- # ====== Process: Submit Feedback ============================
+  id: 16507522493979144
+  identification: 
+    name: Submit Feedback
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: APEX_UTIL
+    procedure-or-function: SUBMIT_FEEDBACK
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Feedback Submitted
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: SUBMIT # 16499884682979135
+
+  parameters: 
+  - # ====== Parameter: p_comment ================================
+    id: 16508063213979145
+    identification: 
+      name: p_comment
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P10030_FEEDBACK
+
+    advanced: 
+      display-sequence: 1
+
+  - # ====== Parameter: p_application_id =========================
+    id: 16508569164979145
+    identification: 
+      name: p_application_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: APP_ID
+
+    advanced: 
+      display-sequence: 2
+
+  - # ====== Parameter: p_page_id ================================
+    id: 16509062581979146
+    identification: 
+      name: p_page_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P10030_PAGE_ID
+
+    advanced: 
+      display-sequence: 3
+
+  - # ====== Parameter: p_rating =================================
+    id: 16509547175979146
+    identification: 
+      name: p_rating
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: true
+
+    value: 
+      type: Item
+      item: P10030_RATING
+
+    advanced: 
+      display-sequence: 4
+
+branches: 
+- # ====== Branch: Go To Page 10031 ============================
+  id: 16510409557979147
+  identification: 
+    name: Go To Page 10031
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:10031:&APP_SESSION.::&DEBUG.:RP::'
+      page: 10031 # Feedback Submitted
+      clear-cache: RP
+

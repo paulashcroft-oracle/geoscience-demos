@@ -1,0 +1,126 @@
+{
+  "manifestVersion": "1.0",
+  "generatedFor": "source-only Boreholes AI Hub onboarding preparation",
+  "generatedAt": "2026-07-27",
+  "sourceEnvironment": "ASHCROFT AI Hub (read-only evidence)",
+  "targetEnvironment": "AIDEMODB AI Hub (not yet activated)",
+  "targetProject": {
+    "projectKey": "boreholes",
+    "projectName": "Boreholes Demo",
+    "clientKey": "codex-boreholes",
+    "credentialProfile": "Shared Credentials/api-keys/ai-hub/codex-boreholes-aidemodb.local.json",
+    "credentialProfileState": "guarded locally; not activated or tested against target"
+  },
+  "application": {
+    "workspace": "GEOSCIENCE",
+    "schema": "GEOSCIENCE",
+    "applicationId": 105,
+    "applicationName": "Boreholes Demo",
+    "applicationAlias": "BOREHOLES-DEMO",
+    "builderUrl": "https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/apex/app-builder/home?fb_flow_id=105&f4000_p1_flow=105",
+    "runtimeUrl": "https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/geoscience/boreholes-demo/home",
+    "reportsRuntimeUrl": "https://ge1c42bf10ae843-aidemodb.adb.ap-sydney-1.oraclecloudapps.com/ords/r/geoscience/boreholes-demo/boreholes-reports"
+  },
+  "sourceTaskBundles": [
+    {
+      "sourceTaskKey": "geoscience-003",
+      "targetTaskKey": "boreholes-001",
+      "targetTitle": "Boreholes Demo App",
+      "intendedStatus": "COMPLETE",
+      "bundleEvidence": ".local/geoscience-003-bundle-before-completion.local.json",
+      "bundleSha256": "887054A032873EDD8DD07355A0514E1CDC8406805D53D88AB32B7DB54DCEE39A",
+      "capturedAt": "2026-06-16T05:44:48Z",
+      "latestCapturedVersion": 4,
+      "capturedThreadEntries": 4,
+      "capturedArtifacts": 0,
+      "capturedApprovals": 0,
+      "capturedSourceFeedback": 0,
+      "capturedDesignReferences": 0,
+      "idempotencyKey": "ashcroft:geoscience-003:to:aidemodb:boreholes-001"
+    },
+    {
+      "sourceTaskKey": "geoscience-008",
+      "targetTaskKey": "boreholes-002",
+      "targetTitle": "Make Boreholes AI responsive",
+      "intendedStatus": "COMPLETE",
+      "bundleEvidence": ".local/geoscience-008-bundle-final.local.json",
+      "bundleSha256": "F6BC226BD3F92E09F77B1856BBFD5ACD944E4D715DC12587FEFFC96BF71B777D",
+      "capturedAt": "2026-06-16T10:49:55Z",
+      "latestCapturedVersion": 3,
+      "capturedThreadEntries": 4,
+      "capturedArtifacts": 1,
+      "artifactReferences": ["hub-task-artifact://521/image.png"],
+      "capturedApprovals": 0,
+      "capturedSourceFeedback": 0,
+      "capturedDesignReferences": 0,
+      "idempotencyKey": "ashcroft:geoscience-008:to:aidemodb:boreholes-002"
+    },
+    {
+      "sourceTaskKey": "geoscience-009",
+      "targetTaskKey": "boreholes-003",
+      "targetTitle": "Boreholes Ask AI on Enter key",
+      "intendedStatus": "COMPLETE",
+      "bundleEvidence": ".local/geoscience-009-bundle-final.local.json",
+      "bundleSha256": "B8B7C43E23C9D391EE23A15D60E3F9A3C1FEE8E344FF36C54831AE2E51DFCBE2",
+      "capturedAt": "2026-06-16T10:49:55Z",
+      "latestCapturedVersion": 3,
+      "capturedThreadEntries": 4,
+      "capturedArtifacts": 0,
+      "capturedApprovals": 0,
+      "capturedSourceFeedback": 0,
+      "capturedDesignReferences": 0,
+      "idempotencyKey": "ashcroft:geoscience-009:to:aidemodb:boreholes-003"
+    },
+    {
+      "sourceTaskKey": "geoscience-015",
+      "targetTaskKey": "boreholes-004",
+      "targetTitle": "Enable Boreholes assistant feedback tools",
+      "intendedStatus": "BLOCKED",
+      "sourceEvidence": "ASHCROFT task-list inventory captured 2026-07-27; no local full bundle available",
+      "scopeSplit": "Boreholes-only feedback/assistant scope split from the shared Geoscience task; app 104 remains outside this target task.",
+      "blocker": "AIDEMODB AI Hub control-plane deployment, target credential activation, and endpoint reachability are pending.",
+      "idempotencyKey": "ashcroft:geoscience-015:split:aidemodb:boreholes-004"
+    }
+  ],
+  "systemDesign": {
+    "targetDesignKey": "boreholes-system-design",
+    "targetTitle": "Boreholes Demo System Design",
+    "scope": "App 105 map/report/refresh/AI/feedback integration; excludes app 104 and shared workspace ownership except where a dependency is explicit.",
+    "sourceEvidence": [
+      "database/009_create_boreholes_refresh_agent_api.sql",
+      "database/010_create_boreholes_page_api.sql",
+      "docs/verification/20260616-boreholes-refresh-ai-assistant.md",
+      "docs/verification/20260616-boreholes-assistant-left-panel-enter.md",
+      "docs/verification/20260617-boreholes-reports-native-map.md"
+    ],
+    "idempotencyKey": "aidemodb:boreholes:design:boreholes-system-design"
+  },
+  "sourceEvidence": {
+    "apexCheckpoint": {
+      "path": "exports/apex/f105_boreholes_demo_20260617_reports_native_map_readable",
+      "format": "expanded readable application export with f105.sql",
+      "fileCount": 35,
+      "f105SqlSha256": "C49402989589D997FCA970F8A41EFF6811185679A538D458B6B99B33D08CB775",
+      "commit": "59be22da4852a11f62f2b5705f55f93bcb0c816f",
+      "workspaceCredentialComponentsPresent": false,
+      "generativeAiServiceComponentsPresent": false,
+      "currentLiveExport": false,
+      "provisionalReason": "Current authenticated app-105 source export could not be captured in this source-only slice; use the dated clean checkpoint until access is restored."
+    },
+    "databaseAssets": [
+      {"path": "database/009_create_boreholes_refresh_agent_api.sql", "sha256": "6C813C4016AD8F6FD75BAC5B93CE7B9E42E4F4E9F1945FFF33000D63EA355911"},
+      {"path": "database/010_create_boreholes_page_api.sql", "sha256": "5F9B10429C7A540A8EEEF51895540741A00B67C0D26A2342F03A08307154A839"}
+    ],
+    "verificationEvidence": [
+      {"path": "docs/verification/20260617-boreholes-reports-native-map.md", "sha256": "655447E8BDBA1D4DE3080E4E089042665B20C0A1C13D0DC31F05F5F072C4DE46"},
+      {"path": "docs/verification/20260616-boreholes-assistant-left-panel-enter.md"},
+      {"path": "docs/verification/20260616-boreholes-refresh-ai-assistant.md"}
+    ]
+  },
+  "activationPreconditions": [
+    "AIHUB DATA quota repaired and control-plane replay completed by the AI Hub master task.",
+    "The AIDEMODB project row and codex-boreholes client are activated by the master task using ignored activation material.",
+    "The guarded AIDEMODB profile is used; no ASHCROFT key is reused, copied, renamed, or repointed.",
+    "Catalog, OpenAPI, bootstrap, triage, task, thread, and design mutation checks return 200 before any target lifecycle claim."
+  ]
+}
