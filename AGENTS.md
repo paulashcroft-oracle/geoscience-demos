@@ -17,6 +17,10 @@ This file contains only project-specific additions or explicit exceptions. Share
 - Current generated APEX applications in AIDEMODB workspace `GEOSCIENCE`:
   - App 104 `Geoscience Demos`, alias `GEOSCIENCE-DEMOS`, native APEX Feedback enabled, generated with an Account Requests interactive report and form, passwordless `DEMO_USER` login button on page 9999, AI Hub feedback queue hook on page 10030 with source task `geoscience-001`.
   - App 105 `Boreholes Demo`, alias `BOREHOLES-DEMO`, native APEX Feedback enabled, generated with a Boreholes interactive report and form, passwordless `DEMO_USER` login button on page 9999, AI Hub feedback queue hook on page 10030 with source task `geoscience-003`.
+- AIDEMODB AI Hub uses application-based project keys inside this shared workspace/repository:
+  - App `104` uses project `geoscience`, client `codex-geoscience`, and `codex-geoscience-aidemodb.local.json`.
+  - App `105` uses project `boreholes`, client `codex-boreholes`, and `codex-boreholes-aidemodb.local.json`.
+  Do not use the app `104`/`geoscience` credential for Boreholes tasks, designs, feedback, or Kanban writes.
 - The Geoscience demo-user model follows AFMA: page 9999 remains public, normal APEX account login remains available for `CODEX` and administrators, and the `Continue as Demo User` button submits `DEMO_USER_LOGIN` to call `apex_authentication.post_login` as `DEMO_USER` before redirecting to page 1. Keep this path in any new Geoscience APEX app unless Paul Ashcroft explicitly asks for a different entry model.
 - The Geoscience feedback model follows the shared AI Hub/GovernMate pattern in queue-first form: native APEX Feedback is the user capture surface; `GS_AI_HUB_FEEDBACK_FORWARDS` stores replayable AI Hub source-feedback payloads, idempotency keys, source app/page/user context, and task provenance; live forwarding requires an approved endpoint credential outside Git.
 - Before changing either application, follow the shared APEX export and Git checkpoint rules in the parent `AGENTS.md`.
@@ -24,4 +28,6 @@ This file contains only project-specific additions or explicit exceptions. Share
 ## Project Credential References
 
 - `Shared Credentials\logins\afma-geoscience-demo-user.local.json`
-- `Shared Credentials\api-keys\ai-hub\codex-geoscience.local.json`
+- `Shared Credentials\api-keys\ai-hub\codex-geoscience-aidemodb.local.json` — AIDEMODB app `104` / AI Hub project `geoscience`
+- `Shared Credentials\api-keys\ai-hub\codex-boreholes-aidemodb.local.json` — AIDEMODB app `105` / AI Hub project `boreholes`
+- `Shared Credentials\api-keys\ai-hub\codex-geoscience.local.json` — legacy ASHCROFT source only; never use or repoint it for AIDEMODB
