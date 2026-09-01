@@ -27,7 +27,7 @@ This file contains only project-specific additions or explicit exceptions. Share
 
 ## Project Credential References
 
-- `Shared Credentials\logins\afma-geoscience-demo-user.local.json`
-- `Shared Credentials\api-keys\ai-hub\codex-geoscience-aidemodb.local.json` — AIDEMODB app `104` / AI Hub project `geoscience`
-- `Shared Credentials\api-keys\ai-hub\codex-boreholes-aidemodb.local.json` — AIDEMODB app `105` / AI Hub project `boreholes`
-- `Shared Credentials\api-keys\ai-hub\codex-geoscience.local.json` — legacy ASHCROFT source only; never use or repoint it for AIDEMODB
+- `Shared Credentials/logins/afma-geoscience-demo-user.local.json`
+- `Shared Credentials/api-keys/ai-hub/codex-geoscience-aidemodb.local.json` — AIDEMODB app `104` / AI Hub project `geoscience`
+- `Shared Credentials/api-keys/ai-hub/codex-boreholes-aidemodb.local.json` — AIDEMODB app `105` / AI Hub project `boreholes`
+- `Shared Credentials/api-keys/ai-hub/codex-geoscience.local.json` — legacy ASHCROFT source only; never use or repoint it for AIDEMODB
