@@ -4,7 +4,14 @@ Geoscience Demos is the Geoscience project shell under the shared Codex Projects
 
 This repository will hold replayable source assets for Geoscience APEX demo applications using Oracle Autonomous Database 26ai and APEX in AIDEMODB.
 
-AI Hub project key: `geoscience`
+The shared `GEOSCIENCE` workspace/repository hosts two application-level AI Hub projects:
+
+| APEX application | AI Hub project | Codex client | Shared credential filename |
+| --- | --- | --- | --- |
+| `104` — Geoscience Demos | `geoscience` | `codex-geoscience` | `codex-geoscience-aidemodb.local.json` |
+| `105` — Boreholes Demo | `boreholes` | `codex-boreholes` | `codex-boreholes-aidemodb.local.json` |
+
+Credential references resolve under `Shared Credentials\api-keys\ai-hub` in the parent workspace. Select the application first, then validate its AIDEMODB profile; the Geoscience credential must not be used for Boreholes tasks, designs, feedback, or Kanban writes. See `AGENTS.md` for the current project boundary.
 
 ## Live AIDEMODB Workspace
 
