@@ -19,7 +19,7 @@ target exists until the AI Hub control plane is deployed and queried.
 | GitHub repository | `geoscience-demos` | `geoscience-demos` | Shared repo is retained. |
 | GitHub URL | `https://github.com/paulashcroft-oracle/geoscience-demos` | Same | Environment-neutral source ownership. |
 | GitHub account/status | `Paul Ashcroft Oracle GitHub` / historical `PLANNED` | Current repository/account metadata | Refresh status from Git; do not preserve stale `PLANNED`. |
-| Local folder | `C:\Users\pashcrof\Documents\Codex Projects\Geoscience Demos` | Same | Shared local repository, distinct AI Hub project. |
+| Local folder | Dell mirror: `C:\Users\pashcrof\Documents\Codex Projects\Geoscience Demos` | `/Users/ashcroft/Documents/Codex Projects/Geoscience Demos` | Shared GitHub repository, machine-native working copies. |
 | APEX workspace | `GEOSCIENCE` | `GEOSCIENCE` | Same shared application workspace. |
 | APEX schema | `GEOSCIENCE` | `GEOSCIENCE` | Same parsing schema. |
 | APEX application ID | Historical shared row was app 104 | `105` | Deliberate correction to Boreholes app. |
