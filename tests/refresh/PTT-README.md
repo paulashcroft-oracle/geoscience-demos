@@ -10,6 +10,8 @@ First verify private temporary table creation and anonymous PL/SQL access in the
 
 Capture the current `sys_context('USERENV','DB_UNIQUE_NAME')` in the approved AIDEMODB / GEOSCIENCE SQL Workshop session; do not infer it from the database display name. The generated block also requires current schema `GEOSCIENCE`, active APEX workspace `GEOSCIENCE`, and `v('APP_USER') = 'CODEX'`. It does not require `USER = GEOSCIENCE`: the observed SQL Workshop session user is the ORDS gateway.
 
+The workspace guard compares documented [`APEX_CUSTOM_AUTH.GET_SECURITY_GROUP_ID`](https://docs.oracle.com/en/database/oracle/apex/26.1/aeapi/GET_SECURITY_GROUP_ID-Function.html) with `APEX_UTIL.FIND_SECURITY_GROUP_ID('GEOSCIENCE')`; the getter does not belong to `APEX_UTIL`. Both missing values fail closed using different sentinels.
+
 ```powershell
 $inspection = & .\tests\refresh\New-BoreholesRefreshPttHarness.ps1
 $inspection | Format-List

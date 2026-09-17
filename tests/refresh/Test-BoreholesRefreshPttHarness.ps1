@@ -27,7 +27,9 @@ Check ([regex]::Matches($sql, "execute immediate 'create private temporary table
 Check ([regex]::Matches($sql, 'on commit drop definition').Count -eq 3) 'All tables must be transaction scoped.'
 Check ($sql -notmatch '(?im)^\s*/\s*$|create or replace|create global|preserve definition') 'No installer, persistent object or script separators.'
 Check ($sql.Contains("CURRENT_SCHEMA'), '?') <> 'GEOSCIENCE'") -and $sql.Contains("DB_UNIQUE_NAME'), '?') <> 'OFFLINE_TEST'")) 'Exact schema/database guards required.'
-Check ($sql.Contains("nvl(v('APP_USER'), '?') <> 'CODEX'") -and $sql.Contains("find_security_group_id('GEOSCIENCE')")) 'CODEX and workspace guards required.'
+Check ($sql.Contains("nvl(v('APP_USER'), '?') <> 'CODEX'") -and
+    $sql.Contains("nvl(apex_custom_auth.get_security_group_id, -1) <> nvl(apex_util.find_security_group_id('GEOSCIENCE'), -2)")) 'CODEX and supported workspace guards required.'
+Check ($sql -notmatch '(?i)apex_util\.get_security_group_id') 'Nonexistent APEX_UTIL getter must not recur.'
 Check ($sql.IndexOf('Fixture nonce already exists') -lt $sql.IndexOf("execute immediate 'create")) 'Collision refusal must precede every creation.'
 Check ($sql.Contains('if false then raise_application_error(-20995')) 'Default must run fixtures rather than inject failure.'
 $failureSql = & $generator @arguments -FailAfterFirstTable
@@ -72,4 +74,7 @@ foreach ($forbidden in @(
 }
 $oldFixture = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'fixture-regression.sql'))
 Check ($oldFixture.Contains("if user <> 'BOREHOLES_TEST' or sys_context('USERENV', 'CURRENT_SCHEMA') <> 'BOREHOLES_TEST' then")) 'Original isolated-owner guard must remain intact.'
+$probe = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'Test-BoreholesPttCapability.sql'))
+Check ($probe.Contains("nvl(apex_custom_auth.get_security_group_id, -1) <> nvl(apex_util.find_security_group_id('GEOSCIENCE'), -2)") -and
+    $probe -notmatch '(?i)apex_util\.get_security_group_id') 'Capability probe must use the supported workspace getter too.'
 "PASS: $script:checks offline generator, extraction and refusal checks. No Oracle execution performed."

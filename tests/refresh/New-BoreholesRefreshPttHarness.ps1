@@ -152,7 +152,7 @@ begin
   -- All checks precede CREATE; do not change these to run in another target.
   if nvl(sys_context('USERENV', 'CURRENT_SCHEMA'), '?') <> 'GEOSCIENCE'
      or nvl(sys_context('USERENV', 'DB_UNIQUE_NAME'), '?') <> '__DB_UNIQUE__'
-     or nvl(apex_util.get_security_group_id, -1) <> nvl(apex_util.find_security_group_id('GEOSCIENCE'), -2)
+     or nvl(apex_custom_auth.get_security_group_id, -1) <> nvl(apex_util.find_security_group_id('GEOSCIENCE'), -2)
      or nvl(v('APP_USER'), '?') <> 'CODEX' then
     raise_application_error(-20991, 'Requires the inspected database and CODEX GEOSCIENCE SQL Workshop context.');
   end if;
