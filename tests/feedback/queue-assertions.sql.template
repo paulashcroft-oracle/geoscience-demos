@@ -1,0 +1,116 @@
+declare
+  l_checks pls_integer := 0;
+  l_count number;
+  l_id number;
+  l_key varchar2(255);
+  l_status varchar2(30);
+  l_error varchar2(4000);
+  l_payload clob;
+  l_payload_text varchar2(32767);
+  l_before clob;
+  l_after clob;
+  l_values apex_json.t_values;
+  l_code number;
+  l_flow pls_integer := 0;
+  l_caller_output boolean := false;
+__DECLARATIONS__
+
+  procedure assert_true(p_ok boolean, p_label varchar2) is
+  begin
+    if p_ok is null or not p_ok then
+      dbms_output.put_line('Queue fixture assertion failed: ' || p_label);
+      raise_application_error(-20990, p_label);
+    end if;
+    l_checks := l_checks + 1;
+  end;
+
+  procedure free_copy(p_lob in out nocopy clob) is
+  begin
+    if dbms_lob.istemporary(p_lob) = 1 then dbms_lob.freetemporary(p_lob); end if;
+    p_lob := null;
+  end;
+
+  procedure snapshot(p_snapshot in out nocopy clob) is
+  begin
+    free_copy(p_snapshot);
+    select json_arrayagg(json_object(q.* returning clob) order by feedback_id returning clob)
+      into p_snapshot from __TABLE__ q;
+  end;
+begin
+  -- Private temporary tables cannot store LOBs. Fail before queue DML unless
+  -- the complete synthetic payload fits the two substituted JSON column types.
+  l_payload := build_endpoint_payload(10501);
+  assert_true(dbms_lob.getlength(l_payload) between 1 and 4000, 'synthetic payload bounded before DML');
+  l_payload_text := dbms_lob.substr(l_payload, 4000, 1);
+  assert_true(length2(l_payload_text) = dbms_lob.getlength(l_payload)
+    and lengthb(l_payload_text) <= 4000, 'complete synthetic payload fits without clipping');
+  free_copy(l_payload);
+
+  queue_latest_feedback(105, 5, 'fixture_user', 'BH08 synthetic feedback');
+  select count(*) into l_count from __TABLE__;
+  assert_true(l_count = 1, 'one initial queue row');
+  select feedback_id, idempotency_key, forward_status, payload_json
+    into l_id, l_key, l_status, l_payload_text from __TABLE__;
+  assert_true(l_id = 10501, 'most recent matching synthetic feedback selected');
+  assert_true(l_key = 'geoscience-apex-feedback-10501' and l_status = 'PENDING', 'pending identity preserved');
+  apex_json.parse(p_values => l_values, p_source => l_payload_text);
+  assert_true(apex_json.get_varchar2('source.projectKey', p_values => l_values) = 'boreholes', 'queue payload project');
+  assert_true(apex_json.get_varchar2('source.taskKey', p_values => l_values) = 'geoscience-003', 'historical task provenance');
+  l_payload_text := null;
+
+  queue_latest_feedback(105, 5, 'FIXTURE_USER', 'BH08 synthetic feedback');
+  select count(*) into l_count from __TABLE__;
+  assert_true(l_count = 1, 'repeated same feedback updates one row');
+  select feedback_id, idempotency_key, forward_status into l_id, l_key, l_status from __TABLE__;
+  assert_true(l_id = 10501 and l_key = 'geoscience-apex-feedback-10501' and l_status = 'PENDING',
+    'repeated queue identity unchanged');
+
+  mark_failed(10501, 'Synthetic queue failure');
+  select forward_status, error_message into l_status, l_error from __TABLE__;
+  assert_true(l_status = 'FAILED' and l_error = 'Synthetic queue failure', 'existing failure state');
+  queue_latest_feedback(105, 5, 'FIXTURE_USER', 'BH08 synthetic feedback');
+  select count(*), max(forward_status), max(error_message) into l_count, l_status, l_error from __TABLE__;
+  assert_true(l_count = 1 and l_status = 'PENDING' and l_error is null, 'retry updates existing failure row');
+  snapshot(l_before);
+
+  -- Missing lookup must preserve caller flow and unrelated APEX_JSON ownership.
+  apex_json.initialize_clob_output;
+  l_caller_output := true;
+  apex_json.open_object; apex_json.write('marker', 'caller-owned'); apex_json.close_object;
+  queue_latest_feedback(105, 999, 'FIXTURE_USER', 'BH08 synthetic feedback');
+  l_flow := l_flow + 1;
+  assert_true(l_flow = 1, 'missing-match diagnostic is nonfatal');
+  apex_json.parse(p_values => l_values, p_source => apex_json.get_clob_output);
+  assert_true(apex_json.get_varchar2('marker', p_values => l_values) = 'caller-owned', 'caller JSON preserved');
+  apex_json.free_output;
+  l_caller_output := false;
+  snapshot(l_after);
+  assert_true(dbms_lob.compare(l_before, l_after) = 0, 'missing match leaves queue unchanged');
+
+  -- The lookup matches app106; the unchanged payload builder rejects that app.
+  -- Its -20000 must propagate through the package's NO_DATA_FOUND-only handler.
+  begin
+    queue_latest_feedback(106, 5, 'FIXTURE_USER', 'BH08 synthetic feedback');
+  exception when others then l_code := sqlcode;
+  end;
+  assert_true(l_code = -20000, 'other package errors still propagate');
+  snapshot(l_after);
+  assert_true(dbms_lob.compare(l_before, l_after) = 0, 'failed builder leaves queue unchanged');
+
+  -- Exact reviewed page10030 handler; no APEX_DEBUG stub or forced debug failure.
+  begin
+    queue_latest_feedback(106, 5, 'FIXTURE_USER', 'BH08 synthetic feedback');
+__PAGE_HANDLER__
+  end;
+  l_flow := l_flow + 1;
+  assert_true(l_flow = 2, 'page diagnostic preserves caller flow after queue error');
+  snapshot(l_after);
+  assert_true(dbms_lob.compare(l_before, l_after) = 0, 'page handler leaves queue unchanged');
+  free_copy(l_before); free_copy(l_after);
+  dbms_output.put_line('Feedback queue assertions=' || l_checks || '; repeatedRows=1; callerFlowSteps=' || l_flow);
+exception
+  when others then
+    if l_caller_output then apex_json.free_output; end if;
+    free_copy(l_payload); free_copy(l_before); free_copy(l_after);
+    raise;
+end;

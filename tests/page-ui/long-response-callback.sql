@@ -3,6 +3,7 @@
 -- Test fixture only: never retain this branch in canonical APEX exports.
 declare
   c_nonce constant varchar2(80) := 'BH_LONG_5AA6E506ED0E4414B62A9B0D5E2AA8C3';
+  c_fallback_nonce constant varchar2(80) := 'BH_FALLBACK_D61D8013299446B08CA23F098F144708';
   l_fixture_json clob;
 
   procedure free_clob(p_value in out nocopy clob) is
@@ -74,6 +75,15 @@ begin
     l_fixture_json := fixture_json;
     apex_util.prn(p_clob => l_fixture_json, p_escape => false);
     free_clob(l_fixture_json);
+  elsif apex_application.g_x01 = c_fallback_nonce and v('APP_USER') in ('CODEX', 'DEMO_USER') then
+    apex_util.prn(
+      p_clob => gs_borehole_agent_api.ask_json(
+        p_user_prompt       => 'explain count by state',
+        p_service_static_id => 'BH_TEST_NO_PROVIDER',
+        p_screen_context    => null
+      ),
+      p_escape => false
+    );
   else
     apex_util.prn(
       p_clob => gs_borehole_agent_api.ask_json(
