@@ -176,6 +176,18 @@ begin
         l_source_task_key    varchar2(128);
         l_payload            clob;
         l_details            clob;
+        l_output_initialized boolean := false;
+
+        procedure release_failed_output is
+        begin
+          if l_output_initialized then
+            apex_json.free_output;
+            l_output_initialized := false;
+          end if;
+          if l_payload is not null and dbms_lob.istemporary(l_payload) = 1 then
+            dbms_lob.freetemporary(l_payload);
+          end if;
+        end release_failed_output;
       begin
         select feedback_id,
                application_id,
@@ -230,6 +242,7 @@ begin
           '- Replay with Idempotency-Key ' || idempotency_key(l_feedback_id) || '.';
 
         apex_json.initialize_clob_output;
+        l_output_initialized := true;
         apex_json.open_object;
         apex_json.write('idempotencyKey', idempotency_key(l_feedback_id));
         apex_json.write('title', short_text(nvl(l_page_name, 'Geoscience') || ': ' || l_feedback, 160));
@@ -259,16 +272,19 @@ begin
         apex_json.write('submittedAt', to_char(l_created_on, 'YYYY-MM-DD"T"HH24:MI:SS TZH:TZM'));
         apex_json.close_object;
         apex_json.close_object;
-        l_payload := apex_json.get_clob_output;
+        -- The returned locator must survive APEX_JSON freeing its own output.
+        dbms_lob.createtemporary(l_payload, true, dbms_lob.call);
+        dbms_lob.append(l_payload, apex_json.get_clob_output);
         apex_json.free_output;
+        l_output_initialized := false;
 
         return l_payload;
       exception
         when no_data_found then
-          apex_json.free_output;
+          release_failed_output;
           raise_application_error(-20000, 'Geoscience APEX feedback not found: ' || p_feedback_id);
         when others then
-          apex_json.free_output;
+          release_failed_output;
           raise;
       end build_endpoint_payload;
 
@@ -422,7 +438,19 @@ begin
         mark_pending(l_feedback_id);
       exception
         when no_data_found then
-          null;
+          -- Preserve native feedback capture; make a missed queue match visible
+          -- to administrators without logging feedback text or user identity.
+          begin
+            apex_debug.error(
+              p_message => 'GS_FEEDBACK_QUEUE_NOT_FOUND app=%s page=%s code=%s feedback=%s',
+              p0 => to_char(p_application_id),
+              p1 => to_char(p_page_id),
+              p2 => to_char(sqlcode),
+              p3 => to_char(l_feedback_id)
+            );
+          exception
+            when others then null; -- Diagnostics must not reject native feedback.
+          end;
       end queue_latest_feedback;
     end gs_ai_hub_feedback;
   ~';

@@ -1,0 +1,77 @@
+declare
+  l_first clob;
+  l_second clob;
+  l_missing clob;
+  l_values apex_json.t_values;
+  l_checks pls_integer := 0;
+  l_missing_code number;
+  l_caller_output boolean := false;
+__DECLARATIONS__
+
+  procedure assert_true(p_condition boolean, p_label varchar2) is
+  begin
+    if p_condition is null or not p_condition then
+      raise_application_error(-20990, p_label);
+    end if;
+    l_checks := l_checks + 1;
+  end;
+
+  procedure free_payload(p_payload in out nocopy clob) is
+  begin
+    if p_payload is not null and dbms_lob.istemporary(p_payload) = 1 then
+      dbms_lob.freetemporary(p_payload);
+    end if;
+  end;
+begin
+  l_first := build_endpoint_payload(10401);
+  assert_true(dbms_lob.istemporary(l_first) = 1 and dbms_lob.getlength(l_first) > 0,
+              '104 returned independent temporary CLOB');
+  l_second := build_endpoint_payload(10501);
+  assert_true(dbms_lob.istemporary(l_second) = 1 and dbms_lob.getlength(l_second) > 0,
+              '105 returned independent temporary CLOB');
+
+  -- Read the first locator after both builders have freed their APEX_JSON output.
+  apex_json.parse(p_values => l_values, p_source => l_first);
+  assert_true(apex_json.get_varchar2('source.projectKey', p_values => l_values) = 'geoscience', '104 project');
+  assert_true(apex_json.get_varchar2('source.applicationId', p_values => l_values) = '104', '104 application');
+  assert_true(apex_json.get_varchar2('source.taskKey', p_values => l_values) = 'geoscience-001', '104 historical task');
+  assert_true(apex_json.get_varchar2('idempotencyKey', p_values => l_values) = 'geoscience-apex-feedback-10401', '104 idempotency');
+  assert_true(apex_json.get_varchar2('feedback', p_values => l_values) = 'Saved "quoted" <feedback> ' || chr(38) || ' text.', '104 complete escaped feedback');
+
+  apex_json.parse(p_values => l_values, p_source => l_second);
+  assert_true(apex_json.get_varchar2('source.projectKey', p_values => l_values) = 'boreholes', '105 project');
+  assert_true(apex_json.get_varchar2('source.applicationId', p_values => l_values) = '105', '105 application');
+  assert_true(apex_json.get_varchar2('source.taskKey', p_values => l_values) = 'geoscience-003', '105 historical task');
+  assert_true(apex_json.get_varchar2('idempotencyKey', p_values => l_values) = 'geoscience-apex-feedback-10501', '105 idempotency');
+  assert_true(apex_json.get_varchar2('source.recordId', p_values => l_values) = '10501', '105 original record');
+  assert_true(apex_json.get_varchar2('feedback', p_values => l_values) = 'Saved "quoted" <feedback> ' || chr(38) || ' text.', '105 complete escaped feedback');
+
+  -- A missing feedback row fails before this function initializes output.
+  -- Its exception cleanup must not free another caller's active JSON buffer.
+  apex_json.initialize_clob_output;
+  l_caller_output := true;
+  apex_json.open_object;
+  apex_json.write('marker', 'caller-owned');
+  apex_json.close_object;
+  begin
+    l_missing := build_endpoint_payload(-1);
+  exception when others then l_missing_code := sqlcode;
+  end;
+  assert_true(l_missing_code = -20000, 'missing feedback keeps expected error');
+  apex_json.parse(p_values => l_values, p_source => apex_json.get_clob_output);
+  assert_true(apex_json.get_varchar2('marker', p_values => l_values) = 'caller-owned', 'missing row preserves caller output');
+  apex_json.free_output;
+  l_caller_output := false;
+  assert_true(dbms_lob.getlength(l_first) > 0 and dbms_lob.getlength(l_second) > 0,
+              'prior payloads survive subsequent error cleanup');
+  free_payload(l_first);
+  free_payload(l_second);
+  dbms_output.put_line('PASS: ' || l_checks || ' feedback payload assertions; no queue DML or forwarding.');
+exception
+  when others then
+    if l_caller_output then apex_json.free_output; end if;
+    free_payload(l_first);
+    free_payload(l_second);
+    free_payload(l_missing);
+    raise;
+end;
