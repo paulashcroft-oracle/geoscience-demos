@@ -240,7 +240,12 @@ begin
         apex_json.write('details', l_details);
         apex_json.open_object('source');
         apex_json.write('system', 'Geoscience Demos');
-        apex_json.write('projectKey', c_project_key);
+        -- Application identity is distinct from the shared workspace/repository.
+        -- Preserve the historical task key and feedback idempotency key below.
+        apex_json.write('projectKey', case l_application_id
+          when 105 then 'boreholes'
+          else c_project_key
+        end);
         apex_json.write('taskKey', l_source_task_key);
         apex_json.write('application', nvl(l_application_name, 'Geoscience'));
         apex_json.write('applicationId', to_char(l_application_id));

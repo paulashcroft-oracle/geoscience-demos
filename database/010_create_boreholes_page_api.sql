@@ -128,7 +128,7 @@ create or replace package body gs_borehole_page_api as
     append_line(p_html, '.gs-bore-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:1rem 0}.gs-bore-stats div{border:1px solid var(--line);border-radius:8px;background:#fff;padding:.85rem}.gs-bore-stats span{display:block;color:var(--muted);font-size:.74rem;text-transform:uppercase;font-weight:850}.gs-bore-stats strong{display:block;font-size:1.55rem;margin-top:.2rem}.gs-bore-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1rem}.gs-bore-panel{border:1px solid var(--line);border-radius:8px;background:#fff;padding:1rem}.gs-bore-panel h3{margin:.1rem 0 .45rem;font-size:1rem}');
     append_line(p_html, '.gs-bore-map{border:1px solid var(--line);border-radius:8px;background:linear-gradient(180deg,#f8fbfd,#eef6f1);min-height:20rem;overflow:hidden}.gs-bore-map svg{width:100%;height:auto;display:block}.gs-bore-layout{display:grid;grid-template-columns:minmax(18rem,.42fr) minmax(0,1fr);gap:1rem}.gs-bore-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.gs-bore-form label{display:grid;gap:.25rem;font-weight:800;font-size:.82rem;color:var(--muted)}.gs-bore-form input,.gs-bore-form select,.gs-bore-form textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:.55rem .65rem;font:inherit;background:#fff}.gs-bore-form textarea{min-height:7rem;resize:vertical}.gs-bore-span{grid-column:1/-1}');
     append_line(p_html, '.gs-bore-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px}.gs-bore-table{width:100%;border-collapse:collapse;background:#fff}.gs-bore-table th,.gs-bore-table td{padding:.55rem .65rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.gs-bore-table th{font-size:.75rem;text-transform:uppercase;color:var(--muted);background:#f7fafc}.gs-bore-chip{display:inline-flex;border-radius:999px;background:#eef7f1;color:#276749;padding:.12rem .45rem;font-weight:850;font-size:.75rem}.gs-bore-thread{border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:1rem;min-height:24rem;max-height:58vh;overflow:auto}.gs-bore-msg{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1rem;margin-bottom:.8rem}.gs-bore-msg--user{background:#eaf4fb;margin-left:auto;max-width:80%}.gs-bore-label{font-size:.72rem;text-transform:uppercase;font-weight:850;color:var(--muted);margin-bottom:.35rem}.gs-bore-answer-head{border-left:4px solid var(--green);padding-left:.8rem}.gs-bore-mode{display:inline-flex;border-radius:999px;background:#edf7ff;color:#1d5d86;padding:.15rem .5rem;font-weight:850;font-size:.72rem;text-transform:uppercase}');
-    append_line(p_html, '.gs-bore--assistant{height:calc(100dvh - 7.5rem);min-height:38rem;display:flex;flex-direction:column;gap:.8rem}.gs-bore--assistant h1{flex:0 0 auto}.gs-bore-ai-shell{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(18rem,22rem) minmax(0,1fr);gap:1rem;align-items:stretch}.gs-bore-ai-panel{min-height:0;display:flex;flex-direction:column}.gs-bore-ai-panel .gs-bore-form{height:100%;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:auto minmax(18rem,1fr) auto auto;gap:.7rem}.gs-bore-chat-main{display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0}.gs-bore-ai-panel .gs-bore-form label,.gs-bore-ai-panel .gs-bore-form textarea{min-height:0}.gs-bore-ai-panel .gs-bore-chat-main textarea{height:100%;min-height:18rem;resize:none}.gs-bore-ai-panel select,.gs-bore-ai-panel input,.gs-bore-ai-panel textarea{font-size:.95rem}.gs-bore-ai-actions{display:flex;gap:.6rem;align-items:center}.gs-bore-ai-actions .gs-bore-btn{flex:1 1 8rem;justify-content:center;min-height:2.75rem}.gs-bore-file-input{position:absolute;inline-size:1px;block-size:1px;opacity:0;pointer-events:none}.gs-bore-attachments{display:grid;gap:.35rem}.gs-bore-attachments[hidden]{display:none}.gs-bore-attachment{display:flex;align-items:center;justify-content:space-between;gap:.5rem;border:1px solid var(--line);border-radius:8px;background:#f7fafc;padding:.42rem .55rem;color:var(--muted);font-size:.8rem}.gs-bore-attachment strong{color:var(--ink)}.gs-bore-attachment button{border:0;background:transparent;color:var(--blue);font-weight:800}.gs-bore-ai-output{min-height:0;display:flex}.gs-bore-ai-output .gs-bore-thread{flex:1 1 auto;height:100%;max-height:none;min-height:0}.gs-bore-ai-output .gs-bore-msg{max-width:100%}.gs-bore-ai-output .gs-bore-viz-grid{grid-template-columns:repeat(auto-fit,minmax(min(14rem,100%),1fr))}.gs-bore-ai-output .gs-bore-viz-metrics{grid-template-columns:repeat(auto-fit,minmax(min(7rem,100%),1fr))}');
+    append_line(p_html, '.gs-bore--assistant{height:calc(100dvh - 7.5rem);min-height:38rem;display:flex;flex-direction:column;gap:.8rem}.gs-bore--assistant h1{flex:0 0 auto}.gs-bore-ai-shell{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(18rem,22rem) minmax(0,1fr);gap:1rem;align-items:stretch}.gs-bore-ai-panel{min-height:0;display:flex;flex-direction:column}.gs-bore-ai-panel .gs-bore-form{height:100%;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:auto minmax(18rem,1fr) auto auto;gap:.7rem}.gs-bore-chat-main{display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0}.gs-bore-ai-panel .gs-bore-form label,.gs-bore-ai-panel .gs-bore-form textarea{min-height:0}.gs-bore-ai-panel .gs-bore-chat-main textarea{height:100%;min-height:18rem;resize:none}.gs-bore-ai-panel select,.gs-bore-ai-panel input,.gs-bore-ai-panel textarea{font-size:.95rem}.gs-bore-ai-actions{display:flex;gap:.6rem;align-items:center}.gs-bore-ai-actions .gs-bore-btn{flex:1 1 8rem;justify-content:center;min-height:2.75rem}.gs-bore-ai-output{min-height:0;display:flex}.gs-bore-ai-output .gs-bore-thread{flex:1 1 auto;height:100%;max-height:none;min-height:0}.gs-bore-ai-output .gs-bore-msg{max-width:100%}.gs-bore-ai-output .gs-bore-viz-grid{grid-template-columns:repeat(auto-fit,minmax(min(14rem,100%),1fr))}.gs-bore-ai-output .gs-bore-viz-metrics{grid-template-columns:repeat(auto-fit,minmax(min(7rem,100%),1fr))}');
     append_line(p_html, 'body.gs-bore-assistant-page .t-Body-contentInner,body.gs-bore-assistant-page .t-Region,body.gs-bore-assistant-page .t-Region-bodyWrap,body.gs-bore-assistant-page .t-Region-body{width:100%;max-width:none}.gs-bore--assistant,.gs-bore-ai-shell,.gs-bore-ai-output{width:100%;max-width:none;box-sizing:border-box}.gs-bore-ai-output,.gs-bore-ai-output .gs-bore-thread,.gs-bore-ai-output .gs-bore-msg,.gs-bore-ai-output .gs-bore-viz,.gs-bore-ai-output .gs-bore-viz>*,.gs-bore-ai-output .gs-bore-viz-hero,.gs-bore-ai-output .gs-bore-viz-grid,.gs-bore-ai-output .gs-bore-viz-card,.gs-bore-ai-output .gs-bore-viz-metrics,.gs-bore-ai-output .gs-bore-viz-metric,.gs-bore-ai-output .gs-bore-narrative{min-width:0;max-width:100%;width:100%;box-sizing:border-box;overflow-wrap:anywhere}.gs-bore-ai-output .gs-bore-thread{overflow-y:auto;overflow-x:hidden}.gs-bore-ai-output svg{max-width:100%;height:auto}.gs-bore-ai-output pre,.gs-bore-ai-output code{white-space:pre-wrap;overflow-wrap:anywhere}');
     append_line(p_html, '@media(max-width:800px){.gs-bore-hero,.gs-bore-layout,.gs-bore-grid,.gs-bore-stats{grid-template-columns:1fr}.gs-bore-form{grid-template-columns:1fr}.gs-bore-msg--user{max-width:100%}}');
     append_line(p_html, '@media(max-width:1024px){.gs-bore--assistant{height:auto;min-height:0}.gs-bore-ai-shell{grid-template-columns:1fr}.gs-bore-ai-panel .gs-bore-form{min-height:34rem}.gs-bore-ai-output .gs-bore-thread{min-height:32rem}.gs-bore-ai-output .gs-bore-viz-grid,.gs-bore-ai-output .gs-bore-viz-metrics{grid-template-columns:1fr}}');
@@ -193,16 +193,28 @@ create or replace package body gs_borehole_page_api as
   end append_map;
 
   procedure append_model_options(p_html in out nocopy clob) is
+    l_found boolean := false;
   begin
     for r in (
       select remote_server_static_id, remote_server_name
         from apex_workspace_ai_services
        where provider_type_code = 'OCI_GENAI'
-       order by case when remote_server_static_id = 'google_gemini_2_5_pro' then 0 else 1 end,
+         and remote_server_static_id in (
+           'google_gemini_2_5_pro', 'google_gemini_2_5_flash', 'cohere_command_a_03_2025'
+         )
+       order by case remote_server_static_id
+                  when 'google_gemini_2_5_pro' then 0
+                  when 'google_gemini_2_5_flash' then 1
+                  else 2
+                end,
                 lower(remote_server_name)
     ) loop
+      l_found := true;
       append_line(p_html, '<option value="' || ha(r.remote_server_static_id) || '">' || h(r.remote_server_name) || '</option>');
     end loop;
+    if not l_found then
+      append_line(p_html, '<option value="">AI unavailable - data answers only</option>');
+    end if;
   end append_model_options;
 
   function home_html return clob is
@@ -223,7 +235,7 @@ create or replace package body gs_borehole_page_api as
     append_line(l_html, '<div class="gs-bore-actions"><a class="gs-bore-btn gs-bore-btn--primary" href="' || page_url(2) || '">Explore Data</a><a class="gs-bore-btn" href="' || page_url(6) || '">Reports</a><a class="gs-bore-btn" href="' || page_url(4) || '">Refresh Data</a><a class="gs-bore-btn" href="' || page_url(5) || '">Ask AI</a></div>');
     append_line(l_html, '<div class="gs-bore-stats"><div><span>Total boreholes</span><strong>' || to_char(l_total, 'FM999G999G999') || '</strong></div><div><span>WFS refreshed</span><strong>' || to_char(l_wfs, 'FM999G999G999') || '</strong></div><div><span>Last refresh</span><strong>' || h(coalesce(l_last_refresh, 'Pending')) || '</strong></div></div></div>');
     append_map(l_html);
-    append_line(l_html, '</section><section class="gs-bore-grid"><article class="gs-bore-panel"><h3>Real source</h3><p>Uses `https://services.ga.gov.au/gis/boreholes/ows` with feature type `bh:Boreholes` and GeoJSON output.</p></article><article class="gs-bore-panel"><h3>Refreshable area</h3><p>Authorized users can refresh by longitude/latitude bounding box and retain provenance for source URL, request URL, row count, and errors.</p></article><article class="gs-bore-panel"><h3>AI grounded</h3><p>The assistant sees loaded borehole rows, refresh provenance, current screen/pasted context, and falls back to deterministic reports if AI is unavailable.</p></article></section></div>');
+    append_line(l_html, '</section><section class="gs-bore-grid"><article class="gs-bore-panel"><h3>Real source</h3><p>Uses `https://services.ga.gov.au/gis/boreholes/ows` with feature type `bh:Boreholes` and GeoJSON output.</p></article><article class="gs-bore-panel"><h3>Refreshable area</h3><p>Authorized users can refresh by longitude/latitude bounding box and retain provenance for source URL, request URL, row count, and errors.</p></article><article class="gs-bore-panel"><h3>AI grounded</h3><p>The assistant sees loaded borehole rows, refresh provenance, pasted text, and falls back to deterministic reports if AI is unavailable.</p></article></section></div>');
     return l_html;
   end home_html;
 
@@ -256,13 +268,66 @@ create or replace package body gs_borehole_page_api as
     append_line(l_html, '<div class="gs-bore"><h1>Refresh Data</h1>');
     append_css(l_html);
     append_line(l_html, '<p>Refresh boreholes from the Geoscience Australia Boreholes WFS source, feature type <code>bh:Boreholes</code>. The default area matches the first live Tanami/central Australia slice used for verification.</p>');
-    append_line(l_html, '<div class="gs-bore-layout"><section class="gs-bore-panel"><div class="gs-bore-form" id="gsBoreRefreshForm"><label>Min longitude<input id="gsMinLon" type="number" step="0.000001" value="129"></label><label>Min latitude<input id="gsMinLat" type="number" step="0.000001" value="-24"></label><label>Max longitude<input id="gsMaxLon" type="number" step="0.000001" value="139"></label><label>Max latitude<input id="gsMaxLat" type="number" step="0.000001" value="-17"></label><label>Limit<input id="gsLimit" type="number" min="1" max="10000" value="250"></label><div class="gs-bore-span"><button class="gs-bore-btn gs-bore-btn--primary" type="button" id="gsRunRefresh">Run GA WFS Refresh</button></div></div><div id="gsRefreshResult" style="margin-top:1rem"></div></section>');
-    append_line(l_html, '<section class="gs-bore-panel"><h2>Recent Refresh Runs</h2><div class="gs-bore-table-wrap"><table class="gs-bore-table"><thead><tr><th>Run</th><th>Status</th><th>Rows</th><th>BBOX</th><th>Finished</th></tr></thead><tbody>');
+    append_line(l_html, '<div class="gs-bore-layout"><section class="gs-bore-panel"><div class="gs-bore-form" id="gsBoreRefreshForm"><label>Min longitude<input id="gsMinLon" type="number" step="0.000001" value="129"></label><label>Min latitude<input id="gsMinLat" type="number" step="0.000001" value="-24"></label><label>Max longitude<input id="gsMaxLon" type="number" step="0.000001" value="139"></label><label>Max latitude<input id="gsMaxLat" type="number" step="0.000001" value="-17"></label><label>Limit<input id="gsLimit" type="number" min="1" max="10000" value="250"></label><div class="gs-bore-span"><button class="gs-bore-btn gs-bore-btn--primary" type="button" id="gsRunRefresh">Run GA WFS Refresh</button></div></div><div id="gsRefreshResult" role="status" aria-live="polite" aria-atomic="true" style="margin-top:1rem"></div></section>');
+    append_line(l_html, '<section class="gs-bore-panel"><h2>Recent Refresh Runs</h2><p>History as of this page load. <a href="' || page_url(4) || '">Reload run history</a>.</p><div class="gs-bore-table-wrap"><table class="gs-bore-table"><thead><tr><th>Run</th><th>Status</th><th>Rows</th><th>BBOX</th><th>Finished</th></tr></thead><tbody>');
     for r in (select refresh_run_id, status_code, rows_loaded, bbox_text, finished_at from gs_data_refresh_runs order by refresh_run_id desc fetch first 8 rows only) loop
       append_line(l_html, '<tr><td>' || r.refresh_run_id || '</td><td><span class="gs-bore-chip">' || h(r.status_code) || '</span></td><td>' || r.rows_loaded || '</td><td>' || h(r.bbox_text) || '</td><td>' || h(to_char(r.finished_at, 'YYYY-MM-DD HH24:MI')) || '</td></tr>');
     end loop;
     append_line(l_html, '</tbody></table></div></section></div>');
-    append_line(l_html, '<script>(function(){var b=document.getElementById("gsRunRefresh"),out=document.getElementById("gsRefreshResult"),defaultLabel="Run GA WFS Refresh";function esc(v){return String(v==null?"":v).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}function setBusy(isBusy,label){b.disabled=!!isBusy;b.classList.toggle("is-loading",!!isBusy);b.textContent=label||defaultLabel;b.setAttribute("aria-busy",isBusy?"true":"false");}if(!b){return;}b.addEventListener("click",function(){var bbox=[gsMinLon.value,gsMinLat.value,gsMaxLon.value,gsMaxLat.value].join(",");setBusy(true,"Refreshing GA WFS...");out.innerHTML="<div class=\"gs-bore-status gs-bore-status--working\"><strong>Refreshing boreholes from Geoscience Australia WFS...</strong><div>BBOX: <code>"+esc(bbox)+"</code></div><div>Limit: <code>"+esc(gsLimit.value)+"</code></div></div>";apex.server.process("GS_BOREHOLES_REFRESH",{x01:gsMinLon.value,x02:gsMinLat.value,x03:gsMaxLon.value,x04:gsMaxLat.value,x05:gsLimit.value},{dataType:"json"}).then(function(r){out.innerHTML=r.success?"<div class=\"gs-bore-status gs-bore-status--success\"><strong>Refresh complete.</strong><div>Run "+esc(r.refreshRunId)+" loaded "+esc(r.rowsLoaded||"0")+" rows.</div><code>"+esc(r.requestUrl||"")+"</code></div>":"<div class=\"gs-bore-status gs-bore-status--error\"><strong>Refresh failed.</strong><div>"+esc(r.message||"Unknown error")+"</div></div>";if(r&&r.success){setTimeout(function(){location.reload();},1200);}}).catch(function(e){out.innerHTML="<div class=\"gs-bore-status gs-bore-status--error\"><strong>Refresh failed.</strong><div>"+esc(e&&e.message?e.message:e)+"</div></div>";}).finally(function(){setBusy(false,defaultLabel);});});})();</script></div>');
+    append_line(l_html, q'~<script>
+(function(){
+  var b = document.getElementById("gsRunRefresh");
+  var out = document.getElementById("gsRefreshResult");
+  var fields = ["gsMinLon", "gsMinLat", "gsMaxLon", "gsMaxLat", "gsLimit"].map(function(id){ return document.getElementById(id); });
+  if (!b || !out || fields.some(function(field){ return !field; })) { return; }
+  function esc(v){
+    return String(v == null ? "" : v).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function setBusy(busy){
+    b.disabled = busy;
+    fields.forEach(function(field){ field.disabled = busy; });
+    b.classList.toggle("is-loading", busy);
+    b.textContent = busy ? "Refreshing GA WFS..." : "Run GA WFS Refresh";
+    b.setAttribute("aria-busy", busy ? "true" : "false");
+  }
+  function details(r){
+    var parts = [];
+    if (r.refreshRunId != null) { parts.push("Run: " + r.refreshRunId); }
+    var timings = r.timingMs || {};
+    [["download", "Download"], ["load", "Database load"], ["total", "Server total"]].forEach(function(item){
+      var value = timings[item[0]];
+      if (typeof value === "number" && isFinite(value) && value >= 0) { parts.push(item[1] + ": " + value + " ms"); }
+    });
+    return parts.length ? "<p>" + esc(parts.join(" | ")) + "</p>" : "";
+  }
+  function failure(message, r){
+    out.innerHTML = "<div class=\"gs-bore-status gs-bore-status--error\"><strong>Refresh failed.</strong><p>" + esc(message || "No response returned.") + "</p>" + details(r || {}) + "</div>";
+  }
+  b.addEventListener("click", function(){
+    if (b.disabled) { return; }
+    var values = fields.map(function(field){ return field.value; });
+    setBusy(true);
+    out.innerHTML = "<div class=\"gs-bore-status gs-bore-status--working\"><strong>Refreshing boreholes from Geoscience Australia WFS...</strong><div>BBOX: <code>" + esc(values.slice(0, 4).join(",")) + "</code></div><div>Limit: <code>" + esc(values[4]) + "</code></div></div>";
+    var req;
+    try {
+      req = apex.server.process("GS_BOREHOLES_REFRESH", {x01:values[0], x02:values[1], x03:values[2], x04:values[3], x05:values[4]}, {dataType:"json"});
+    } catch (e) {
+      failure((e && e.message) || "Request could not be started.");
+      setBusy(false);
+      return;
+    }
+    Promise.resolve(req).then(function(r){
+      if (!r || !r.success) { failure(r && r.message, r); return; }
+      var empty = r.emptyResult === true || r.rowsLoaded === 0;
+      out.innerHTML = "<div class=\"gs-bore-status gs-bore-status--success\"><strong>" + (empty ? "Refresh complete: no matching rows." : "Refresh complete.") + "</strong><p>Rows loaded: " + esc(r.rowsLoaded == null ? "not reported" : r.rowsLoaded) + "." + (empty ? " Existing data is unchanged." : "") + "</p>" + (r.message ? "<p>" + esc(r.message) + "</p>" : "") + details(r) + "<code>" + esc(r.requestUrl || "") + "</code></div>";
+    }).catch(function(e){
+      failure((e && e.message) || e || "Request failed.");
+    }).finally(function(){ setBusy(false); });
+  });
+})();
+</script></div>~');
     return l_html;
   end refresh_html;
 
@@ -295,14 +360,14 @@ create or replace package body gs_borehole_page_api as
     dbms_lob.createtemporary(l_html, true);
     append_line(l_html, '<div class="gs-bore gs-bore--assistant"><h1>AI Data Assistant</h1>');
     append_css(l_html);
-    append_line(l_html, '<div class="gs-bore-ai-shell"><section class="gs-bore-panel gs-bore-ai-panel"><div class="gs-bore-form"><label class="gs-bore-span">Service / AI model<select id="gsAiModel">');
+    append_line(l_html, '<div class="gs-bore-ai-shell"><section class="gs-bore-panel gs-bore-ai-panel"><div class="gs-bore-form"><label class="gs-bore-span">AI model for explanations<select id="gsAiModel">');
     append_model_options(l_html);
-    append_line(l_html, q'~</select></label><label class="gs-bore-span gs-bore-chat-main">Ask about boreholes<textarea id="gsAiPrompt" placeholder="Ask about borehole counts, maps, provinces, depth, reports, operators, pasted notes, or pasted images. Press Enter to ask; Shift+Enter adds a new line."></textarea></label><div class="gs-bore-span gs-bore-attachments" id="gsAiAttachmentList" hidden></div><div class="gs-bore-span gs-bore-ai-actions"><button class="gs-bore-btn gs-bore-btn--primary" id="gsAiAsk" type="button">Ask</button><label class="gs-bore-btn" for="gsAiFile">Insert File</label><input id="gsAiFile" class="gs-bore-file-input" type="file" accept="image/*,.txt,.csv,.json,.pdf" multiple></div></div></section><section class="gs-bore-ai-output"><div class="gs-bore-thread" id="gsAiThread"><div class="gs-bore-msg"><div class="gs-bore-label">Boreholes Agent</div><p>Ask questions grounded in the loaded borehole data. Pasted text is sent with the prompt, and pasted images or inserted files are captured as request attachment context.</p></div></div></section></div>~');
+    append_line(l_html, q'~</select></label><label class="gs-bore-span gs-bore-chat-main">Ask about boreholes<textarea id="gsAiPrompt" maxlength="3000" aria-describedby="gsAiHelp" placeholder="Ask a data question, or use summarize text: followed by your pasted text. Enter asks; Shift+Enter adds a new line."></textarea></label><p class="gs-bore-span" id="gsAiHelp">Each question is independent; previous questions and answers are not sent. Use the example formats alongside (up to 3,000 characters). Pasted text is supported; files and images are not analysed.</p><div class="gs-bore-span gs-bore-ai-actions"><button class="t-Button t-Button--hot gs-bore-btn gs-bore-btn--primary" id="gsAiAsk" type="button">Ask</button><span id="gsAiStatus" role="status" aria-live="polite" aria-atomic="true"></span></div></div></section><section class="gs-bore-ai-output" aria-label="Recent independent questions"><div class="gs-bore-thread" id="gsAiThread"><div class="gs-bore-msg"><div class="gs-bore-label">Boreholes Assistant</div><p>Ask a complete question about the loaded borehole data. Counts, charts and map links can be answered directly from the data; explanations may use the selected AI model. This page shows recent answers for reference, without conversation memory.</p><p>Try <code>count boreholes in NT</code>, <code>chart count by operator</code> or <code>top 5 longest boreholes</code>.</p><p>Exact filters use <code>operator "NAME"</code>, <code>purpose "VALUE"</code> or <code>ref "REFERENCE"</code>; replace the quoted text with a loaded value. For pasted text, start with <code>summarize text:</code> or <code>explain text:</code>, followed by a space and your text.</p></div></div></section></div>~');
     append_line(l_html, q'~<script>
 (function(){
   document.body.classList.add("gs-bore-assistant-page");
   function esc(v){
-    return String(v || "").replace(/[&<>"']/g, function(c){
+    return String(v == null ? "" : v).replace(/[&<>"']/g, function(c){
       return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
     });
   }
@@ -310,7 +375,7 @@ create or replace package body gs_borehole_page_api as
     var t = document.getElementById("gsAiThread");
     var d = document.createElement("div");
     d.className = "gs-bore-msg" + (k === "user" ? " gs-bore-msg--user" : "");
-    d.innerHTML = "<div class=\"gs-bore-label\">" + (k === "user" ? "You" : "Boreholes Agent") + "</div>" + html;
+    d.innerHTML = "<div class=\"gs-bore-label\">" + (k === "user" ? "You" : "Boreholes Assistant") + "</div>" + html;
     t.appendChild(d);
     t.scrollTop = t.scrollHeight;
     return d;
@@ -318,101 +383,67 @@ create or replace package body gs_borehole_page_api as
   function simpleMd(v){
     return "<p>" + esc(v).replace(/\n\n+/g, "</p><p>").replace(/\n/g, "<br>") + "</p>";
   }
-  function insertAtCursor(text){
-    var start = p.selectionStart || p.value.length;
-    var end = p.selectionEnd || p.value.length;
-    var before = p.value.slice(0, start);
-    var after = p.value.slice(end);
-    var prefix = before && !/\s$/.test(before) ? "\n" : "";
-    var suffix = after && !/^\s/.test(after) ? "\n" : "";
-    p.value = before + prefix + text + suffix + after;
-    var pos = (before + prefix + text + suffix).length;
-    p.setSelectionRange(pos, pos);
-    p.focus();
-  }
-  function renderAttachments(){
-    if (!list) { return; }
-    if (!attachments.length) {
-      list.hidden = true;
-      list.innerHTML = "";
-      return;
-    }
-    list.hidden = false;
-    list.innerHTML = attachments.map(function(a, i){
-      return "<div class=\"gs-bore-attachment\"><span><strong>" + esc(a.name) + "</strong> " +
-             esc(a.type || "unknown") + " " + esc(String(a.size || 0)) +
-             " bytes</span><button type=\"button\" data-remove=\"" + i + "\">Remove</button></div>";
-    }).join("");
-  }
-  function addAttachment(file, source, insertMarker){
-    if (!file) { return; }
-    var name = file.name || (source === "pasted image" ? "pasted-image" : "attachment");
-    attachments.push({name:name, type:file.type || "", size:file.size || 0, source:source});
-    if (insertMarker) {
-      insertAtCursor("[" + source + ": " + name + "]");
-    }
-    renderAttachments();
-  }
-  function attachmentContext(){
-    if (!attachments.length) { return ""; }
-    return attachments.map(function(a){
-      return a.source + " metadata: " + a.name + "; type " + (a.type || "unknown") +
-             "; bytes " + (a.size || 0) + ". Binary content was supplied through the prompt attachment workflow; this APEX text request includes attachment metadata and any pasted prompt text.";
-    }).join("\n");
-  }
-  function clearEntry(){
-    p.value = "";
-    attachments = [];
-    if (f) { f.value = ""; }
-    renderAttachments();
+  function setBusy(busy){
+    b.disabled = busy;
+    m.disabled = busy;
+    p.readOnly = busy;
+    b.classList.toggle("is-loading", busy);
+    b.setAttribute("aria-busy", busy ? "true" : "false");
+    b.textContent = busy ? "Answering..." : "Ask";
   }
   function finish(){
-    b.disabled = false;
+    setBusy(false);
     p.focus();
+  }
+  function responseDetails(r){
+    var details = [];
+    var timings = r.timings || {};
+    [["totalMs", "Server"], ["contextMs", "Context"], ["providerMs", "AI provider"], ["renderMs", "Response preparation"]].forEach(function(item){
+      var value = timings[item[0]];
+      if (typeof value === "number" && isFinite(value) && value >= 0) {
+        details.push(item[1] + ": " + value + " ms");
+      }
+    });
+    if (r.requestId) { details.push("Request: " + r.requestId); }
+    return details.length ? "<p class=\"gs-bore-response-details\">" + esc(details.join(" | ")) + "</p>" : "";
+  }
+  function showFailure(hold, message, r){
+    status.textContent = "Request failed. Your question is retained; try again.";
+    hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Assistant</div><div class=\"gs-bore-status gs-bore-status--error\"><strong>Request failed</strong><p>" + esc(message || "No response returned.") + "</p><p>Your question is retained so you can try again.</p></div>" + responseDetails(r || {});
   }
   function showResponse(hold, r){
     if (!r || !r.success) {
-      hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div><p>" + esc((r && r.message) || "No response returned.") + "</p>";
+      showFailure(hold, r && r.message, r);
       return;
     }
     var html = r.answerHtml || simpleMd(r.answerMarkdown || "");
-    if (r.selectedServiceName) {
-      html = "<p><strong>Model:</strong> " + esc(r.selectedServiceName) + " <span class=\"gs-bore-chip\">" + esc(r.mode) + "</span></p>" + html;
+    var fallback = r.mode === "DETERMINISTIC_FALLBACK";
+    var clarification = r.status === "CLARIFICATION_REQUIRED";
+    var modeLabel = clarification ? "More context needed" : r.mode === "APEX_AI" ? "AI explanation" : fallback ? "Data answer - AI unavailable" : r.mode === "DETERMINISTIC" ? "Data answer - no AI call" : "Answer (mode not reported)";
+    var summary = "<p><strong>" + esc(modeLabel) + "</strong>";
+    if (r.mode === "APEX_AI" && r.selectedServiceName) {
+      summary += "<br>Model used: " + esc(r.selectedServiceName);
     }
+    summary += "</p>";
+    if (fallback || r.aiError) {
+      summary += "<div class=\"gs-bore-status gs-bore-status--error\"><strong>AI explanation unavailable</strong><p>" + esc(r.aiError || "A data answer is shown instead.") + "</p><p>Your question is retained if you want to retry.</p></div>";
+    } else if (!clarification) {
+      p.value = "";
+    }
+    status.textContent = fallback || r.aiError ? "Data answer ready. AI unavailable; your question is retained." : clarification ? "More context needed. Your question is retained." : modeLabel + " ready.";
     if (r.supportingHtml) {
       html += "<details class=\"gs-bore-section\"><summary>Grounding details</summary>" + r.supportingHtml + "</details>";
     }
-    hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div>" + html;
+    hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Assistant</div>" + summary + html + responseDetails(r);
   }
 
   var b = document.getElementById("gsAiAsk");
   var p = document.getElementById("gsAiPrompt");
   var m = document.getElementById("gsAiModel");
-  var f = document.getElementById("gsAiFile");
-  var list = document.getElementById("gsAiAttachmentList");
-  var attachments = [];
-  if (!b || !p || !m) { return; }
-
-  list && list.addEventListener("click", function(e){
-    var ix = e.target && e.target.getAttribute("data-remove");
-    if (ix === null) { return; }
-    attachments.splice(Number(ix), 1);
-    renderAttachments();
-  });
-  p.addEventListener("paste", function(e){
-    var files = Array.prototype.slice.call((e.clipboardData && e.clipboardData.files) || []);
-    var imageFiles = files.filter(function(file){ return /^image\//.test(file.type || ""); });
-    if (!imageFiles.length) { return; }
-    e.preventDefault();
-    imageFiles.forEach(function(file){ addAttachment(file, "pasted image", true); });
-  });
-  f && f.addEventListener("change", function(){
-    Array.prototype.slice.call(f.files || []).forEach(function(file){
-      addAttachment(file, "inserted file", true);
-    });
-  });
+  var status = document.getElementById("gsAiStatus");
+  if (!b || !p || !m || !status) { return; }
   p.addEventListener("keydown", function(e){
-    if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+    if (e.key === "Enter" && !e.isComposing && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
       e.preventDefault();
       b.click();
     }
@@ -420,22 +451,28 @@ create or replace package body gs_borehole_page_api as
   b.addEventListener("click", function(){
     var q = p.value.trim();
     if (!q || b.disabled) { return; }
-    var ctx = attachmentContext();
-    add("user", "<p>" + esc(q) + "</p>");
-    clearEntry();
-    b.disabled = true;
-    var hold = add("agent", "<p>Thinking...</p>");
-    var req = apex.server.process("GS_BOREHOLES_AGENT_ASK", {x01:q, x02:m.value, x03:ctx}, {dataType:"json"});
+    add("user", simpleMd(q));
+    setBusy(true);
+    status.textContent = "Answering your question...";
+    var hold = add("agent", "<p>Answering your question...</p>");
+    var req;
+    try {
+      req = apex.server.process("GS_BOREHOLES_AGENT_ASK", {x01:q, x02:m.value}, {dataType:"json"});
+    } catch (e) {
+      showFailure(hold, (e && e.message) || "Request could not be started.");
+      finish();
+      return;
+    }
     if (req && typeof req.done === "function") {
       req.done(function(r){ showResponse(hold, r); })
-         .fail(function(jqXHR, textStatus, errorThrown){ hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div><p>" + esc(errorThrown || textStatus || "Request failed.") + "</p>"; })
+         .fail(function(jqXHR, textStatus, errorThrown){ showFailure(hold, errorThrown || textStatus || "Request failed."); })
          .always(finish);
     } else if (req && typeof req.then === "function") {
       Promise.resolve(req).then(function(r){ showResponse(hold, r); })
-        .catch(function(e){ hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div><p>" + esc((e && e.message) || e || "Request failed.") + "</p>"; })
+        .catch(function(e){ showFailure(hold, (e && e.message) || e || "Request failed."); })
         .finally(finish);
     } else {
-      hold.innerHTML = "<div class=\"gs-bore-label\">Boreholes Agent</div><p>Request could not be started.</p>";
+      showFailure(hold, "Request could not be started.");
       finish();
     }
   });
