@@ -71,6 +71,13 @@ test('UI advertises independent text questions and has no file attachment contro
   assert.doesNotMatch(source, /gsAiFile|gsAiAttachmentList|Binary content was supplied|attachmentContext/);
 });
 
+test('model selector uses the verified workspace service IDs and retains Pro first', () => {
+  const options = source.slice(source.indexOf('  procedure append_model_options'), source.indexOf('  end append_model_options;'));
+  assert.match(options, /'google_gemini_2_5_pro', 'google_gemini_2_5_flash', 'cohere-command-a-03-2025'/);
+  assert.match(options, /when 'google_gemini_2_5_pro' then 0/);
+  assert.doesNotMatch(options, /cohere_command_a_03_2025/);
+});
+
 test('one pending request prevents repeat submission and sends only the current text and model', () => {
   const pending = deferred();
   const f = fixture('assistant_html', () => pending);

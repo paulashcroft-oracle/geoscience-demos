@@ -978,7 +978,7 @@ create or replace package body gs_borehole_agent_api as
     l_id varchar2(255);
   begin
     if lower(trim(p_service_static_id)) not in
-       ('google_gemini_2_5_pro', 'google_gemini_2_5_flash', 'cohere_command_a_03_2025')
+       ('google_gemini_2_5_pro', 'google_gemini_2_5_flash', 'cohere-command-a-03-2025')
        or p_service_static_id is null then return null; end if;
     select remote_server_static_id into l_id from apex_workspace_ai_services
      where lower(remote_server_static_id) = lower(trim(p_service_static_id))

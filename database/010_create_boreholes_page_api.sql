@@ -200,7 +200,7 @@ create or replace package body gs_borehole_page_api as
         from apex_workspace_ai_services
        where provider_type_code = 'OCI_GENAI'
          and remote_server_static_id in (
-           'google_gemini_2_5_pro', 'google_gemini_2_5_flash', 'cohere_command_a_03_2025'
+           'google_gemini_2_5_pro', 'google_gemini_2_5_flash', 'cohere-command-a-03-2025'
          )
        order by case remote_server_static_id
                   when 'google_gemini_2_5_pro' then 0
