@@ -1,10 +1,11 @@
 -- Integration acceptance only: invokes the installed public refresh API.
 -- Expected extracted GS_BOREHOLE_REFRESH_API BODY SHA256 (20,445 UTF-8 bytes):
 -- 39c352c0728239794291865c1e844d4d31747a857a70eab7e6056d6ff7a44b42
--- Normalized USER_SOURCE: 20,270 bytes, SHA256
--- a43f90464c3276cbb1d8f796a707b8675407b79691029a5e3437d7fb94b47b2e
--- Normalization excludes CREATE OR REPLACE, removes CR, maps NBSP to space,
--- and trims trailing whitespace; compare complete ordered source lines.
+-- Verified SQL Scripts USER_SOURCE: 458 rows, 20,427 bytes, SHA256
+-- b539e67439d2b7f8b82fb24a999bb4798d7937fe802ce86172efc886ad619cac
+-- SQL Scripts changed canonical CR to ordinary space and retained LF.
+-- Comparison excludes CREATE OR REPLACE, maps displayed NBSP to space,
+-- and trims only final whitespace; compare complete ordered source lines.
 -- Root must first verify that installed source, the current SQL Commands page,
 -- baseline checkpoint and exclusive execution window. This block cannot attest
 -- that source hash or distinguish SQL Workshop from every APEX runtime session.
