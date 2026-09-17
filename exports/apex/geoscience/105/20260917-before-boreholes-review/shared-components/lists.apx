@@ -1,0 +1,520 @@
+list activity-reports (
+    name: Activity Reports
+    config {
+        buildOption: @feature-activity-reporting
+    }
+
+    entry application-error-log (
+        label: Application Error Log
+        icon {
+            imageIconCssClasses: fa-exclamation
+        }
+        layout {
+            sequence: 30
+        }
+        link {
+            target: {
+                page: 10022
+                clearCache: 10022
+            }
+        }
+        userDefinedAttributes {
+            1: Report of errors logged by this application
+        }
+    )
+
+    entry automations-log (
+        label: Automations Log
+        icon {
+            imageIconCssClasses: fa-gears
+        }
+        layout {
+            sequence: 60
+        }
+        link {
+            target: {
+                page: 10025
+                clearCache: 10025
+                action: resetRegions
+            }
+        }
+        userDefinedAttributes {
+            1: Report of automation executions and messages logged by this application
+        }
+        serverSideCondition {
+            type: rowsReturned
+            sqlQuery:
+                ```sql
+                select 1
+                from apex_appl_automations a, apex_automation_log l
+                where a.automation_id = l.automation_id
+                and l.application_id = :APP_ID
+                ```
+        }
+    )
+
+    entry dashboard (
+        label: Dashboard
+        icon {
+            imageIconCssClasses: fa-area-chart
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: {
+                page: 10020
+                clearCache: 10020
+            }
+        }
+        userDefinedAttributes {
+            1: View application activity metrics
+        }
+    )
+
+    entry page-performance (
+        label: Page Performance
+        icon {
+            imageIconCssClasses: fa-file-chart
+        }
+        layout {
+            sequence: 40
+        }
+        link {
+            target: {
+                page: 10023
+                clearCache: 10023
+            }
+        }
+        userDefinedAttributes {
+            1: Report of activity and performance by application page
+        }
+    )
+
+    entry page-views (
+        label: Page Views
+        icon {
+            imageIconCssClasses: fa-file-search
+        }
+        layout {
+            sequence: 50
+        }
+        link {
+            target: {
+                page: 10024
+                clearCache: 10024
+                action: resetRegions
+            }
+        }
+        userDefinedAttributes {
+            1: Report of each page view by user including date of access and elapsed time
+        }
+    )
+
+    entry top-users (
+        label: Top Users
+        icon {
+            imageIconCssClasses: fa-user-chart
+        }
+        layout {
+            sequence: 20
+        }
+        link {
+            target: {
+                page: 10021
+                clearCache: 10021
+            }
+        }
+        userDefinedAttributes {
+            1: Report of page views aggregated by user
+        }
+    )
+
+)
+
+list feedback (
+    name: Feedback
+    config {
+        buildOption: @feature-feedback
+    }
+
+    entry user-feedback (
+        label: User Feedback
+        icon {
+            imageIconCssClasses: fa-comment-o
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: {
+                page: 10033
+                clearCache: 10033
+            }
+        }
+        userDefinedAttributes {
+            1: Report of all feedback submitted by application users
+        }
+    )
+
+)
+
+list navigation-bar (
+    name: Navigation Bar
+
+    entry about (
+        label: About
+        icon {
+            imageIconCssClasses: fa-question-circle-o
+        }
+        layout {
+            sequence: 20
+        }
+        userDefinedAttributes {
+            2: icon-only
+        }
+        config {
+            buildOption: @feature-about-page
+        }
+    )
+
+    entry about-page (
+        label: About Page
+        icon {
+            imageIconCssClasses: fa-info-circle-o
+        }
+        layout {
+            sequence: 50
+            parentEntry: @about
+        }
+        link {
+            target: {
+                page: 10040
+                clearCache: 10040
+            }
+        }
+        config {
+            buildOption: @feature-about-page
+        }
+    )
+
+    entry app-user (
+        label: &APP_USER.
+        icon {
+            imageIconCssClasses: fa-user
+        }
+        layout {
+            sequence: 60
+        }
+        link {
+            target: {
+                type: url
+                url: #
+            }
+        }
+        userDefinedAttributes {
+            2: has-username
+        }
+    )
+
+    entry feedback (
+        label: Feedback
+        icon {
+            imageIconCssClasses: fa-comment-o
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: {
+                page: 10030
+                items: {
+                    P10030_PAGE_ID: &APP_PAGE_ID.
+                }
+                clearCache: 10030
+                action: resetPagination
+            }
+        }
+        userDefinedAttributes {
+            2: icon-only
+        }
+        serverSideCondition {
+            type: expression
+            plsqlExpression: apex_util.feedback_enabled
+        }
+        config {
+            buildOption: @feature-feedback
+        }
+    )
+
+    entry list_item (
+        label: ---
+        layout {
+            sequence: 40
+            parentEntry: @about
+        }
+        link {
+            target: {
+                type: url
+                url: separator
+            }
+        }
+    )
+
+    entry list_item-2 (
+        label: ---
+        layout {
+            sequence: 70
+            parentEntry: @app-user
+        }
+        link {
+            target: {
+                type: url
+                url: separator
+            }
+        }
+        serverSideCondition {
+            type: userIsAuthenticated
+        }
+    )
+
+    entry page-help (
+        label: Page Help
+        icon {
+            imageIconCssClasses: fa-question-circle-o
+        }
+        layout {
+            sequence: 30
+            parentEntry: @about
+        }
+        link {
+            target: {
+                page: 10041
+                items: {
+                    P10041_PAGE_ID: &APP_PAGE_ID.
+                }
+            }
+        }
+        userDefinedAttributes {
+            2: icon-only
+        }
+        config {
+            buildOption: @feature-about-page
+        }
+    )
+
+    entry sign-out (
+        label: Sign Out
+        icon {
+            imageIconCssClasses: fa-sign-out
+        }
+        layout {
+            sequence: 80
+            parentEntry: @app-user
+        }
+        link {
+            target: {
+                type: url
+                url: &LOGOUT_URL.
+            }
+        }
+        serverSideCondition {
+            type: userIsAuthenticated
+        }
+    )
+
+)
+
+list navigation-menu (
+    name: Navigation Menu
+
+    entry administration (
+        label: Administration
+        icon {
+            imageIconCssClasses: fa-user-wrench
+        }
+        layout {
+            sequence: 10000
+        }
+        link {
+            target: {
+                page: 10000
+            }
+        }
+        security {
+            authorizationScheme: @administration-rights
+        }
+    )
+
+    entry ask-ai (
+        label: Ask AI
+        icon {
+            imageIconCssClasses: fa-comments-o
+        }
+        layout {
+            sequence: 50
+        }
+        link {
+            target: {
+                page: 5
+            }
+        }
+    )
+
+    entry explore-data (
+        label: Explore Data
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 20
+        }
+        link {
+            target: {
+                page: 2
+            }
+        }
+    )
+
+    entry home (
+        label: Home
+        icon {
+            imageIconCssClasses: fa-home
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: {
+                page: 1
+            }
+        }
+    )
+
+    entry refresh-data (
+        label: Refresh Data
+        icon {
+            imageIconCssClasses: fa-refresh
+        }
+        layout {
+            sequence: 40
+        }
+        link {
+            target: {
+                page: 4
+            }
+        }
+    )
+
+    entry reports (
+        label: Reports
+        icon {
+            imageIconCssClasses: fa-bar-chart
+        }
+        layout {
+            sequence: 30
+        }
+        link {
+            target: {
+                page: 6
+            }
+        }
+    )
+
+)
+
+list page-navigation (
+    name: Page Navigation
+
+    entry ask-ai (
+        label: Ask AI
+        icon {
+            imageIconCssClasses: fa-comments-o
+        }
+        layout {
+            sequence: 40
+        }
+        link {
+            target: {
+                page: 5
+            }
+        }
+    )
+
+    entry explore-data (
+        label: Explore Data
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: {
+                page: 2
+            }
+        }
+    )
+
+    entry refresh-data (
+        label: Refresh Data
+        icon {
+            imageIconCssClasses: fa-refresh
+        }
+        layout {
+            sequence: 30
+        }
+        link {
+            target: {
+                page: 4
+            }
+        }
+    )
+
+    entry reports (
+        label: Reports
+        icon {
+            imageIconCssClasses: fa-bar-chart
+        }
+        layout {
+            sequence: 20
+        }
+        link {
+            target: {
+                page: 6
+            }
+        }
+    )
+
+)
+
+list user-interface (
+    name: User Interface
+    config {
+        buildOption: @feature-theme-style-selection
+    }
+
+    entry theme-style-selection (
+        label: Theme Style Selection
+        icon {
+            imageIconCssClasses: fa-paint-brush
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: {
+                page: 10010
+                clearCache: 10010
+            }
+        }
+        userDefinedAttributes {
+            1: Set the default application look and feel
+        }
+        config {
+            buildOption: @feature-theme-style-selection
+        }
+    )
+
+)
+

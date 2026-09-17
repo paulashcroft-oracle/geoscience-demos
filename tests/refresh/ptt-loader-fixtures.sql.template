@@ -1,0 +1,107 @@
+declare
+  l_run number := 0;
+  l_loaded number;
+  l_count number;
+  l_status varchar2(30);
+  l_name varchar2(240);
+  l_source_refresh timestamp with local time zone;
+  l_before_refresh timestamp with local time zone;
+  l_checks pls_integer := 0;
+__DECLARATIONS__
+
+  procedure check_true(p_condition boolean, p_label varchar2) is
+  begin
+    if p_condition is null or not p_condition then raise_application_error(-20990, p_label); end if;
+    l_checks := l_checks + 1;
+  end;
+
+  function feature(p_ref varchar2, p_name varchar2, p_depth varchar2 default '42',
+                   p_status varchar2 default 'ABANDONED') return varchar2 is
+  begin
+    return '{"type":"Feature","properties":{"ENO":"' || p_ref || '","NAME":"' || p_name ||
+      '","STATE":"NT","COLLAR_LAT_GDA94":-20,"COLLAR_LONG_GDA94":135,"BOREHOLELENGTH_M":' ||
+      p_depth || ',"STATUS":"' || p_status || '"}}';
+  end;
+
+  function collection(p_features varchar2) return clob is
+  begin
+    return '{"type":"FeatureCollection","features":[' || p_features || ']}';
+  end;
+
+  procedure seed_run is
+  begin
+    l_run := l_run + 1;
+    insert into __RUNS__ (refresh_run_id, source_id, status_code, rows_loaded, rows_rejected, started_at)
+      values (l_run, 1, 'STARTED', 0, 0, systimestamp);
+  end;
+
+  procedure check_failure(p_payload clob, p_label varchar2, p_rejected number default 0,
+                          p_limit number default 10) is
+    l_failed boolean := false;
+    l_rows number;
+    l_rejected number;
+    l_finished timestamp with local time zone;
+    l_message varchar2(2000);
+  begin
+    seed_run;
+    begin
+      l_loaded := apply_geojson(p_payload, l_run, p_limit);
+    exception when others then l_failed := true;
+    end;
+    check_true(l_failed, p_label || ': expected failure');
+    select status_code, rows_loaded, rows_rejected, finished_at, message
+      into l_status, l_rows, l_rejected, l_finished, l_message
+      from __RUNS__ where refresh_run_id = l_run;
+    check_true(l_status = 'FAILED' and l_rows = 0 and l_rejected = p_rejected
+      and l_finished is not null and l_message is not null, p_label || ': retained diagnostics');
+  end;
+begin
+  insert into __SOURCES__ (source_id, source_status, last_refresh_at, updated_at)
+    values (1, 'ACTIVE', systimestamp, systimestamp);
+  insert into __BOREHOLES__ (borehole_ref, borehole_name, status_code)
+    values ('CALLER', 'Caller work before loader', 'KNOWN');
+  check_failure('{broken', 'malformed JSON');
+  check_failure('{"type":"Other","features":[]}', 'wrong type');
+  check_failure('{"type":"FeatureCollection"}', 'missing array');
+  check_failure('{"type":"FeatureCollection","features":{}}', 'non-array');
+  check_failure(collection('{"type":"Feature","properties":null}'), 'missing properties', 1);
+  check_failure(collection('{"type":"Feature","properties":{"NAME":"No stable ID"}}'), 'missing identifier', 1);
+  seed_run;
+  l_loaded := apply_geojson(collection(null), l_run, 10);
+  select status_code into l_status from __RUNS__ where refresh_run_id = l_run;
+  check_true(l_loaded = 0 and l_status = 'SUCCESS', 'empty success');
+  select count(*) into l_count from __BOREHOLES__;
+  check_true(l_count = 1, 'empty response preserved caller row');
+  seed_run;
+  l_loaded := apply_geojson(collection(feature('EXISTING', 'Original')), l_run, 10);
+  select status_code into l_status from __BOREHOLES__ where borehole_ref = 'EXISTING';
+  check_true(l_loaded = 1 and l_status = 'HISTORIC', 'first insert status');
+  seed_run;
+  l_loaded := apply_geojson(collection(feature('EXISTING', 'Original')), l_run, 10);
+  select count(*), max(status_code) into l_count, l_status from __BOREHOLES__ where borehole_ref = 'EXISTING';
+  check_true(l_count = 1 and l_status = 'HISTORIC', 'repeat updates one row');
+  select last_refresh_at into l_before_refresh from __SOURCES__ where source_id = 1;
+  check_failure(collection(feature('EXISTING', 'Must roll back', '100', 'ACTIVE') || ',' ||
+    feature('BAD', 'Invalid', '-1')), 'mid-batch update failure', 1);
+  select borehole_name, status_code into l_name, l_status from __BOREHOLES__ where borehole_ref = 'EXISTING';
+  check_true(l_name = 'Original' and l_status = 'HISTORIC', 'earlier update rolled back');
+  check_failure(collection(feature('NEW', 'Must roll back') || ',' ||
+    feature('BAD', 'Invalid', '-1')), 'mid-batch insert failure', 1);
+  select count(*) into l_count from __BOREHOLES__ where borehole_ref in ('NEW', 'BAD');
+  check_true(l_count = 0, 'earlier insert rolled back');
+  check_failure(collection(feature('EXISTING', 'Over limit') || ',' || feature('BAD', 'Over limit')),
+    'count cap', 0, 1);
+  check_failure(collection(feature('BAD', 'Bad number', '"not-a-number"')), 'invalid number', 1);
+  check_failure(collection(feature('EXISTING', 'Must roll back') || ',' ||
+    replace(feature('BAD', 'Bad date'), '"STATUS"', '"DRILLSTARTDATE":"2026-02-31","STATUS"')),
+    'invalid date', 1);
+  check_failure(collection(feature('EXISTING', 'Must roll back') || ',' || feature('EXISTING', 'Repeated')),
+    'duplicate identifier', 1);
+  select borehole_name into l_name from __BOREHOLES__ where borehole_ref = 'EXISTING';
+  check_true(l_name = 'Original', 'remaining failures preserved existing row');
+  select last_refresh_at into l_source_refresh from __SOURCES__ where source_id = 1;
+  check_true(l_before_refresh = l_source_refresh, 'failures preserved source timestamp');
+  select count(*) into l_count from __BOREHOLES__ where borehole_ref = 'CALLER';
+  check_true(l_count = 1, 'rollback preserved unrelated caller work');
+  dbms_output.put_line('Loader assertions passed: ' || l_checks || '; PTT cleanup follows.');
+end;

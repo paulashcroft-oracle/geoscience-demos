@@ -1,0 +1,144 @@
+page 6 (
+    name: Reports
+    alias: BOREHOLES-REPORTS
+    title: Reports
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region interactive-boreholes-map (
+        name: Interactive Boreholes Map
+        type: map
+        layout {
+            sequence: 20
+            slot: body
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: gs-boreholes-reports-map
+        }
+        controls {
+            navigationBar: zoomOnly
+        }
+        initialPositionAndZoom {
+            type: staticValues
+            longitude: 134.5
+            latitude: -25.0
+            zoomLevel: 3
+        }
+        legend {
+            show: false
+        }
+        performance {
+            lazyLoading: false
+        }
+
+        layer boreholes (
+            name: Boreholes
+            label {
+                label: Boreholes
+            }
+            layout {
+                sequence: 10
+            }
+            source {
+                type: sqlQuery
+                sqlQuery:
+                    ```sql
+                    
+                    select borehole_id,
+                           borehole_ref,
+                           borehole_name,
+                           state_code,
+                           region_name,
+                           operator_name,
+                           depth_metres,
+                           apex_spatial.point(longitude, latitude) as geom,
+                           borehole_name as tooltip_text,
+                           borehole_name as info_title,
+                           state_code || ' | ' || region_name || ' | depth ' || nvl(to_char(depth_metres), 'n/a') || ' m' as info_body
+                      from gs_boreholes
+                     where latitude is not null
+                       and longitude is not null
+                    
+                    ```
+            }
+            columnMapping {
+                geometryColumn: GEOM
+                primaryKeyColumn: BOREHOLE_ID
+            }
+            pointObjects {
+                shape: CIRCLE
+                shapeScale: 0.9
+            }
+            appearance {
+                fillColor: #1d6fa5
+                fillOpacity: .85
+                strokeColor: #ffffff
+                strokeWidth: 1
+            }
+            pointClustering {
+                enable: true
+            }
+            tooltip {
+                column: TOOLTIP_TEXT
+            }
+            infoWindow {
+                titleColumn: INFO_TITLE
+                bodyColumn: INFO_BODY
+            }
+        )
+
+    )
+
+    region reports-cards (
+        name: Reports Cards
+        type: dynamicContent
+        source {
+            plsqlFunctionBody: return gs_borehole_page_api.reports_html;
+        }
+        layout {
+            sequence: 30
+            slot: body
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: gs-boreholes-reports-cards
+        }
+    )
+
+    region reports-intro (
+        name: Reports Intro
+        type: dynamicContent
+        source {
+            plsqlFunctionBody: return gs_borehole_page_api.reports_intro_html;
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: gs-boreholes-reports-intro
+        }
+    )
+
+)
+

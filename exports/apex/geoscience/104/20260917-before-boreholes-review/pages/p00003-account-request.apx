@@ -1,0 +1,638 @@
+page 3 (
+    name: Account Request
+    alias: ACCOUNT-REQUEST
+    title: Account Request
+    appearance {
+        pageMode: modalDialog
+        dialogTemplate: @/drawer
+        templateOptions: [
+            #DEFAULT#
+            js-dialog-class-t-Drawer--pullOutEnd
+        ]
+    }
+    dialog {
+        chained: false
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region account-request (
+        name: Account Request
+        type: form
+        source {
+            location: localDatabase
+            tableName: GS_ACCOUNT_REQUESTS
+        }
+        layout {
+            sequence: 10
+            slot: contentBody
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        edit {
+            enabled: true
+            allowedOperations: [
+                add
+                update
+                delete
+            ]
+        }
+    )
+
+    region buttons (
+        name: Buttons
+        type: staticContent
+        layout {
+            sequence: 20
+            slot: dialogFooter
+        }
+        appearance {
+            template: @/buttons-container
+            templateOptions: #DEFAULT#
+        }
+        settings {
+            outputAs: text
+        }
+    )
+
+    pageItem P3_AI_SUMMARY (
+        type: textarea
+        label {
+            label: Ai Summary
+            alignment: right
+        }
+        layout {
+            sequence: 90
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 60
+            height: 4
+        }
+        validation {
+            maxLength: 2000
+        }
+        source {
+            formRegion: @account-request
+            column: AI_SUMMARY
+            dataType: varchar2
+        }
+    )
+
+    pageItem P3_BUSINESS_REASON (
+        type: textarea
+        label {
+            label: Business Reason
+            alignment: right
+        }
+        layout {
+            sequence: 80
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 60
+            height: 4
+        }
+        validation {
+            maxLength: 2000
+        }
+        source {
+            formRegion: @account-request
+            column: BUSINESS_REASON
+            dataType: varchar2
+        }
+    )
+
+    pageItem P3_COMPLETED_AT (
+        type: datePicker
+        label {
+            label: Completed At
+            alignment: right
+        }
+        layout {
+            sequence: 110
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            maxLength: 255
+        }
+        source {
+            formRegion: @account-request
+            column: COMPLETED_AT
+            dataType: timestampWithLocalTimeZone
+        }
+    )
+
+    pageItem P3_CREATED_AT (
+        type: datePicker
+        label {
+            label: Created At
+            alignment: right
+        }
+        layout {
+            sequence: 120
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            valueRequired: true
+            maxLength: 255
+        }
+        source {
+            formRegion: @account-request
+            column: CREATED_AT
+            dataType: timestampWithLocalTimeZone
+        }
+    )
+
+    pageItem P3_PERSON_ID (
+        type: selectList
+        label {
+            label: Person
+            alignment: right
+        }
+        lov {
+            type: sharedComponent
+            lov: @gs-people-display-name
+        }
+        layout {
+            sequence: 30
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required-floating
+            templateOptions: #DEFAULT#
+            height: 1
+        }
+        validation {
+            valueRequired: true
+        }
+        source {
+            formRegion: @account-request
+            column: PERSON_ID
+            dataType: number
+        }
+    )
+
+    pageItem P3_REQUESTED_AT (
+        type: datePicker
+        label {
+            label: Requested At
+            alignment: right
+        }
+        layout {
+            sequence: 60
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            valueRequired: true
+            maxLength: 255
+        }
+        source {
+            formRegion: @account-request
+            column: REQUESTED_AT
+            dataType: timestampWithLocalTimeZone
+        }
+    )
+
+    pageItem P3_REQUESTED_BY (
+        type: textField
+        label {
+            label: Requested By
+            alignment: right
+        }
+        layout {
+            sequence: 50
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            valueRequired: true
+            maxLength: 255
+        }
+        source {
+            formRegion: @account-request
+            column: REQUESTED_BY
+            dataType: varchar2
+        }
+    )
+
+    pageItem P3_REQUEST_ID (
+        type: hidden
+        layout {
+            sequence: 10
+            region: @account-request
+            slot: regionBody
+        }
+        source {
+            formRegion: @account-request
+            column: REQUEST_ID
+            dataType: number
+            queryOnly: true
+            primaryKey: true
+        }
+        security {
+            sessionStateProtection: checksumRequiredSessionLevel
+        }
+    )
+
+    pageItem P3_REQUEST_NUMBER (
+        type: textField
+        label {
+            label: Request Number
+            alignment: right
+        }
+        layout {
+            sequence: 20
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            valueRequired: true
+            maxLength: 40
+        }
+        source {
+            formRegion: @account-request
+            column: REQUEST_NUMBER
+            dataType: varchar2
+        }
+    )
+
+    pageItem P3_REQUEST_TYPE_CODE (
+        type: textField
+        label {
+            label: Request Type Code
+            alignment: right
+        }
+        layout {
+            sequence: 40
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            valueRequired: true
+            maxLength: 30
+        }
+        source {
+            formRegion: @account-request
+            column: REQUEST_TYPE_CODE
+            dataType: varchar2
+        }
+    )
+
+    pageItem P3_STATUS_CODE (
+        type: textField
+        label {
+            label: Status Code
+            alignment: right
+        }
+        layout {
+            sequence: 70
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            valueRequired: true
+            maxLength: 30
+        }
+        source {
+            formRegion: @account-request
+            column: STATUS_CODE
+            dataType: varchar2
+        }
+    )
+
+    pageItem P3_TARGET_DUE_DATE (
+        type: datePicker
+        label {
+            label: Target Due Date
+            alignment: right
+        }
+        layout {
+            sequence: 100
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            maxLength: 255
+        }
+        source {
+            formRegion: @account-request
+            column: TARGET_DUE_DATE
+            dataType: date
+        }
+    )
+
+    pageItem P3_UPDATED_AT (
+        type: datePicker
+        label {
+            label: Updated At
+            alignment: right
+        }
+        layout {
+            sequence: 130
+            region: @account-request
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            valueRequired: true
+            maxLength: 255
+        }
+        source {
+            formRegion: @account-request
+            column: UPDATED_AT
+            dataType: timestampWithLocalTimeZone
+        }
+    )
+
+    button cancel (
+        buttonName: CANCEL
+        label: Cancel
+        layout {
+            sequence: 10
+            region: @buttons
+            slot: close
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: definedByDynamicAction
+        }
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Create
+        layout {
+            sequence: 40
+            region: @buttons
+            slot: next
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: insert
+        }
+        serverSideCondition {
+            type: itemIsNull
+            item: P3_REQUEST_ID
+        }
+    )
+
+    button delete (
+        buttonName: DELETE
+        label: Delete
+        layout {
+            sequence: 20
+            region: @buttons
+            slot: delete
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: [
+                #DEFAULT#
+                t-Button--danger
+                t-Button--simple
+            ]
+        }
+        behavior {
+            executeValidations: false
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: delete
+            requiresConfirmation: true
+        }
+        confirmation {
+            message: &APP_TEXT$DELETE_MSG!RAW.
+            style: danger
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P3_REQUEST_ID
+        }
+    )
+
+    button save (
+        buttonName: SAVE
+        label: Apply Changes
+        layout {
+            sequence: 30
+            region: @buttons
+            slot: next
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: update
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P3_REQUEST_ID
+        }
+    )
+
+    dynamicAction cancel-dialog (
+        name: Cancel Dialog
+        execution {
+            sequence: 10
+        }
+        when {
+            event: click
+            selectionType: button
+            button: @cancel
+        }
+
+        action native-dialog-cancel (
+            action: cancelDialog
+            execution {
+                sequence: 10
+                fireOnInit: false
+            }
+        )
+
+    )
+
+    validation p3-completed-at-must-be-timestamp (
+        name: P3_COMPLETED_AT must be timestamp
+        execution {
+            sequence: 100
+        }
+        validation {
+            type: itemIsAValidTimestamp
+            item: P3_COMPLETED_AT
+        }
+        error {
+            errorMessage: #LABEL# must be a valid timestamp.
+            associatedItem: @P3_COMPLETED_AT
+        }
+    )
+
+    validation p3-created-at-must-be-timestamp (
+        name: P3_CREATED_AT must be timestamp
+        execution {
+            sequence: 110
+        }
+        validation {
+            type: itemIsAValidTimestamp
+            item: P3_CREATED_AT
+        }
+        error {
+            errorMessage: #LABEL# must be a valid timestamp.
+            associatedItem: @P3_CREATED_AT
+        }
+    )
+
+    validation p3-requested-at-must-be-timestamp (
+        name: P3_REQUESTED_AT must be timestamp
+        execution {
+            sequence: 50
+        }
+        validation {
+            type: itemIsAValidTimestamp
+            item: P3_REQUESTED_AT
+        }
+        error {
+            errorMessage: #LABEL# must be a valid timestamp.
+            associatedItem: @P3_REQUESTED_AT
+        }
+    )
+
+    validation p3-updated-at-must-be-timestamp (
+        name: P3_UPDATED_AT must be timestamp
+        execution {
+            sequence: 120
+        }
+        validation {
+            type: itemIsAValidTimestamp
+            item: P3_UPDATED_AT
+        }
+        error {
+            errorMessage: #LABEL# must be a valid timestamp.
+            associatedItem: @P3_UPDATED_AT
+        }
+    )
+
+    process close-dialog (
+        name: Close Dialog
+        type: closeDialog
+        execution {
+            sequence: 50
+        }
+        advanced {
+            executionMappingIdentifier: 16165988627959937
+        }
+        serverSideCondition {
+            type: requestIsContainedInValue
+            value: CREATE,SAVE,DELETE
+        }
+    )
+
+    process initialize-form-account-request (
+        name: Initialize form Account Request
+        type: formInitialization
+        formRegion: @account-request
+        execution {
+            sequence: 10
+            point: beforeHeader
+        }
+        advanced {
+            executionMappingIdentifier: 16165139688959936
+        }
+    )
+
+    process process-form-account-request (
+        name: Process form Account Request
+        type: formAutoRowProcessing
+        formRegion: @account-request
+        execution {
+            sequence: 10
+        }
+        advanced {
+            executionMappingIdentifier: 16165576882959937
+        }
+    )
+
+)
+

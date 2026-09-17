@@ -1,0 +1,317 @@
+page 9999 (
+    name: Login Page
+    alias: LOGIN
+    title: Boreholes Demo - Log In
+    appearance {
+        pageTemplate: @/login
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        warnOnUnsavedChanges: false
+    }
+    security {
+        authentication: public
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region boreholes-demo (
+        name: Boreholes Demo
+        type: staticContent
+        layout {
+            sequence: 10
+            slot: contentBody
+        }
+        appearance {
+            template: @/login
+            templateOptions: #DEFAULT#
+        }
+        image {
+            fileUrl: #APP_FILES#icons/app-icon-512.png
+        }
+    )
+
+    region demo-user-login (
+        name: Demo User Login
+        type: staticContent
+        source {
+            htmlCode:
+                ```html
+                
+                <style>
+                .gs-demo-login { margin:.35rem 0 1rem; display:grid; gap:.55rem; }
+                .gs-demo-login__divider { display:flex; align-items:center; gap:.6rem; color:#607080; font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+                .gs-demo-login__divider:before, .gs-demo-login__divider:after { content:""; height:1px; background:#d9e2ec; flex:1; }
+                .gs-demo-login__note { margin:0; color:#52606d; font-size:.86rem; line-height:1.45; }
+                </style>
+                <div class="gs-demo-login">
+                  <button class="t-Button t-Button--hot t-Button--large t-Button--stretch" type="button" onclick="apex.submit('DEMO_USER_LOGIN');">Continue as Demo User</button>
+                  <p class="gs-demo-login__note">For QR and shared demos. Opens the app as DEMO_USER so Geoscience activity remains visible in feedback and audit trails.</p>
+                  <div class="gs-demo-login__divider">or sign in</div>
+                </div>
+                
+                ```
+        }
+        layout {
+            sequence: 5
+            slot: contentBody
+        }
+        advanced {
+            htmlDomId: demo-user-login
+        }
+    )
+
+    pageItem P9999_PASSWORD (
+        type: password
+        label {
+            label: Password
+            alignment: right
+        }
+        layout {
+            sequence: 20
+            region: @boreholes-demo
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/hidden
+            templateOptions: #DEFAULT#
+            icon: fa-key
+            width: 40
+            valuePlaceholder: Password
+        }
+        validation {
+            maxLength: 100
+        }
+        advanced {
+            customAttributes: autocomplete="current-password"
+        }
+        sessionState {
+            storage: request
+        }
+    )
+
+    pageItem P9999_REMEMBER (
+        type: checkbox
+        label {
+            label: Remember username
+            alignment: right
+        }
+        layout {
+            sequence: 30
+            region: @boreholes-demo
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/hidden
+            templateOptions: #DEFAULT#
+        }
+        serverSideCondition {
+            type: expression
+            plsqlExpression: apex_authentication.persistent_cookies_enabled
+        }
+    )
+
+    pageItem P9999_USERNAME (
+        type: textField
+        label {
+            label: Username
+            alignment: right
+        }
+        layout {
+            sequence: 10
+            region: @boreholes-demo
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/hidden
+            templateOptions: #DEFAULT#
+            icon: fa-user
+            width: 40
+            valuePlaceholder: Username
+        }
+        validation {
+            maxLength: 100
+        }
+        advanced {
+            customAttributes: autocomplete="username"
+        }
+        sessionState {
+            storage: request
+        }
+    )
+
+    button login (
+        buttonName: LOGIN
+        label: Sign In
+        layout {
+            sequence: 40
+            region: @boreholes-demo
+            slot: next
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    process clear-page-s-cache (
+        name: Clear Page(s) Cache
+        type: clearSessionState
+        execution {
+            sequence: 30
+        }
+        advanced {
+            executionMappingIdentifier: 16359887782978267
+        }
+    )
+
+    process demo-user-login (
+        name: Demo User Login
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                
+                begin
+                  if apex_application.g_request = 'DEMO_USER_LOGIN' then
+                    apex_authentication.post_login(
+                      p_username           => 'DEMO_USER',
+                      p_password           => 'DEMO',
+                      p_uppercase_username => true
+                    );
+                
+                    apex_util.redirect_url(apex_page.get_url(p_page => 1));
+                    apex_application.stop_apex_engine;
+                  end if;
+                end;
+                
+                ```
+        }
+        execution {
+            sequence: 1
+        }
+        advanced {
+            executionMappingIdentifier: 1050500001
+        }
+        serverSideCondition {
+            type: request=Value
+            value: DEMO_USER_LOGIN
+        }
+    )
+
+    process get-username-cookie (
+        name: Get Username Cookie
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                :P9999_USERNAME := apex_authentication.get_login_username_cookie;
+                :P9999_REMEMBER := case when :P9999_USERNAME is not null then 'Y' end;
+                ```
+        }
+        execution {
+            sequence: 10
+            point: beforeHeader
+        }
+        advanced {
+            executionMappingIdentifier: 16359434908978267
+        }
+    )
+
+    process login (
+        name: Login
+        type: invokeApi
+        invoke {
+            package: APEX_AUTHENTICATION
+            procedureOrFunction: LOGIN
+        }
+        execution {
+            sequence: 20
+        }
+        advanced {
+            executionMappingIdentifier: 16356094024978263
+        }
+
+        parameter p_password (
+            value {
+                type: item
+                item: P9999_PASSWORD
+            }
+            advanced {
+                displaySequence: 2
+            }
+        )
+
+        parameter p_set_persistent_auth (
+            parameter {
+                dataType: boolean
+                hasDefault: true
+            }
+            value {
+                type: apiDefault
+            }
+            advanced {
+                displaySequence: 3
+            }
+        )
+
+        parameter p_username (
+            value {
+                type: item
+                item: P9999_USERNAME
+            }
+            advanced {
+                displaySequence: 1
+            }
+        )
+
+    )
+
+    process set-username-cookie (
+        name: Set Username Cookie
+        type: invokeApi
+        invoke {
+            package: APEX_AUTHENTICATION
+            procedureOrFunction: SEND_LOGIN_USERNAME_COOKIE
+        }
+        execution {
+            sequence: 10
+        }
+        advanced {
+            executionMappingIdentifier: 16357922851978265
+        }
+
+        parameter p_consent (
+            parameter {
+                dataType: boolean
+            }
+            value {
+                type: item
+                item: P9999_REMEMBER
+            }
+            advanced {
+                displaySequence: 2
+            }
+        )
+
+        parameter p_username (
+            value {
+                type: expression
+                plsqlExpression: lower( :P9999_USERNAME )
+            }
+            advanced {
+                displaySequence: 1
+            }
+        )
+
+    )
+
+)
+

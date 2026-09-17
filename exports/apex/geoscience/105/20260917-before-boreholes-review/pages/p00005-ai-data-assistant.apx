@@ -1,0 +1,65 @@
+page 5 (
+    name: AI Data Assistant
+    alias: AI-DATA-ASSISTANT
+    title: Boreholes AI Data Assistant
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region boreholes-ai-data-assistant (
+        name: Boreholes AI Data Assistant
+        type: dynamicContent
+        source {
+            plsqlFunctionBody: return gs_borehole_page_api.assistant_html;
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: gs-boreholes-ai-assistant
+        }
+    )
+
+    process gs-boreholes-agent-ask (
+        name: GS_BOREHOLES_AGENT_ASK
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                
+                begin
+                  htp.prn(
+                    gs_borehole_agent_api.ask_json(
+                      p_user_prompt => apex_application.g_x01,
+                      p_service_static_id => apex_application.g_x02,
+                      p_screen_context => apex_application.g_x03
+                    )
+                  );
+                end;
+                
+                ```
+        }
+        execution {
+            sequence: 10
+            point: ajaxCallback
+        }
+        advanced {
+            executionMappingIdentifier: 1050100502
+        }
+    )
+
+)
+

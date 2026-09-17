@@ -1,0 +1,67 @@
+page 4 (
+    name: Refresh Data
+    alias: DATA-REFRESH
+    title: Refresh Data
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region refresh-data (
+        name: Refresh Data
+        type: dynamicContent
+        source {
+            plsqlFunctionBody: return gs_borehole_page_api.refresh_html;
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: gs-boreholes-refresh
+        }
+    )
+
+    process gs-boreholes-refresh (
+        name: GS_BOREHOLES_REFRESH
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                
+                begin
+                  htp.prn(
+                    gs_borehole_refresh_api.remote_refresh_json(
+                      p_min_lon => to_number(apex_application.g_x01, '999999999D999999', 'NLS_NUMERIC_CHARACTERS=.,'),
+                      p_min_lat => to_number(apex_application.g_x02, '999999999D999999', 'NLS_NUMERIC_CHARACTERS=.,'),
+                      p_max_lon => to_number(apex_application.g_x03, '999999999D999999', 'NLS_NUMERIC_CHARACTERS=.,'),
+                      p_max_lat => to_number(apex_application.g_x04, '999999999D999999', 'NLS_NUMERIC_CHARACTERS=.,'),
+                      p_limit => to_number(apex_application.g_x05)
+                    )
+                  );
+                end;
+                
+                ```
+        }
+        execution {
+            sequence: 10
+            point: ajaxCallback
+        }
+        advanced {
+            executionMappingIdentifier: 1050100402
+        }
+    )
+
+)
+

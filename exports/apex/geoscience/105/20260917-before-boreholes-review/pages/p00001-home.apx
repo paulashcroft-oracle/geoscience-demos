@@ -1,0 +1,37 @@
+page 1 (
+    name: Home
+    alias: HOME
+    title: Boreholes Demo
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region boreholes-home (
+        name: Boreholes Home
+        type: dynamicContent
+        source {
+            plsqlFunctionBody: return gs_borehole_page_api.home_html;
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: gs-boreholes-home
+        }
+    )
+
+)
+

@@ -1,0 +1,56 @@
+buildOption commented-out (
+    name: Commented Out
+)
+
+buildOption feature-about-page (
+    name: Feature: About Page
+    status {
+        status: include
+    }
+    advanced {
+        featureIdentifier: APPLICATION_ABOUT_PAGE
+    }
+    comments {
+        comments: About this application page.
+    }
+)
+
+buildOption feature-activity-reporting (
+    name: Feature: Activity Reporting
+    status {
+        status: include
+    }
+    advanced {
+        featureIdentifier: APPLICATION_ACTIVITY_REPORTING
+    }
+    comments {
+        comments: Include numerous reports and charts on end user activity.
+    }
+)
+
+buildOption feature-feedback (
+    name: Feature: Feedback
+    status {
+        status: include
+    }
+    advanced {
+        featureIdentifier: APPLICATION_FEEDBACK
+    }
+    comments {
+        comments: Provide a mechanism for end users to post general comments back to the application administrators and developers.
+    }
+)
+
+buildOption feature-theme-style-selection (
+    name: Feature: Theme Style Selection
+    status {
+        status: include
+    }
+    advanced {
+        featureIdentifier: APPLICATION_THEME_STYLE_SELECTION
+    }
+    comments {
+        comments: "Allow administrators to select a default color scheme (theme style) for the application. Administrators can also choose to allow end users to choose their own theme style. "
+    }
+)
+

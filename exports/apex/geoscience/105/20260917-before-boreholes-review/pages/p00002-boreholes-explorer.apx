@@ -1,0 +1,37 @@
+page 2 (
+    name: Explore Data
+    alias: BOREHOLES-EXPLORER
+    title: Explore Data
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region explore-data (
+        name: Explore Data
+        type: dynamicContent
+        source {
+            plsqlFunctionBody: return gs_borehole_page_api.explorer_html;
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: gs-boreholes-explorer
+        }
+    )
+
+)
+
