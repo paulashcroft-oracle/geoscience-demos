@@ -1,0 +1,65 @@
+list page-navigation (
+    name: Page Navigation
+
+    entry ask-ai (
+        label: Ask AI
+        icon {
+            imageIconCssClasses: fa-comments-o
+        }
+        layout {
+            sequence: 40
+        }
+        link {
+            target: {
+                page: 5
+            }
+        }
+    )
+
+    entry explore-data (
+        label: Explore Data
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: {
+                page: 2
+            }
+        }
+    )
+
+    entry refresh-data (
+        label: Refresh Data
+        icon {
+            imageIconCssClasses: fa-refresh
+        }
+        layout {
+            sequence: 30
+        }
+        link {
+            target: {
+                page: 4
+            }
+        }
+    )
+
+    entry reports (
+        label: Reports
+        icon {
+            imageIconCssClasses: fa-bar-chart
+        }
+        layout {
+            sequence: 20
+        }
+        link {
+            target: {
+                page: 6
+            }
+        }
+    )
+
+)
+

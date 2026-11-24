@@ -1,0 +1,12 @@
+lov gs-people-display-name (
+    name: GS_PEOPLE.DISPLAY_NAME
+    source {
+        tableName: GS_PEOPLE
+    }
+    columnMapping {
+        return: PERSON_ID
+        display: DISPLAY_NAME
+        defaultSort: DISPLAY_NAME
+    }
+)
+

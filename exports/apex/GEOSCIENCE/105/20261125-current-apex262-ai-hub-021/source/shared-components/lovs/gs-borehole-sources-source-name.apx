@@ -1,0 +1,12 @@
+lov gs-borehole-sources-source-name (
+    name: GS_BOREHOLE_SOURCES.SOURCE_NAME
+    source {
+        tableName: GS_BOREHOLE_SOURCES
+    }
+    columnMapping {
+        return: SOURCE_ID
+        display: SOURCE_NAME
+        defaultSort: SOURCE_NAME
+    }
+)
+

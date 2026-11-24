@@ -1,0 +1,281 @@
+{
+  "project": "boreholes",
+  "task": "ai-hub-021",
+  "workspace": "GEOSCIENCE",
+  "applicationId": 105,
+  "exportedAtUtc": "2026-11-24T22:45:43.908897+00:00",
+  "rawNativeSha256": "2f2f95676c42ea019b9df587fd43efbd917c62c610c0afd9b01bdf3a31ec15e9",
+  "nativeExportMetadata": {
+    "mmdVersion": "26.2.0+3479"
+  },
+  "checkpointPath": "exports/apex/GEOSCIENCE/105/20261125-current-apex262-ai-hub-021",
+  "repositoryUrl": "https://github.com/paulashcroft-oracle/geoscience-demos",
+  "files": [
+    {
+      "path": "shared-components/themes/universal-theme/theme.apx",
+      "bytes": 1619,
+      "sha256": "f3b9b755873dfa60e9390074a3885a2728da892c63c9e6532b02f3207a496c1c"
+    },
+    {
+      "path": "shared-components/component-settings.apx",
+      "bytes": 1309,
+      "sha256": "be206cc14e55641f16488cbe0d9234d041c06ddfeaa310991a75aa8525f64d6e"
+    },
+    {
+      "path": "shared-components/build-options.apx",
+      "bytes": 1358,
+      "sha256": "0a0aa8fde8575c309509758a678c82f9af47248a03fb8b3c73e5fb816ad61305"
+    },
+    {
+      "path": "shared-components/authentications.apx",
+      "bytes": 101,
+      "sha256": "4b525f3023225c4f91b53c58fabec81ef146d5dfabd1c677cb7c71866d179382"
+    },
+    {
+      "path": "shared-components/authorizations.apx",
+      "bytes": 256,
+      "sha256": "ebb959b32997340cbadedc08d1a97b5f5d3d6833cda33c24d47137024c76a57b"
+    },
+    {
+      "path": "shared-components/static-files.apx",
+      "bytes": 405,
+      "sha256": "7daf77a6a4b8a68142c1e0975aa0ab4dffed3bf51416360ab9f5e3c95897ba01"
+    },
+    {
+      "path": "shared-components/breadcrumbs/breadcrumb.apx",
+      "bytes": 702,
+      "sha256": "283aafdd805ec51af27037bcc5ccb8014c4c7777f4bbf6f8dfcbb8fe09859ec3"
+    },
+    {
+      "path": "shared-components/lists/activity-reports.apx",
+      "bytes": 3046,
+      "sha256": "6a741f9b8bc2bf27b6e709913f49b7a63ca892522763bcab436e3fc46e54df3a"
+    },
+    {
+      "path": "shared-components/lists/feedback.apx",
+      "bytes": 516,
+      "sha256": "243afc077d04746578c475472b56d678fbb92f95dbd6540f8177152091664654"
+    },
+    {
+      "path": "shared-components/lists/navigation-bar.apx",
+      "bytes": 3351,
+      "sha256": "5d24c0d54fafbfc18f832a0c83dd1430ef130aff3b08bc491a621b613a5583c2"
+    },
+    {
+      "path": "shared-components/lists/navigation-menu.apx",
+      "bytes": 1711,
+      "sha256": "b29372f31ad8476a7bae0fdde277c485ae4985905438dd89b97762d1105441ae"
+    },
+    {
+      "path": "shared-components/lists/page-navigation.apx",
+      "bytes": 1098,
+      "sha256": "dcc14989600782d7f86fcccbd8f613b604690aaedb85cbb68d090a18d5bcbfb7"
+    },
+    {
+      "path": "shared-components/lists/user-interface.apx",
+      "bytes": 630,
+      "sha256": "203e8899fce50b6ad8895903933005054cddef8f069d34d978a752f63f7c1e7a"
+    },
+    {
+      "path": "shared-components/lovs/desktop-theme-styles.apx",
+      "bytes": 605,
+      "sha256": "45613b82ba8c7e8143609b220ea6aa479b0dbe84190ab7124520a9f25bd8df23"
+    },
+    {
+      "path": "shared-components/lovs/feedback-rating.apx",
+      "bytes": 992,
+      "sha256": "4855a3bbd5155731ca5d1e18b26d4f679a94564686daa2de46c0ac975ea77245"
+    },
+    {
+      "path": "shared-components/lovs/feedback-status.apx",
+      "bytes": 475,
+      "sha256": "9a026bfd57bfd72f44debc9a1bfa01a2f72d8af2cbf424cdfe4ff7b4d9c61207"
+    },
+    {
+      "path": "shared-components/lovs/gs-borehole-sources-source-name.apx",
+      "bytes": 255,
+      "sha256": "8e0aca1e5f2706df8309a65a2b9d3bbbdffd194567c3ae8d843dea9835582ad0"
+    },
+    {
+      "path": "shared-components/lovs/timeframe-4-weeks.apx",
+      "bytes": 379,
+      "sha256": "e01f15f820bd5ada5e8cab00f8e5ae03dfdde79aa7cb4aa6b5fe69f1362fd9b2"
+    },
+    {
+      "path": "shared-components/lovs/user-theme-preference.apx",
+      "bytes": 232,
+      "sha256": "4a2e861130d520c4f65bd93de384616a7a0251c8c8ff9661a737194371362006"
+    },
+    {
+      "path": "shared-components/lovs/view-as-report-chart.apx",
+      "bytes": 641,
+      "sha256": "8a96809cc27acfeca7eb1ada0282922d3c06e206d9b48257a83e321f2535f0ad"
+    },
+    {
+      "path": "page-groups.apx",
+      "bytes": 55,
+      "sha256": "46d760ce3168fd934b0ba382a31c4eb59187579edc85939cd0bfcef8832eee65"
+    },
+    {
+      "path": "pages/p00000-global-page.apx",
+      "bytes": 92,
+      "sha256": "3256e6113b033c6bc3a6ce9076fff1e70a8ff635cb11dc9b4aba5a1a9e5a1053"
+    },
+    {
+      "path": "pages/p00001-home.apx",
+      "bytes": 612,
+      "sha256": "28ffddfa46cdb807bcc8c1b3cc3669a8f123c1b8e507593995dd9bb93a991f4e"
+    },
+    {
+      "path": "pages/p00002-boreholes-explorer.apx",
+      "bytes": 9979,
+      "sha256": "fb78721ef51467c22277fe651a9e88de8d07aeb3d2072ac6815ee2c60cc13d12"
+    },
+    {
+      "path": "pages/p00003-borehole.apx",
+      "bytes": 15052,
+      "sha256": "0ef75e13c2f87bc7d26c704c657847408a387a61c9665d0e34b6d8e4185b7580"
+    },
+    {
+      "path": "pages/p00004-data-refresh.apx",
+      "bytes": 2481,
+      "sha256": "6938989c3d9dbe1ce4c9b585bb33c13d8403f382d60080cea53dc37a12abdf55"
+    },
+    {
+      "path": "pages/p00005-ai-data-assistant.apx",
+      "bytes": 1485,
+      "sha256": "6be1e8bc5c0b88db1a6822ccef6d3a294f4cba154ca2839ad9f0ab541bde63eb"
+    },
+    {
+      "path": "pages/p00006-boreholes-reports.apx",
+      "bytes": 3600,
+      "sha256": "fa9566770bd40f4fd40e58fd24e3dd68d1d177de2694cb3bdfb6c3d641d3e119"
+    },
+    {
+      "path": "pages/p09999-login.apx",
+      "bytes": 8104,
+      "sha256": "0ec2f7318af6e2b25e418da061b46107d2f359686a936064844751243d6f0abe"
+    },
+    {
+      "path": "pages/p10000-administration.apx",
+      "bytes": 6556,
+      "sha256": "fd4c23d13b7365c8ab7b25955067f55312be3b37930be5e77997c25d3c23cabd"
+    },
+    {
+      "path": "pages/p10010-application-appearance.apx",
+      "bytes": 8250,
+      "sha256": "d02e4b1d10de58cc84217530ceb7f90b8bb601e04b6c3d047323745c3713e428"
+    },
+    {
+      "path": "pages/p10020-activity-dashboard.apx",
+      "bytes": 17257,
+      "sha256": "189fb1f3660b80ce2feae7c7134c5317b83daa388e8c9a8ee21b6845e9b7f274"
+    },
+    {
+      "path": "pages/p10021-top-users.apx",
+      "bytes": 24243,
+      "sha256": "bc0ffe7d03cac8ce3378ffc95398a3f114e6f2d332cfc00682018cce1865dc95"
+    },
+    {
+      "path": "pages/p10022-application-error-log.apx",
+      "bytes": 6060,
+      "sha256": "4aeabbf2f97b4ade962524c641f3aa1e10193adda0a7ed226b047edaeab4fb70"
+    },
+    {
+      "path": "pages/p10023-page-performance.apx",
+      "bytes": 13919,
+      "sha256": "cdd8fd3d836bf44c587979a1a4c3cb27969b2c3a311067e672ffd8f5c29da0f1"
+    },
+    {
+      "path": "pages/p10024-page-views.apx",
+      "bytes": 10019,
+      "sha256": "4b5e9d3b2619511d70c9907ace8f67c35991ee91ee66efa18918d4b732bbc455"
+    },
+    {
+      "path": "pages/p10025-automations-log.apx",
+      "bytes": 7701,
+      "sha256": "e864e86d54cda46ea0834018baddc757d5ebdad01458f9766a771d1f106e55b3"
+    },
+    {
+      "path": "pages/p10026-log-messages.apx",
+      "bytes": 5539,
+      "sha256": "94617e4874db3acb2277de24141218c734e502851ffac89dcab8aeb89c934d90"
+    },
+    {
+      "path": "pages/p10030-feedback.apx",
+      "bytes": 9077,
+      "sha256": "98ac77167c31ab6ef2a90141f7183fe9ad81c7b53ffe8a9cd06596b0728c89c1"
+    },
+    {
+      "path": "pages/p10031-feedback-submitted.apx",
+      "bytes": 1586,
+      "sha256": "20ebb0af8d749988f11ca1fd629b2c26260897bd90d3f06077944e39969039b0"
+    },
+    {
+      "path": "pages/p10033-manage-feedback.apx",
+      "bytes": 11268,
+      "sha256": "6165893a9dd000b7da27feac740afe54f1b1f43381a4ac67316e75e30116372e"
+    },
+    {
+      "path": "pages/p10034-feedback1.apx",
+      "bytes": 11369,
+      "sha256": "6e8d322be17e8597046dbcbda582ba1bcc5f79c25832652717a980a5cc13c12a"
+    },
+    {
+      "path": "pages/p10040-about.apx",
+      "bytes": 1075,
+      "sha256": "53a3a993c07c538ffd073cad9df28943fb082bfe1fedde233072b111ddb07c7a"
+    },
+    {
+      "path": "pages/p10041-help.apx",
+      "bytes": 1816,
+      "sha256": "8e1ffabbee433f18dc2fa089f82c74a85560176f28af4e702ed4b6d1b94ffdc8"
+    },
+    {
+      "path": "application.apx",
+      "bytes": 1445,
+      "sha256": "eddeab9adcbbca52902e6902b3de36cb275dad564263a4850d769d8f1d75a2c9"
+    },
+    {
+      "path": "shared-components/static-files/icons/app-icon-144-rounded.png",
+      "bytes": 3645,
+      "sha256": "76b4a8c05b2c687899a0260dc0461dc3ac63ade97aa66f491618d3151684166a"
+    },
+    {
+      "path": "shared-components/static-files/icons/app-icon-512.png",
+      "bytes": 14115,
+      "sha256": "b866877b087b58ade55e2b64ccec3e25ec6fd33b838f27fed0fd71e4ff9c3e90"
+    },
+    {
+      "path": "shared-components/static-files/icons/app-icon-256-rounded.png",
+      "bytes": 7210,
+      "sha256": "c8fbd8e498038d6baa6d0f47d22df14e19f769c698fe95f03e715aee4b7ac29b"
+    },
+    {
+      "path": "shared-components/static-files/icons/app-icon-192.png",
+      "bytes": 3058,
+      "sha256": "ea06b20d70ff4fe78637cdd87f563512c418e9402c59e83c99c53ae0d818e6de"
+    },
+    {
+      "path": "shared-components/static-files/icons/app-icon-32.png",
+      "bytes": 478,
+      "sha256": "e51ff30b1fc4f2fb8e51054128c3b50b42086ddb0563a459ca55657416578883"
+    },
+    {
+      "path": "deployments/default.json",
+      "bytes": 214,
+      "sha256": "a95855a47a02c050e0afe43d3fd24787b5f0af5549f5aed9095b63e85e29e90d"
+    },
+    {
+      "path": ".apex/apexlang.json",
+      "bytes": 34,
+      "sha256": "1e4d481e2b249e9579fb0e21ec7534b535573b7534e53ec8d8f7b204d841a101"
+    }
+  ],
+  "excludedWorkspaceDefinitions": [],
+  "privateBinaryAssets": [],
+  "redactions": [],
+  "restore": "Restore this checkpoint source/ tree at the recorded Git commit. Provision excluded workspace credentials and GenAI service prerequisites through the project runbook. Reapply redacted activation values through approved secret storage. Binary assets omitted from ordinary Git remain byte-hashed in private native recovery ZIP, retained under AI Hub task ai-hub-021 run 20261125-apex262-exports/native/<project>-<app>.zip; this source checkpoint alone is not a complete binary backup.",
+  "fileCount": 52,
+  "totalBytes": 227075
+}

@@ -1,0 +1,80 @@
+page 4 (
+    name: Refresh Data
+    alias: DATA-REFRESH
+    title: Refresh Data
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region refresh-data (
+        name: Refresh Data
+        type: dynamicContent
+        source {
+            plsqlFunctionBody: return gs_borehole_page_api.refresh_html;
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            htmlDomId: gs-boreholes-refresh
+        }
+    )
+
+    process gs-boreholes-refresh (
+        name: GS_BOREHOLES_REFRESH
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                declare
+                  function request_number(p_text in varchar2) return number is
+                    l_text varchar2(32767) := trim(p_text);
+                  begin
+                    if l_text is null
+                       or not regexp_like(
+                         l_text,
+                         '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$',
+                         'c'
+                       ) then
+                      return null;
+                    end if;
+                    if substr(l_text, 1, 1) = '+' then
+                      l_text := substr(l_text, 2);
+                    end if;
+                    return to_number(
+                      l_text default null on conversion error,
+                      '999999999D999999',
+                      'NLS_NUMERIC_CHARACTERS=''.,'''
+                    );
+                  end request_number;
+                begin
+                  apex_util.prn(
+                    p_clob => gs_borehole_refresh_api.remote_refresh_json(
+                      p_min_lon => request_number(apex_application.g_x01),
+                      p_min_lat => request_number(apex_application.g_x02),
+                      p_max_lon => request_number(apex_application.g_x03),
+                      p_max_lat => request_number(apex_application.g_x04),
+                      p_limit   => request_number(apex_application.g_x05)
+                    ),
+                    p_escape => false
+                  );
+                end;
+                ```
+        }
+        execution {
+            sequence: 10
+            point: ajaxCallback
+        }
+        advanced {
+            executionMappingIdentifier: 1050100402
+        }
+    )
+
+)
+

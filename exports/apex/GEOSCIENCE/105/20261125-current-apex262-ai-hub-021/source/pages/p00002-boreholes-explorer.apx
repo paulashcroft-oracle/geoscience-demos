@@ -1,0 +1,441 @@
+page 2 (
+    name: Explore Data
+    alias: BOREHOLES-EXPLORER
+    title: Explore Data
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region explore-data (
+        name: Explore Data
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                select b.borehole_id,
+                       b.borehole_ref,
+                       b.borehole_name,
+                       b.state_code,
+                       b.operator_name,
+                       b.purpose,
+                       coalesce(b.geological_provinces, b.region_name) province,
+                       b.depth_metres,
+                       b.latitude,
+                       b.longitude,
+                       s.source_name,
+                       b.last_refresh_run_id,
+                       b.borehole_report_uri report_url,
+                       b.updated_at
+                  from gs_boreholes b
+                  left join gs_borehole_sources s on s.source_id = b.source_id
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        advanced {
+            htmlDomId: gs-boreholes-explorer
+        }
+        pagination {
+            type: rowRangesXToYOfZ
+        }
+        searchBar {
+            rowsPerPageSelector: true
+        }
+        actionsMenu {
+            flashback: false
+            subscription: false
+        }
+        download {
+            sendAsEmail: false
+        }
+        advanced {
+            savedReportMappingIdentifier: 11369596725364826
+        }
+
+        column BOREHOLE_ID (
+            type: plainText
+            heading {
+                heading: Borehole Id
+                alignment: end
+            }
+            layout {
+                sequence: 10
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: A
+            }
+        )
+
+        column BOREHOLE_NAME (
+            type: plainText
+            heading {
+                heading: Name
+            }
+            layout {
+                sequence: 30
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: C
+            }
+        )
+
+        column BOREHOLE_REF (
+            type: plainText
+            heading {
+                heading: Ref
+            }
+            layout {
+                sequence: 20
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: B
+            }
+        )
+
+        column DEPTH_METRES (
+            type: plainText
+            heading {
+                heading: Length (m)
+                alignment: end
+            }
+            layout {
+                sequence: 80
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: H
+            }
+        )
+
+        column LAST_REFRESH_RUN_ID (
+            type: plainText
+            heading {
+                heading: Last Refresh Run Id
+                alignment: end
+            }
+            layout {
+                sequence: 120
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: L
+            }
+        )
+
+        column LATITUDE (
+            type: plainText
+            heading {
+                heading: Latitude
+                alignment: end
+            }
+            layout {
+                sequence: 90
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: I
+            }
+        )
+
+        column LONGITUDE (
+            type: plainText
+            heading {
+                heading: Longitude
+                alignment: end
+            }
+            layout {
+                sequence: 100
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: J
+            }
+        )
+
+        column OPERATOR_NAME (
+            type: plainText
+            heading {
+                heading: Operator
+            }
+            layout {
+                sequence: 50
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: E
+            }
+        )
+
+        column PROVINCE (
+            type: plainText
+            heading {
+                heading: Province
+            }
+            layout {
+                sequence: 70
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: G
+            }
+        )
+
+        column PURPOSE (
+            type: plainText
+            heading {
+                heading: Purpose
+            }
+            layout {
+                sequence: 60
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: F
+            }
+        )
+
+        column REPORT_URL (
+            type: plainText
+            heading {
+                heading: Report Url
+            }
+            layout {
+                sequence: 130
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: M
+            }
+        )
+
+        column SOURCE_NAME (
+            type: plainText
+            heading {
+                heading: Source Name
+            }
+            layout {
+                sequence: 110
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: K
+            }
+        )
+
+        column STATE_CODE (
+            type: plainText
+            heading {
+                heading: State
+            }
+            layout {
+                sequence: 40
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: D
+            }
+        )
+
+        column UPDATED_AT (
+            type: plainText
+            heading {
+                heading: Updated At
+            }
+            layout {
+                sequence: 140
+            }
+            source {
+                dataType: date
+                timezoneAware: Y
+            }
+            advanced {
+                endUserAlias: N
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+
+        savedReport primary (
+            visibility: primaryDefault
+            view {
+                rowsPerPage: 50
+            }
+
+            displayColumn BOREHOLE_NAME (
+                sequence: 2
+            )
+
+            displayColumn BOREHOLE_REF (
+                sequence: 1
+            )
+
+            displayColumn DEPTH_METRES (
+                sequence: 7
+            )
+
+            displayColumn OPERATOR_NAME (
+                sequence: 4
+            )
+
+            displayColumn PROVINCE (
+                sequence: 6
+            )
+
+            displayColumn PURPOSE (
+                sequence: 5
+            )
+
+            displayColumn STATE_CODE (
+                sequence: 3
+            )
+
+            sort (
+                column: UPDATED_AT
+                sort {
+                    direction: desc
+                    sequence: 1
+                }
+            )
+
+            sort (
+                column: BOREHOLE_ID
+                sort {
+                    sequence: 2
+                }
+            )
+
+        )
+
+    )
+
+    button ask-ai (
+        buttonName: ASK_AI
+        label: Ask AI
+        layout {
+            sequence: 40
+            region: @explore-data
+            slot: rightOfInteractiveReportSearchBar
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 5
+            }
+        }
+    )
+
+    button home (
+        buttonName: HOME
+        label: Home
+        layout {
+            sequence: 20
+            region: @explore-data
+            slot: rightOfInteractiveReportSearchBar
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 1
+            }
+        }
+    )
+
+    button refresh-data (
+        buttonName: REFRESH_DATA
+        label: Refresh Data
+        layout {
+            sequence: 30
+            region: @explore-data
+            slot: rightOfInteractiveReportSearchBar
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 4
+            }
+        }
+    )
+
+    button view-all-map (
+        buttonName: VIEW_ALL_MAP
+        label: View all boreholes map
+        layout {
+            sequence: 10
+            region: @explore-data
+            slot: rightOfInteractiveReportSearchBar
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 6
+            }
+        }
+    )
+
+)
+
